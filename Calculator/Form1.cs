@@ -50,5 +50,10 @@ namespace Calculator
         private void bt7_Click(object sender, EventArgs e) { txtInput.Text += "7"; }
         private void bt8_Click(object sender, EventArgs e) { txtInput.Text += "8"; }
         private void bt9_Click(object sender, EventArgs e) { txtInput.Text += "9"; }
+
+        private void infoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Sample Calculator", "Info");
+        }
     }
 }

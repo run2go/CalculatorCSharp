@@ -74,8 +74,9 @@
             // infoToolStripMenuItem
             // 
             infoToolStripMenuItem.Name = "infoToolStripMenuItem";
-            infoToolStripMenuItem.Size = new Size(95, 22);
+            infoToolStripMenuItem.Size = new Size(180, 22);
             infoToolStripMenuItem.Text = "Info";
+            infoToolStripMenuItem.Click += infoToolStripMenuItem_Click;
             // 
             // txtInput
             // 
