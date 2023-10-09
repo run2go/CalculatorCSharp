@@ -32,6 +32,8 @@
             menuStrip1 = new MenuStrip();
             aboutToolStripMenuItem = new ToolStripMenuItem();
             infoToolStripMenuItem = new ToolStripMenuItem();
+            toolStripSeparator1 = new ToolStripSeparator();
+            alwaysOnTopToolStripMenuItem = new ToolStripMenuItem();
             txtInput = new TextBox();
             bt9 = new Button();
             btDelete = new Button();
@@ -52,7 +54,9 @@
             btCalc = new Button();
             btSub = new Button();
             btOutput = new Button();
+            tableLayoutPanel1 = new TableLayoutPanel();
             menuStrip1.SuspendLayout();
+            tableLayoutPanel1.SuspendLayout();
             SuspendLayout();
             // 
             // menuStrip1
@@ -66,7 +70,7 @@
             // 
             // aboutToolStripMenuItem
             // 
-            aboutToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { infoToolStripMenuItem });
+            aboutToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { infoToolStripMenuItem, toolStripSeparator1, alwaysOnTopToolStripMenuItem });
             aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             aboutToolStripMenuItem.Size = new Size(52, 20);
             aboutToolStripMenuItem.Text = "About";
@@ -74,9 +78,23 @@
             // infoToolStripMenuItem
             // 
             infoToolStripMenuItem.Name = "infoToolStripMenuItem";
-            infoToolStripMenuItem.Size = new Size(180, 22);
+            infoToolStripMenuItem.Size = new Size(150, 22);
             infoToolStripMenuItem.Text = "Info";
             infoToolStripMenuItem.Click += infoToolStripMenuItem_Click;
+            // 
+            // toolStripSeparator1
+            // 
+            toolStripSeparator1.Name = "toolStripSeparator1";
+            toolStripSeparator1.Size = new Size(147, 6);
+            // 
+            // alwaysOnTopToolStripMenuItem
+            // 
+            alwaysOnTopToolStripMenuItem.Checked = true;
+            alwaysOnTopToolStripMenuItem.CheckState = CheckState.Checked;
+            alwaysOnTopToolStripMenuItem.Name = "alwaysOnTopToolStripMenuItem";
+            alwaysOnTopToolStripMenuItem.Size = new Size(150, 22);
+            alwaysOnTopToolStripMenuItem.Text = "Always on Top";
+            alwaysOnTopToolStripMenuItem.Click += alwaysOnTopToolStripMenuItem_Click;
             // 
             // txtInput
             // 
@@ -91,7 +109,7 @@
             // 
             bt9.Anchor = AnchorStyles.None;
             bt9.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            bt9.Location = new Point(86, 137);
+            bt9.Location = new Point(85, 45);
             bt9.Name = "bt9";
             bt9.Size = new Size(34, 33);
             bt9.TabIndex = 3;
@@ -102,21 +120,22 @@
             // btDelete
             // 
             btDelete.Anchor = AnchorStyles.None;
+            tableLayoutPanel1.SetColumnSpan(btDelete, 2);
             btDelete.Font = new Font("Arial Rounded MT Bold", 12F, FontStyle.Regular, GraphicsUnit.Point);
             btDelete.ForeColor = SystemColors.WindowFrame;
-            btDelete.Location = new Point(4, 96);
+            btDelete.Location = new Point(3, 4);
             btDelete.Name = "btDelete";
             btDelete.Size = new Size(75, 33);
             btDelete.TabIndex = 3;
             btDelete.Text = "Delete";
-            btDelete.UseVisualStyleBackColor = true;
+            btDelete.UseVisualStyleBackColor = false;
             btDelete.Click += btDelete_Click;
             // 
             // bt0
             // 
             bt0.Anchor = AnchorStyles.None;
             bt0.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            bt0.Location = new Point(45, 260);
+            bt0.Location = new Point(44, 168);
             bt0.Name = "bt0";
             bt0.Size = new Size(34, 33);
             bt0.TabIndex = 3;
@@ -128,7 +147,7 @@
             // 
             bt6.Anchor = AnchorStyles.None;
             bt6.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            bt6.Location = new Point(86, 178);
+            bt6.Location = new Point(85, 86);
             bt6.Name = "bt6";
             bt6.Size = new Size(34, 33);
             bt6.TabIndex = 3;
@@ -140,7 +159,7 @@
             // 
             bt2.Anchor = AnchorStyles.None;
             bt2.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            bt2.Location = new Point(45, 219);
+            bt2.Location = new Point(44, 127);
             bt2.Name = "bt2";
             bt2.Size = new Size(34, 33);
             bt2.TabIndex = 3;
@@ -152,7 +171,7 @@
             // 
             bt3.Anchor = AnchorStyles.None;
             bt3.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            bt3.Location = new Point(86, 219);
+            bt3.Location = new Point(85, 127);
             bt3.Name = "bt3";
             bt3.Size = new Size(34, 33);
             bt3.TabIndex = 3;
@@ -164,7 +183,7 @@
             // 
             bt5.Anchor = AnchorStyles.None;
             bt5.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            bt5.Location = new Point(45, 178);
+            bt5.Location = new Point(44, 86);
             bt5.Name = "bt5";
             bt5.Size = new Size(34, 33);
             bt5.TabIndex = 3;
@@ -177,19 +196,19 @@
             btAdd.Anchor = AnchorStyles.None;
             btAdd.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             btAdd.ForeColor = SystemColors.WindowFrame;
-            btAdd.Location = new Point(127, 260);
+            btAdd.Location = new Point(126, 168);
             btAdd.Name = "btAdd";
             btAdd.Size = new Size(34, 33);
             btAdd.TabIndex = 3;
             btAdd.Text = "+";
-            btAdd.UseVisualStyleBackColor = true;
+            btAdd.UseVisualStyleBackColor = false;
             btAdd.Click += btAdd_Click;
             // 
             // bt8
             // 
             bt8.Anchor = AnchorStyles.None;
             bt8.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            bt8.Location = new Point(45, 137);
+            bt8.Location = new Point(44, 45);
             bt8.Name = "bt8";
             bt8.Size = new Size(34, 33);
             bt8.TabIndex = 3;
@@ -202,12 +221,12 @@
             btDiv.Anchor = AnchorStyles.None;
             btDiv.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             btDiv.ForeColor = SystemColors.WindowFrame;
-            btDiv.Location = new Point(127, 137);
+            btDiv.Location = new Point(126, 45);
             btDiv.Name = "btDiv";
             btDiv.Size = new Size(34, 33);
             btDiv.TabIndex = 3;
             btDiv.Text = "/";
-            btDiv.UseVisualStyleBackColor = true;
+            btDiv.UseVisualStyleBackColor = false;
             btDiv.Click += btDiv_Click;
             // 
             // btCom
@@ -215,32 +234,33 @@
             btCom.Anchor = AnchorStyles.None;
             btCom.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             btCom.ForeColor = SystemColors.WindowFrame;
-            btCom.Location = new Point(4, 260);
+            btCom.Location = new Point(3, 168);
             btCom.Name = "btCom";
             btCom.Size = new Size(34, 33);
             btCom.TabIndex = 3;
             btCom.Text = ".";
-            btCom.UseVisualStyleBackColor = true;
+            btCom.UseVisualStyleBackColor = false;
             btCom.Click += btCom_Click;
             // 
             // btClear
             // 
             btClear.Anchor = AnchorStyles.None;
+            tableLayoutPanel1.SetColumnSpan(btClear, 2);
             btClear.Font = new Font("Arial Rounded MT Bold", 12F, FontStyle.Regular, GraphicsUnit.Point);
             btClear.ForeColor = SystemColors.WindowFrame;
-            btClear.Location = new Point(86, 96);
+            btClear.Location = new Point(85, 4);
             btClear.Name = "btClear";
             btClear.Size = new Size(75, 33);
             btClear.TabIndex = 3;
             btClear.Text = "Clear";
-            btClear.UseVisualStyleBackColor = true;
+            btClear.UseVisualStyleBackColor = false;
             btClear.Click += btClear_Click;
             // 
             // bt1
             // 
             bt1.Anchor = AnchorStyles.None;
             bt1.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            bt1.Location = new Point(4, 219);
+            bt1.Location = new Point(3, 127);
             bt1.Name = "bt1";
             bt1.Size = new Size(34, 33);
             bt1.TabIndex = 3;
@@ -253,19 +273,19 @@
             btMul.Anchor = AnchorStyles.None;
             btMul.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             btMul.ForeColor = SystemColors.WindowFrame;
-            btMul.Location = new Point(127, 178);
+            btMul.Location = new Point(126, 86);
             btMul.Name = "btMul";
             btMul.Size = new Size(34, 33);
             btMul.TabIndex = 3;
             btMul.Text = "x";
-            btMul.UseVisualStyleBackColor = true;
+            btMul.UseVisualStyleBackColor = false;
             btMul.Click += btMul_Click;
             // 
             // bt4
             // 
             bt4.Anchor = AnchorStyles.None;
             bt4.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            bt4.Location = new Point(4, 178);
+            bt4.Location = new Point(3, 86);
             bt4.Name = "bt4";
             bt4.Size = new Size(34, 33);
             bt4.TabIndex = 3;
@@ -277,7 +297,7 @@
             // 
             bt7.Anchor = AnchorStyles.None;
             bt7.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            bt7.Location = new Point(4, 137);
+            bt7.Location = new Point(3, 45);
             bt7.Name = "bt7";
             bt7.Size = new Size(34, 33);
             bt7.TabIndex = 3;
@@ -291,7 +311,7 @@
             btCalc.BackColor = SystemColors.ActiveCaption;
             btCalc.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             btCalc.ForeColor = SystemColors.ControlLightLight;
-            btCalc.Location = new Point(86, 260);
+            btCalc.Location = new Point(85, 168);
             btCalc.Name = "btCalc";
             btCalc.Size = new Size(34, 33);
             btCalc.TabIndex = 3;
@@ -304,12 +324,12 @@
             btSub.Anchor = AnchorStyles.None;
             btSub.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             btSub.ForeColor = SystemColors.WindowFrame;
-            btSub.Location = new Point(127, 219);
+            btSub.Location = new Point(126, 127);
             btSub.Name = "btSub";
             btSub.Size = new Size(34, 33);
             btSub.TabIndex = 3;
             btSub.Text = "-";
-            btSub.UseVisualStyleBackColor = true;
+            btSub.UseVisualStyleBackColor = false;
             btSub.Click += btSub_Click;
             // 
             // btOutput
@@ -322,29 +342,50 @@
             btOutput.TabIndex = 4;
             btOutput.UseVisualStyleBackColor = false;
             // 
+            // tableLayoutPanel1
+            // 
+            tableLayoutPanel1.ColumnCount = 4;
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+            tableLayoutPanel1.Controls.Add(bt7, 0, 1);
+            tableLayoutPanel1.Controls.Add(bt4, 0, 2);
+            tableLayoutPanel1.Controls.Add(btClear, 2, 0);
+            tableLayoutPanel1.Controls.Add(btMul, 3, 2);
+            tableLayoutPanel1.Controls.Add(btDelete, 0, 0);
+            tableLayoutPanel1.Controls.Add(btDiv, 3, 1);
+            tableLayoutPanel1.Controls.Add(btSub, 3, 3);
+            tableLayoutPanel1.Controls.Add(btCalc, 2, 4);
+            tableLayoutPanel1.Controls.Add(bt1, 0, 3);
+            tableLayoutPanel1.Controls.Add(bt6, 2, 2);
+            tableLayoutPanel1.Controls.Add(btCom, 0, 4);
+            tableLayoutPanel1.Controls.Add(bt0, 1, 4);
+            tableLayoutPanel1.Controls.Add(bt9, 2, 1);
+            tableLayoutPanel1.Controls.Add(bt3, 2, 3);
+            tableLayoutPanel1.Controls.Add(bt8, 1, 1);
+            tableLayoutPanel1.Controls.Add(bt5, 1, 2);
+            tableLayoutPanel1.Controls.Add(btAdd, 3, 4);
+            tableLayoutPanel1.Controls.Add(bt2, 1, 3);
+            tableLayoutPanel1.Dock = DockStyle.Fill;
+            tableLayoutPanel1.Location = new Point(0, 90);
+            tableLayoutPanel1.Name = "tableLayoutPanel1";
+            tableLayoutPanel1.RowCount = 5;
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+            tableLayoutPanel1.Size = new Size(164, 206);
+            tableLayoutPanel1.TabIndex = 5;
+            // 
             // Calculator
             // 
             AutoScaleMode = AutoScaleMode.Inherit;
             ClientSize = new Size(164, 296);
+            Controls.Add(tableLayoutPanel1);
             Controls.Add(btOutput);
-            Controls.Add(btCalc);
-            Controls.Add(btSub);
-            Controls.Add(btMul);
-            Controls.Add(btClear);
-            Controls.Add(btDiv);
-            Controls.Add(btAdd);
-            Controls.Add(bt3);
-            Controls.Add(bt6);
-            Controls.Add(btDelete);
-            Controls.Add(bt9);
-            Controls.Add(bt0);
-            Controls.Add(bt2);
-            Controls.Add(bt5);
-            Controls.Add(bt8);
-            Controls.Add(btCom);
-            Controls.Add(bt1);
-            Controls.Add(bt4);
-            Controls.Add(bt7);
             Controls.Add(txtInput);
             Controls.Add(menuStrip1);
             Icon = (Icon)resources.GetObject("$this.Icon");
@@ -358,6 +399,7 @@
             TopMost = true;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
+            tableLayoutPanel1.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -365,7 +407,6 @@
         #endregion
         private MenuStrip menuStrip1;
         private ToolStripMenuItem aboutToolStripMenuItem;
-        private ToolStripMenuItem infoToolStripMenuItem;
         private TextBox txtInput;
         private Button bt9;
         private Button btDelete;
@@ -386,5 +427,9 @@
         private Button btCalc;
         private Button btSub;
         private Button btOutput;
+        private ToolStripSeparator toolStripSeparator1;
+        private ToolStripMenuItem alwaysOnTopToolStripMenuItem;
+        private ToolStripMenuItem infoToolStripMenuItem;
+        private TableLayoutPanel tableLayoutPanel1;
     }
 }

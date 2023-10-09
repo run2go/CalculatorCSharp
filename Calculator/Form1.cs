@@ -28,12 +28,7 @@ namespace Calculator
             try { btOutput.Text = funCalc(txtInput.Text).ToString(); }
             catch (Exception ex) { btOutput.Text = ex.Message; }
         }
-        private void btClear_Click(object sender, EventArgs e)
-        {
-            txtInput.Text = string.Empty;
-            btOutput.Text = string.Empty;
-        }
-
+        private void btClear_Click(object sender, EventArgs e) { txtInput.Text = btOutput.Text = string.Empty; }
         private void btDelete_Click(object sender, EventArgs e) { txtInput.Text = txtInput.Text.Substring(0, txtInput.Text.Length - 1); }
         private void btAdd_Click(object sender, EventArgs e) { txtInput.Text += "+"; }
         private void btSub_Click(object sender, EventArgs e) { txtInput.Text += "-"; }
@@ -50,10 +45,19 @@ namespace Calculator
         private void bt7_Click(object sender, EventArgs e) { txtInput.Text += "7"; }
         private void bt8_Click(object sender, EventArgs e) { txtInput.Text += "8"; }
         private void bt9_Click(object sender, EventArgs e) { txtInput.Text += "9"; }
-
-        private void infoToolStripMenuItem_Click(object sender, EventArgs e)
+        private void infoToolStripMenuItem_Click(object sender, EventArgs e) { MessageBox.Show("Sample Calculator", "Info"); }
+        private void alwaysOnTopToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Sample Calculator", "Info");
+            if (alwaysOnTopToolStripMenuItem.Checked == true)
+            {
+                alwaysOnTopToolStripMenuItem.Checked = false;
+                this.TopMost = false;
+            }
+            else
+            {
+                alwaysOnTopToolStripMenuItem.Checked = true;
+                this.TopMost = true;
+            }
         }
     }
 }
