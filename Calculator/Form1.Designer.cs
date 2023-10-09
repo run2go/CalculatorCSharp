@@ -31,9 +31,9 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Calculator));
             menuStrip1 = new MenuStrip();
             aboutToolStripMenuItem = new ToolStripMenuItem();
-            infoToolStripMenuItem = new ToolStripMenuItem();
+            MenuTopMost = new ToolStripMenuItem();
             toolStripSeparator1 = new ToolStripSeparator();
-            alwaysOnTopToolStripMenuItem = new ToolStripMenuItem();
+            MenuInfo = new ToolStripMenuItem();
             txtInput = new TextBox();
             bt9 = new Button();
             btDelete = new Button();
@@ -70,31 +70,31 @@
             // 
             // aboutToolStripMenuItem
             // 
-            aboutToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { infoToolStripMenuItem, toolStripSeparator1, alwaysOnTopToolStripMenuItem });
+            aboutToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { MenuTopMost, toolStripSeparator1, MenuInfo });
             aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             aboutToolStripMenuItem.Size = new Size(52, 20);
             aboutToolStripMenuItem.Text = "About";
             // 
-            // infoToolStripMenuItem
+            // MenuTopMost
             // 
-            infoToolStripMenuItem.Name = "infoToolStripMenuItem";
-            infoToolStripMenuItem.Size = new Size(150, 22);
-            infoToolStripMenuItem.Text = "Info";
-            infoToolStripMenuItem.Click += infoToolStripMenuItem_Click;
+            MenuTopMost.Checked = true;
+            MenuTopMost.CheckState = CheckState.Checked;
+            MenuTopMost.Name = "MenuTopMost";
+            MenuTopMost.Size = new Size(180, 22);
+            MenuTopMost.Text = "Always on Top";
+            MenuTopMost.Click += MenuTopMost_Click;
             // 
             // toolStripSeparator1
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
-            toolStripSeparator1.Size = new Size(147, 6);
+            toolStripSeparator1.Size = new Size(177, 6);
             // 
-            // alwaysOnTopToolStripMenuItem
+            // MenuInfo
             // 
-            alwaysOnTopToolStripMenuItem.Checked = true;
-            alwaysOnTopToolStripMenuItem.CheckState = CheckState.Checked;
-            alwaysOnTopToolStripMenuItem.Name = "alwaysOnTopToolStripMenuItem";
-            alwaysOnTopToolStripMenuItem.Size = new Size(150, 22);
-            alwaysOnTopToolStripMenuItem.Text = "Always on Top";
-            alwaysOnTopToolStripMenuItem.Click += alwaysOnTopToolStripMenuItem_Click;
+            MenuInfo.Name = "MenuInfo";
+            MenuInfo.Size = new Size(180, 22);
+            MenuInfo.Text = "Info";
+            MenuInfo.Click += MenuInfo_Click;
             // 
             // txtInput
             // 
@@ -104,6 +104,7 @@
             txtInput.Name = "txtInput";
             txtInput.Size = new Size(164, 29);
             txtInput.TabIndex = 2;
+            txtInput.TextAlign = HorizontalAlignment.Center;
             // 
             // bt9
             // 
@@ -397,6 +398,7 @@
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Calculator";
             TopMost = true;
+            KeyPress += Calculator_KeyPress;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             tableLayoutPanel1.ResumeLayout(false);
@@ -428,8 +430,8 @@
         private Button btSub;
         private Button btOutput;
         private ToolStripSeparator toolStripSeparator1;
-        private ToolStripMenuItem alwaysOnTopToolStripMenuItem;
-        private ToolStripMenuItem infoToolStripMenuItem;
+        private ToolStripMenuItem MenuTopMost;
         private TableLayoutPanel tableLayoutPanel1;
+        private ToolStripMenuItem MenuInfo;
     }
 }

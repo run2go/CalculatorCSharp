@@ -5,7 +5,12 @@ namespace Calculator
     public partial class Calculator : Form
     {
         DataTable dt = new DataTable();
-        private double funCalc(string input) { return Convert.ToDouble(dt.Compute(input, "")); }
+        private void funCalc()
+        {
+            try { btOutput.Text = dt.Compute(txtInput.Text, "").ToString(); }
+            catch (Exception ex) { btOutput.Text = ex.Message; }
+            Clipboard.SetText(btOutput.Text);
+        }
         public Calculator()
         {
             InitializeComponent();
@@ -14,20 +19,14 @@ namespace Calculator
         }
         private void txtInput_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
-            {
-                try { btOutput.Text = funCalc(txtInput.Text).ToString(); }
-                catch (Exception ex) { btOutput.Text = ex.Message; }
-                e.Handled = true;
-                e.SuppressKeyPress = true;
-                Clipboard.SetText(btOutput.Text);
-            }
+            if (e.KeyCode == Keys.Enter) { funCalc(); e.Handled = e.SuppressKeyPress = true; }
         }
-        private void btCalc_Click(object sender, EventArgs e)
+        private void Calculator_KeyPress(object sender, KeyPressEventArgs e)
         {
-            try { btOutput.Text = funCalc(txtInput.Text).ToString(); }
-            catch (Exception ex) { btOutput.Text = ex.Message; }
+            if (e.KeyChar == 13) funCalc();
+            else txtInput.Text += e.KeyChar;
         }
+        private void btCalc_Click(object sender, EventArgs e) { funCalc(); }
         private void btClear_Click(object sender, EventArgs e) { txtInput.Text = btOutput.Text = string.Empty; }
         private void btDelete_Click(object sender, EventArgs e) { txtInput.Text = txtInput.Text.Substring(0, txtInput.Text.Length - 1); }
         private void btAdd_Click(object sender, EventArgs e) { txtInput.Text += "+"; }
@@ -45,19 +44,11 @@ namespace Calculator
         private void bt7_Click(object sender, EventArgs e) { txtInput.Text += "7"; }
         private void bt8_Click(object sender, EventArgs e) { txtInput.Text += "8"; }
         private void bt9_Click(object sender, EventArgs e) { txtInput.Text += "9"; }
-        private void infoToolStripMenuItem_Click(object sender, EventArgs e) { MessageBox.Show("Sample Calculator", "Info"); }
-        private void alwaysOnTopToolStripMenuItem_Click(object sender, EventArgs e)
+        private void MenuTopMost_Click(object sender, EventArgs e)
         {
-            if (alwaysOnTopToolStripMenuItem.Checked == true)
-            {
-                alwaysOnTopToolStripMenuItem.Checked = false;
-                this.TopMost = false;
-            }
-            else
-            {
-                alwaysOnTopToolStripMenuItem.Checked = true;
-                this.TopMost = true;
-            }
+            if (MenuTopMost.Checked == true) { this.TopMost = false; MenuTopMost.Checked = false; }
+            else { this.TopMost = true; MenuTopMost.Checked = true; }
         }
+        private void MenuInfo_Click(object sender, EventArgs e) { MessageBox.Show("Sample Calculator", "Info"); }
     }
 }
