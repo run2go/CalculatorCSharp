@@ -9,12 +9,13 @@ namespace Calculator
         {
             try { btOutput.Text = dt.Compute(txtInput.Text, "").ToString(); }
             catch (Exception ex) { btOutput.Text = ex.Message; }
-            Clipboard.SetText(btOutput.Text);
+            if (btOutput.Text != string.Empty) Clipboard.SetText(btOutput.Text);
         }
         public Calculator()
         {
             InitializeComponent();
             this.ActiveControl = txtInput;
+            this.KeyPress += new KeyPressEventHandler(Calculator_KeyPress);
             txtInput.KeyDown += new KeyEventHandler(txtInput_KeyDown);
         }
         private void txtInput_KeyDown(object sender, KeyEventArgs e)
@@ -23,7 +24,7 @@ namespace Calculator
         }
         private void Calculator_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar == 13) funCalc();
+            if (e.KeyChar == (char)Keys.Enter) funCalc();
             else txtInput.Text += e.KeyChar;
         }
         private void btCalc_Click(object sender, EventArgs e) { funCalc(); }
