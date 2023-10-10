@@ -1,84 +1,127 @@
 using Microsoft.Win32;
 using System.Data;
-
 namespace Calculator
 {
     public partial class Calculator : Form
     {
         DataTable dt = new DataTable();
-        private void funCalc()
+        string[] textLines = new string[2];
+        private void Calc()
         {
-            try { btOutput.Text = dt.Compute(txtInput.Text, "").ToString(); }
-            catch (Exception ex) { btOutput.Text = ex.Message; }
-            if (btOutput.Text != string.Empty) Clipboard.SetText(btOutput.Text);
-        }
-        private void funColorToggle()
-        {
-            //Titlebar
-            //Menustrip
-            aboutToolStripMenuItem.BackColor = ColorExtension.funInvert(aboutToolStripMenuItem.BackColor);
-            aboutToolStripMenuItem.ForeColor = ColorExtension.funInvert(aboutToolStripMenuItem.ForeColor);
-            foreach (Control item in this.Controls)
+            try
             {
-                item.BackColor = ColorExtension.funInvert(item.BackColor);
-                item.ForeColor = ColorExtension.funInvert(item.ForeColor);
+                SplitTextLines();
+                textLines[1] = (textLines[0] != string.Empty) ? dt.Compute(textLines[0], "").ToString() : "Yes." ;
+                TextUpdate();
+                Clipboard.SetText(textLines[1]);
+                txtCalc.SelectionStart = txtCalc.Lines[0].Length;
+                txtCalc.SelectionLength = 0;
+                txtCalc.Focus();
             }
+            catch (Exception ex) { textLines[1] = "Invalid Operator"; TextUpdate(); HandleError(ex); }
         }
+        private void SplitTextLines()
+        {
+            textLines = txtCalc.Text.Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+            if (textLines.Length == 1) textLines = new string[] { textLines[0], string.Empty };
+        }
+        private void TextUpdate() { txtCalc.Text = $"{textLines[0]}{Environment.NewLine}= {textLines[1]}"; }
+        private void TextAppend(string textAppend)
+        {
+            textLines[0] += textAppend;
+            textLines[1] = string.Empty;
+            TextUpdate();
+        }
+        private void TextDelete()
+        {
+            try
+            {
+                if (textLines[0] != string.Empty)
+                {
+                    SplitTextLines();
+                    textLines[0] = textLines[0].Substring(0, textLines[0].Length - 1);
+                    textLines[1] = string.Empty;
+                    TextUpdate();
+                }
+            }
+            catch (Exception ex) { HandleError(ex); }
+        }
+        private void ColorToggle(Control parentControl)
+        {
+            parentControl.BackColor = ColorEx.Invert(parentControl.BackColor);
+            parentControl.ForeColor = ColorEx.Invert(parentControl.ForeColor);
+
+            Button button = parentControl as Button;
+            if (button != null) button.FlatAppearance.BorderColor = ColorEx.Invert(button.FlatAppearance.BorderColor);
+            foreach (Control childControl in parentControl.Controls) ColorToggle(childControl);
+        }
+        private void HandleError(Exception ex) { if (MenuViewDebug.Checked) MessageBox.Show(ex.ToString(), "Error"); }
         public Calculator()
         {
             InitializeComponent();
-            if ((int)Registry.GetValue("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "AppsUseLightTheme", -1) == 0) { funColorToggle(); MenuDarkmode.Checked = true; }
-            this.ActiveControl = txtInput;
+            if ((int)Registry.GetValue("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "AppsUseLightTheme", -1) == 0) { ColorToggle(this); MenuEditDarkmode.Checked = true; }
+            this.ActiveControl = txtCalc;
             this.KeyPress += new KeyPressEventHandler(Calculator_KeyPress);
-            txtInput.KeyDown += new KeyEventHandler(txtInput_KeyDown);
-            //add all to table layout, merge input/output
-            //hover background color
-            //3d button effect top left > center
+            txtCalc.KeyDown += new KeyEventHandler(txtCalc_KeyDown);
+            tableLayout.BackColor = ColorEx.Invert(tableLayout.BackColor);
+            tableLayout.ForeColor = ColorEx.Invert(tableLayout.ForeColor);
+            menuStrip.BackColor = ColorEx.Invert(menuStrip.BackColor);
+            menuStrip.ForeColor = ColorEx.Invert(menuStrip.ForeColor);
         }
-        private void txtInput_KeyDown(object sender, KeyEventArgs e)
+        private void txtCalc_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter) { funCalc(); e.Handled = e.SuppressKeyPress = true; }
+            if (e.KeyCode == Keys.Enter) { Calc(); e.Handled = e.SuppressKeyPress = true; }
         }
         private void Calculator_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar == (char)Keys.Enter) funCalc();
-            else txtInput.Text += e.KeyChar;
+            if (e.KeyChar == (char)Keys.Enter) Calc();
+            else txtCalc.Text += e.KeyChar;
         }
-        private void btCalc_Click(object sender, EventArgs e) { funCalc(); }
-        private void btClear_Click(object sender, EventArgs e) { txtInput.Text = btOutput.Text = string.Empty; }
-        private void btDelete_Click(object sender, EventArgs e) { txtInput.Text = txtInput.Text.Substring(0, txtInput.Text.Length - 1); }
-        private void btAdd_Click(object sender, EventArgs e) { txtInput.Text += "+"; }
-        private void btSub_Click(object sender, EventArgs e) { txtInput.Text += "-"; }
-        private void btMul_Click(object sender, EventArgs e) { txtInput.Text += "*"; }
-        private void btDiv_Click(object sender, EventArgs e) { txtInput.Text += "/"; }
-        private void btCom_Click(object sender, EventArgs e) { txtInput.Text += "."; }
-        private void bt0_Click(object sender, EventArgs e) { txtInput.Text += "0"; }
-        private void bt1_Click(object sender, EventArgs e) { txtInput.Text += "1"; }
-        private void bt2_Click(object sender, EventArgs e) { txtInput.Text += "2"; }
-        private void bt3_Click(object sender, EventArgs e) { txtInput.Text += "3"; }
-        private void bt4_Click(object sender, EventArgs e) { txtInput.Text += "4"; }
-        private void bt5_Click(object sender, EventArgs e) { txtInput.Text += "5"; }
-        private void bt6_Click(object sender, EventArgs e) { txtInput.Text += "6"; }
-        private void bt7_Click(object sender, EventArgs e) { txtInput.Text += "7"; }
-        private void bt8_Click(object sender, EventArgs e) { txtInput.Text += "8"; }
-        private void bt9_Click(object sender, EventArgs e) { txtInput.Text += "9"; }
-        private void MenuTopMost_Click(object sender, EventArgs e)
+        private void MenuTopMost_Click(object sender, EventArgs e) { this.TopMost = MenuEditTopmost.Checked = !MenuEditTopmost.Checked; }
+        private void MenuDarkmode_Click(object sender, EventArgs e) { MenuEditDarkmode.Checked = !MenuEditDarkmode.Checked; ColorToggle(this); }
+        private void StripMenuAbout_Click(object sender, EventArgs e) { MessageBox.Show("Sample Calculator", "Info"); }
+        private void MenuViewSimple_Click(object sender, EventArgs e)
         {
-            if (MenuTopMost.Checked == true) { this.TopMost = false; MenuTopMost.Checked = false; }
-            else { this.TopMost = true; MenuTopMost.Checked = true; }
+            MenuViewSimple.Checked = true;
+            MenuViewAdvanced.Checked = false;
+            MenuViewDebug.Checked = false;
+            txtCalc.Text = "Simple Mode";
         }
-        private void MenuDarkmode_Click(object sender, EventArgs e)
+        private void MenuViewAdvanced_Click(object sender, EventArgs e)
         {
-            if (MenuDarkmode.Checked == true) { MenuDarkmode.Checked = false; funColorToggle(); }
-            else { MenuDarkmode.Checked = true; funColorToggle(); }
+            MenuViewSimple.Checked = false;
+            MenuViewAdvanced.Checked = true;
+            MenuViewDebug.Checked = false;
+            txtCalc.Text = "Advanced Mode";
         }
-        private void MenuInfo_Click(object sender, EventArgs e) { MessageBox.Show("Sample Calculator", "Info"); }
+        private void MenuViewDebug_Click(object sender, EventArgs e)
+        {
+            MenuViewSimple.Checked = false;
+            MenuViewAdvanced.Checked = false;
+            MenuViewDebug.Checked = true;
+            txtCalc.Text = "Debug Mode";
+        }
+        private void btCalc_Click(object sender, EventArgs e) { Calc(); }
+        private void btClear_Click(object sender, EventArgs e) { txtCalc.Text = textLines[0] = textLines[1] = string.Empty; }
+        private void btDelete_Click(object sender, EventArgs e) { TextDelete(); }
+        private void btAdd_Click(object sender, EventArgs e) { TextAppend("+"); }
+        private void btSub_Click(object sender, EventArgs e) { TextAppend("-"); }
+        private void btMul_Click(object sender, EventArgs e) { TextAppend("*"); }
+        private void btDiv_Click(object sender, EventArgs e) { TextAppend("/"); }
+        private void btCom_Click(object sender, EventArgs e) { TextAppend("."); }
+        private void bt0_Click(object sender, EventArgs e) { TextAppend("0"); }
+        private void bt1_Click(object sender, EventArgs e) { TextAppend("1"); }
+        private void bt2_Click(object sender, EventArgs e) { TextAppend("2"); }
+        private void bt3_Click(object sender, EventArgs e) { TextAppend("3"); }
+        private void bt4_Click(object sender, EventArgs e) { TextAppend("4"); }
+        private void bt5_Click(object sender, EventArgs e) { TextAppend("5"); }
+        private void bt6_Click(object sender, EventArgs e) { TextAppend("6"); }
+        private void bt7_Click(object sender, EventArgs e) { TextAppend("7"); }
+        private void bt8_Click(object sender, EventArgs e) { TextAppend("8"); }
+        private void bt9_Click(object sender, EventArgs e) { TextAppend("9"); }
     }
-    public static class ColorExtension
+    public static class ColorEx
     {
-        public static Color funInvert(this Color color)
-        {
-            return Color.FromArgb(255 - color.R, 255 - color.G, 255 - color.B);
-        }
+        public static Color Invert(this Color color) { return Color.FromArgb(255 - color.R, 255 - color.G, 255 - color.B); }
     }
 }
