@@ -1,3 +1,4 @@
+using Microsoft.Win32;
 using System.Data;
 
 namespace Calculator
@@ -11,12 +12,28 @@ namespace Calculator
             catch (Exception ex) { btOutput.Text = ex.Message; }
             if (btOutput.Text != string.Empty) Clipboard.SetText(btOutput.Text);
         }
+        private void funColorToggle()
+        {
+            //Titlebar
+            //Menustrip
+            aboutToolStripMenuItem.BackColor = ColorExtension.funInvert(aboutToolStripMenuItem.BackColor);
+            aboutToolStripMenuItem.ForeColor = ColorExtension.funInvert(aboutToolStripMenuItem.ForeColor);
+            foreach (Control item in this.Controls)
+            {
+                item.BackColor = ColorExtension.funInvert(item.BackColor);
+                item.ForeColor = ColorExtension.funInvert(item.ForeColor);
+            }
+        }
         public Calculator()
         {
             InitializeComponent();
+            if ((int)Registry.GetValue("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "AppsUseLightTheme", -1) == 0) { funColorToggle(); MenuDarkmode.Checked = true; }
             this.ActiveControl = txtInput;
             this.KeyPress += new KeyPressEventHandler(Calculator_KeyPress);
             txtInput.KeyDown += new KeyEventHandler(txtInput_KeyDown);
+            //add all to table layout, merge input/output
+            //hover background color
+            //3d button effect top left > center
         }
         private void txtInput_KeyDown(object sender, KeyEventArgs e)
         {
@@ -50,6 +67,18 @@ namespace Calculator
             if (MenuTopMost.Checked == true) { this.TopMost = false; MenuTopMost.Checked = false; }
             else { this.TopMost = true; MenuTopMost.Checked = true; }
         }
+        private void MenuDarkmode_Click(object sender, EventArgs e)
+        {
+            if (MenuDarkmode.Checked == true) { MenuDarkmode.Checked = false; funColorToggle(); }
+            else { MenuDarkmode.Checked = true; funColorToggle(); }
+        }
         private void MenuInfo_Click(object sender, EventArgs e) { MessageBox.Show("Sample Calculator", "Info"); }
+    }
+    public static class ColorExtension
+    {
+        public static Color funInvert(this Color color)
+        {
+            return Color.FromArgb(255 - color.R, 255 - color.G, 255 - color.B);
+        }
     }
 }

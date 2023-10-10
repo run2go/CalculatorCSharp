@@ -29,9 +29,10 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Calculator));
-            menuStrip1 = new MenuStrip();
+            menuStrip = new MenuStrip();
             aboutToolStripMenuItem = new ToolStripMenuItem();
             MenuTopMost = new ToolStripMenuItem();
+            MenuDarkmode = new ToolStripMenuItem();
             toolStripSeparator1 = new ToolStripSeparator();
             MenuInfo = new ToolStripMenuItem();
             txtInput = new TextBox();
@@ -55,22 +56,22 @@
             btSub = new Button();
             btOutput = new Button();
             tableLayoutPanel1 = new TableLayoutPanel();
-            menuStrip1.SuspendLayout();
+            menuStrip.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
             SuspendLayout();
             // 
-            // menuStrip1
+            // menuStrip
             // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { aboutToolStripMenuItem });
-            menuStrip1.Location = new Point(0, 0);
-            menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(164, 24);
-            menuStrip1.TabIndex = 1;
-            menuStrip1.Text = "menuStrip1";
+            menuStrip.Items.AddRange(new ToolStripItem[] { aboutToolStripMenuItem });
+            menuStrip.Location = new Point(0, 0);
+            menuStrip.Name = "menuStrip";
+            menuStrip.Size = new Size(164, 24);
+            menuStrip.TabIndex = 1;
+            menuStrip.Text = "menuStrip1";
             // 
             // aboutToolStripMenuItem
             // 
-            aboutToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { MenuTopMost, toolStripSeparator1, MenuInfo });
+            aboutToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { MenuTopMost, MenuDarkmode, toolStripSeparator1, MenuInfo });
             aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             aboutToolStripMenuItem.Size = new Size(52, 20);
             aboutToolStripMenuItem.Text = "About";
@@ -83,6 +84,14 @@
             MenuTopMost.Size = new Size(150, 22);
             MenuTopMost.Text = "Always on Top";
             MenuTopMost.Click += MenuTopMost_Click;
+            // 
+            // MenuDarkmode
+            // 
+            MenuDarkmode.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            MenuDarkmode.Name = "MenuDarkmode";
+            MenuDarkmode.Size = new Size(150, 22);
+            MenuDarkmode.Text = "Darkmode";
+            MenuDarkmode.Click += MenuDarkmode_Click;
             // 
             // toolStripSeparator1
             // 
@@ -99,12 +108,13 @@
             // txtInput
             // 
             txtInput.AllowDrop = true;
+            txtInput.BorderStyle = BorderStyle.None;
             txtInput.Cursor = Cursors.IBeam;
             txtInput.Dock = DockStyle.Top;
             txtInput.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             txtInput.Location = new Point(0, 24);
             txtInput.Name = "txtInput";
-            txtInput.Size = new Size(164, 29);
+            txtInput.Size = new Size(164, 22);
             txtInput.TabIndex = 2;
             // 
             // bt9
@@ -113,14 +123,15 @@
             bt9.AutoSize = true;
             bt9.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             bt9.Cursor = Cursors.Hand;
+            bt9.FlatStyle = FlatStyle.Popup;
             bt9.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            bt9.Location = new Point(85, 44);
+            bt9.Location = new Point(85, 45);
             bt9.Name = "bt9";
-            bt9.Size = new Size(35, 35);
+            bt9.Size = new Size(35, 36);
             bt9.TabIndex = 3;
             bt9.TabStop = false;
             bt9.Text = "9";
-            bt9.UseVisualStyleBackColor = true;
+            bt9.UseVisualStyleBackColor = false;
             bt9.Click += bt9_Click;
             // 
             // btDelete
@@ -130,11 +141,12 @@
             btDelete.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             tableLayoutPanel1.SetColumnSpan(btDelete, 2);
             btDelete.Cursor = Cursors.Hand;
+            btDelete.FlatStyle = FlatStyle.Popup;
             btDelete.Font = new Font("Arial Rounded MT Bold", 12F, FontStyle.Regular, GraphicsUnit.Point);
             btDelete.ForeColor = SystemColors.WindowFrame;
             btDelete.Location = new Point(3, 3);
             btDelete.Name = "btDelete";
-            btDelete.Size = new Size(76, 35);
+            btDelete.Size = new Size(76, 36);
             btDelete.TabIndex = 3;
             btDelete.TabStop = false;
             btDelete.Text = "Delete";
@@ -147,14 +159,15 @@
             bt0.AutoSize = true;
             bt0.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             bt0.Cursor = Cursors.Hand;
+            bt0.FlatStyle = FlatStyle.Popup;
             bt0.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            bt0.Location = new Point(44, 167);
+            bt0.Location = new Point(44, 171);
             bt0.Name = "bt0";
-            bt0.Size = new Size(35, 36);
+            bt0.Size = new Size(35, 39);
             bt0.TabIndex = 3;
             bt0.TabStop = false;
             bt0.Text = "0";
-            bt0.UseVisualStyleBackColor = true;
+            bt0.UseVisualStyleBackColor = false;
             bt0.Click += bt0_Click;
             // 
             // bt6
@@ -163,14 +176,15 @@
             bt6.AutoSize = true;
             bt6.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             bt6.Cursor = Cursors.Hand;
+            bt6.FlatStyle = FlatStyle.Popup;
             bt6.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            bt6.Location = new Point(85, 85);
+            bt6.Location = new Point(85, 87);
             bt6.Name = "bt6";
-            bt6.Size = new Size(35, 35);
+            bt6.Size = new Size(35, 36);
             bt6.TabIndex = 3;
             bt6.TabStop = false;
             bt6.Text = "6";
-            bt6.UseVisualStyleBackColor = true;
+            bt6.UseVisualStyleBackColor = false;
             bt6.Click += bt6_Click;
             // 
             // bt2
@@ -179,14 +193,15 @@
             bt2.AutoSize = true;
             bt2.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             bt2.Cursor = Cursors.Hand;
+            bt2.FlatStyle = FlatStyle.Popup;
             bt2.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            bt2.Location = new Point(44, 126);
+            bt2.Location = new Point(44, 129);
             bt2.Name = "bt2";
-            bt2.Size = new Size(35, 35);
+            bt2.Size = new Size(35, 36);
             bt2.TabIndex = 3;
             bt2.TabStop = false;
             bt2.Text = "2";
-            bt2.UseVisualStyleBackColor = true;
+            bt2.UseVisualStyleBackColor = false;
             bt2.Click += bt2_Click;
             // 
             // bt3
@@ -195,14 +210,15 @@
             bt3.AutoSize = true;
             bt3.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             bt3.Cursor = Cursors.Hand;
+            bt3.FlatStyle = FlatStyle.Popup;
             bt3.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            bt3.Location = new Point(85, 126);
+            bt3.Location = new Point(85, 129);
             bt3.Name = "bt3";
-            bt3.Size = new Size(35, 35);
+            bt3.Size = new Size(35, 36);
             bt3.TabIndex = 3;
             bt3.TabStop = false;
             bt3.Text = "3";
-            bt3.UseVisualStyleBackColor = true;
+            bt3.UseVisualStyleBackColor = false;
             bt3.Click += bt3_Click;
             // 
             // bt5
@@ -211,14 +227,15 @@
             bt5.AutoSize = true;
             bt5.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             bt5.Cursor = Cursors.Hand;
+            bt5.FlatStyle = FlatStyle.Popup;
             bt5.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            bt5.Location = new Point(44, 85);
+            bt5.Location = new Point(44, 87);
             bt5.Name = "bt5";
-            bt5.Size = new Size(35, 35);
+            bt5.Size = new Size(35, 36);
             bt5.TabIndex = 3;
             bt5.TabStop = false;
             bt5.Text = "5";
-            bt5.UseVisualStyleBackColor = true;
+            bt5.UseVisualStyleBackColor = false;
             bt5.Click += bt5_Click;
             // 
             // btAdd
@@ -227,11 +244,12 @@
             btAdd.AutoSize = true;
             btAdd.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             btAdd.Cursor = Cursors.Hand;
+            btAdd.FlatStyle = FlatStyle.Popup;
             btAdd.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             btAdd.ForeColor = SystemColors.WindowFrame;
-            btAdd.Location = new Point(126, 167);
+            btAdd.Location = new Point(126, 171);
             btAdd.Name = "btAdd";
-            btAdd.Size = new Size(35, 36);
+            btAdd.Size = new Size(35, 39);
             btAdd.TabIndex = 3;
             btAdd.TabStop = false;
             btAdd.Text = "+";
@@ -244,14 +262,15 @@
             bt8.AutoSize = true;
             bt8.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             bt8.Cursor = Cursors.Hand;
+            bt8.FlatStyle = FlatStyle.Popup;
             bt8.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            bt8.Location = new Point(44, 44);
+            bt8.Location = new Point(44, 45);
             bt8.Name = "bt8";
-            bt8.Size = new Size(35, 35);
+            bt8.Size = new Size(35, 36);
             bt8.TabIndex = 3;
             bt8.TabStop = false;
             bt8.Text = "8";
-            bt8.UseVisualStyleBackColor = true;
+            bt8.UseVisualStyleBackColor = false;
             bt8.Click += bt8_Click;
             // 
             // btDiv
@@ -260,11 +279,12 @@
             btDiv.AutoSize = true;
             btDiv.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             btDiv.Cursor = Cursors.Hand;
+            btDiv.FlatStyle = FlatStyle.Popup;
             btDiv.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             btDiv.ForeColor = SystemColors.WindowFrame;
-            btDiv.Location = new Point(126, 44);
+            btDiv.Location = new Point(126, 45);
             btDiv.Name = "btDiv";
-            btDiv.Size = new Size(35, 35);
+            btDiv.Size = new Size(35, 36);
             btDiv.TabIndex = 3;
             btDiv.TabStop = false;
             btDiv.Text = "/";
@@ -277,11 +297,12 @@
             btCom.AutoSize = true;
             btCom.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             btCom.Cursor = Cursors.Hand;
+            btCom.FlatStyle = FlatStyle.Popup;
             btCom.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             btCom.ForeColor = SystemColors.WindowFrame;
-            btCom.Location = new Point(3, 167);
+            btCom.Location = new Point(3, 171);
             btCom.Name = "btCom";
-            btCom.Size = new Size(35, 36);
+            btCom.Size = new Size(35, 39);
             btCom.TabIndex = 3;
             btCom.TabStop = false;
             btCom.Text = ".";
@@ -295,11 +316,12 @@
             btClear.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             tableLayoutPanel1.SetColumnSpan(btClear, 2);
             btClear.Cursor = Cursors.Hand;
+            btClear.FlatStyle = FlatStyle.Popup;
             btClear.Font = new Font("Arial Rounded MT Bold", 12F, FontStyle.Regular, GraphicsUnit.Point);
             btClear.ForeColor = SystemColors.WindowFrame;
             btClear.Location = new Point(85, 3);
             btClear.Name = "btClear";
-            btClear.Size = new Size(76, 35);
+            btClear.Size = new Size(76, 36);
             btClear.TabIndex = 3;
             btClear.TabStop = false;
             btClear.Text = "Clear";
@@ -312,14 +334,15 @@
             bt1.AutoSize = true;
             bt1.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             bt1.Cursor = Cursors.Hand;
+            bt1.FlatStyle = FlatStyle.Popup;
             bt1.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            bt1.Location = new Point(3, 126);
+            bt1.Location = new Point(3, 129);
             bt1.Name = "bt1";
-            bt1.Size = new Size(35, 35);
+            bt1.Size = new Size(35, 36);
             bt1.TabIndex = 3;
             bt1.TabStop = false;
             bt1.Text = "1";
-            bt1.UseVisualStyleBackColor = true;
+            bt1.UseVisualStyleBackColor = false;
             bt1.Click += bt1_Click;
             // 
             // btMul
@@ -328,11 +351,12 @@
             btMul.AutoSize = true;
             btMul.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             btMul.Cursor = Cursors.Hand;
+            btMul.FlatStyle = FlatStyle.Popup;
             btMul.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             btMul.ForeColor = SystemColors.WindowFrame;
-            btMul.Location = new Point(126, 85);
+            btMul.Location = new Point(126, 87);
             btMul.Name = "btMul";
-            btMul.Size = new Size(35, 35);
+            btMul.Size = new Size(35, 36);
             btMul.TabIndex = 3;
             btMul.TabStop = false;
             btMul.Text = "x";
@@ -345,14 +369,15 @@
             bt4.AutoSize = true;
             bt4.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             bt4.Cursor = Cursors.Hand;
+            bt4.FlatStyle = FlatStyle.Popup;
             bt4.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            bt4.Location = new Point(3, 85);
+            bt4.Location = new Point(3, 87);
             bt4.Name = "bt4";
-            bt4.Size = new Size(35, 35);
+            bt4.Size = new Size(35, 36);
             bt4.TabIndex = 3;
             bt4.TabStop = false;
             bt4.Text = "4";
-            bt4.UseVisualStyleBackColor = true;
+            bt4.UseVisualStyleBackColor = false;
             bt4.Click += bt4_Click;
             // 
             // bt7
@@ -361,14 +386,15 @@
             bt7.AutoSize = true;
             bt7.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             bt7.Cursor = Cursors.Hand;
+            bt7.FlatStyle = FlatStyle.Popup;
             bt7.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            bt7.Location = new Point(3, 44);
+            bt7.Location = new Point(3, 45);
             bt7.Name = "bt7";
-            bt7.Size = new Size(35, 35);
+            bt7.Size = new Size(35, 36);
             bt7.TabIndex = 3;
             bt7.TabStop = false;
             bt7.Text = "7";
-            bt7.UseVisualStyleBackColor = true;
+            bt7.UseVisualStyleBackColor = false;
             bt7.Click += bt7_Click;
             // 
             // btCalc
@@ -378,11 +404,12 @@
             btCalc.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             btCalc.BackColor = SystemColors.ActiveCaption;
             btCalc.Cursor = Cursors.Hand;
+            btCalc.FlatStyle = FlatStyle.Popup;
             btCalc.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             btCalc.ForeColor = SystemColors.ControlLightLight;
-            btCalc.Location = new Point(85, 167);
+            btCalc.Location = new Point(85, 171);
             btCalc.Name = "btCalc";
-            btCalc.Size = new Size(35, 36);
+            btCalc.Size = new Size(35, 39);
             btCalc.TabIndex = 3;
             btCalc.TabStop = false;
             btCalc.Text = "=";
@@ -395,11 +422,12 @@
             btSub.AutoSize = true;
             btSub.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             btSub.Cursor = Cursors.Hand;
+            btSub.FlatStyle = FlatStyle.Popup;
             btSub.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             btSub.ForeColor = SystemColors.WindowFrame;
-            btSub.Location = new Point(126, 126);
+            btSub.Location = new Point(126, 129);
             btSub.Name = "btSub";
-            btSub.Size = new Size(35, 35);
+            btSub.Size = new Size(35, 36);
             btSub.TabIndex = 3;
             btSub.TabStop = false;
             btSub.Text = "-";
@@ -408,10 +436,12 @@
             // 
             // btOutput
             // 
+            btOutput.BackgroundImageLayout = ImageLayout.None;
             btOutput.Cursor = Cursors.Hand;
             btOutput.Dock = DockStyle.Top;
+            btOutput.FlatStyle = FlatStyle.Popup;
             btOutput.Font = new Font("Segoe UI", 15F, FontStyle.Regular, GraphicsUnit.Point);
-            btOutput.Location = new Point(0, 53);
+            btOutput.Location = new Point(0, 46);
             btOutput.Name = "btOutput";
             btOutput.Size = new Size(164, 37);
             btOutput.TabIndex = 4;
@@ -443,11 +473,11 @@
             tableLayoutPanel1.Controls.Add(bt3, 2, 3);
             tableLayoutPanel1.Controls.Add(bt8, 1, 1);
             tableLayoutPanel1.Controls.Add(bt5, 1, 2);
-            tableLayoutPanel1.Controls.Add(btAdd, 3, 4);
             tableLayoutPanel1.Controls.Add(bt2, 1, 3);
+            tableLayoutPanel1.Controls.Add(btAdd, 3, 4);
             tableLayoutPanel1.Dock = DockStyle.Fill;
             tableLayoutPanel1.GrowStyle = TableLayoutPanelGrowStyle.FixedSize;
-            tableLayoutPanel1.Location = new Point(0, 90);
+            tableLayoutPanel1.Location = new Point(0, 83);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 5;
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
@@ -455,7 +485,7 @@
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
-            tableLayoutPanel1.Size = new Size(164, 206);
+            tableLayoutPanel1.Size = new Size(164, 213);
             tableLayoutPanel1.TabIndex = 5;
             // 
             // Calculator
@@ -465,9 +495,9 @@
             Controls.Add(tableLayoutPanel1);
             Controls.Add(btOutput);
             Controls.Add(txtInput);
-            Controls.Add(menuStrip1);
+            Controls.Add(menuStrip);
             Icon = (Icon)resources.GetObject("$this.Icon");
-            MainMenuStrip = menuStrip1;
+            MainMenuStrip = menuStrip;
             MaximizeBox = false;
             MinimizeBox = false;
             MinimumSize = new Size(180, 335);
@@ -476,8 +506,8 @@
             Text = "Calculator";
             TopMost = true;
             KeyPress += Calculator_KeyPress;
-            menuStrip1.ResumeLayout(false);
-            menuStrip1.PerformLayout();
+            menuStrip.ResumeLayout(false);
+            menuStrip.PerformLayout();
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
             ResumeLayout(false);
@@ -485,7 +515,7 @@
         }
 
         #endregion
-        private MenuStrip menuStrip1;
+        private MenuStrip menuStrip;
         private ToolStripMenuItem aboutToolStripMenuItem;
         private TextBox txtInput;
         private Button bt9;
@@ -511,5 +541,6 @@
         private ToolStripMenuItem MenuTopMost;
         private TableLayoutPanel tableLayoutPanel1;
         private ToolStripMenuItem MenuInfo;
+        private ToolStripMenuItem MenuDarkmode;
     }
 }
