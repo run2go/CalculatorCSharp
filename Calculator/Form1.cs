@@ -1,4 +1,4 @@
-﻿using Microsoft.Win32;
+﻿using Microsoft.Win32; //Required for Registry check (Used to get system theme)
 using System.Data;
 namespace Calculator
 {
@@ -11,7 +11,8 @@ namespace Calculator
             try
             {
                 TextSplit();
-                textLines[1] = (textLines[0] != string.Empty) ? dt.Compute(textLines[0], "").ToString() : "♥";
+                //textLines[1] = (textLines[0] != string.Empty) ? dt.Compute(textLines[0], "").ToString() : "♥";
+                textLines[1] = (textLines[0] != string.Empty) ? dt.Compute(textLines[0], "").ToString() : temp.ToString();
                 TextUpdate();
                 Clipboard.SetText(textLines[1]);
                 txtCalc.SelectionStart = txtCalc.Lines[0].Length;
@@ -65,41 +66,6 @@ namespace Calculator
                 ColorToggle(false, childControl);
                 temp++;
             }
-
-            /*if (parentCheck)
-            {
-                Button button = parentControl as Button;
-                if (button != null) button.FlatAppearance.BorderColor = ColorEx.Invert(button.FlatAppearance.BorderColor);
-                foreach (Control childControl in parentControl.Controls)
-                {
-                    ColorToggle(true, childControl);
-                    temp++;
-                }
-            }*/
-
-            /*
-            parentControl.BackColor = ColorEx.Invert(parentControl.BackColor);
-            parentControl.ForeColor = ColorEx.Invert(parentControl.ForeColor);
-    
-            Button button = parentControl as Button;
-            if (button != null)
-            {
-                button.FlatAppearance.BorderColor = ColorEx.Invert(button.FlatAppearance.BorderColor);
-                // Invert border color for child controls of the button
-                foreach (Control childControl in button.Controls)
-                {
-                    ColorToggle(false, childControl);
-                }
-            }
-
-            if (parentCheck)
-            {
-                foreach (Control childControl in parentControl.Controls)
-                {
-                    ColorToggle(true, childControl);
-                }
-            }
-            */
         }
         private void HandleError(Exception ex) { if (MenuViewDebug.Checked) MessageBox.Show(ex.ToString(), "Error"); }
         public Calculator()
