@@ -11,8 +11,7 @@ namespace Calculator
             try
             {
                 TextSplit();
-                //textLines[1] = (textLines[0] != string.Empty) ? dt.Compute(textLines[0], "").ToString() : "♥";
-                textLines[1] = (textLines[0] != string.Empty) ? dt.Compute(textLines[0], "").ToString() : temp.ToString();
+                textLines[1] = (textLines[0] != string.Empty) ? dt.Compute(textLines[0], "").ToString() : "♥";
                 TextUpdate();
                 Clipboard.SetText(textLines[1]);
                 txtCalc.SelectionStart = txtCalc.Lines[0].Length;
@@ -23,11 +22,11 @@ namespace Calculator
         }
         private void TextSplit()
         {
-            textLines = txtCalc.Text.Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+            textLines = txtCalc.Text.Replace(',','.').Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
             if (textLines.Length == 1) textLines = new string[] { textLines[0], string.Empty };
         }
         private void TextUpdate()
-        { 
+        {
             if (textLines[1] != string.Empty) txtCalc.Text = $"{textLines[0]}{Environment.NewLine}= {textLines[1]}";
             else txtCalc.Text = $"{textLines[0]}";
         }
@@ -51,20 +50,22 @@ namespace Calculator
                 catch (Exception ex) { HandleError(ex); }
             }
         }
-        int temp = 0;
         private void ColorToggle(bool parentCheck, Control parentControl)
         {
             if (parentCheck)
             {
                 parentControl.BackColor = ColorEx.Invert(parentControl.BackColor);
                 parentControl.ForeColor = ColorEx.Invert(parentControl.ForeColor);
+                txtCalc.BackColor = ColorEx.Invert(txtCalc.BackColor);
+                txtCalc.ForeColor = ColorEx.Invert(txtCalc.ForeColor);
+                menuStrip.BackColor = ColorEx.Invert(menuStrip.BackColor);
+                menuStrip.ForeColor = ColorEx.Invert(menuStrip.ForeColor);
             }
             Button button = parentControl as Button;
             if (button != null) button.FlatAppearance.BorderColor = ColorEx.Invert(button.FlatAppearance.BorderColor);
             foreach (Control childControl in parentControl.Controls)
             {
                 ColorToggle(false, childControl);
-                temp++;
             }
         }
         private void HandleError(Exception ex) { if (MenuViewDebug.Checked) MessageBox.Show(ex.ToString(), "Error"); }
@@ -76,6 +77,8 @@ namespace Calculator
             this.ActiveControl = txtCalc;
             this.KeyPress += new KeyPressEventHandler(Calculator_KeyPress);
             txtCalc.KeyDown += new KeyEventHandler(txtCalc_KeyDown);
+            menuStrip.BackColor = ColorEx.Invert(menuStrip.BackColor);
+            menuStrip.ForeColor = ColorEx.Invert(menuStrip.ForeColor);
         }
         private void txtCalc_KeyDown(object sender, KeyEventArgs e)
         {
