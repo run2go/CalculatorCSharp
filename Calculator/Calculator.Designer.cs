@@ -30,15 +30,14 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Calculator));
             menuStrip = new MenuStrip();
-            StripMenuView = new ToolStripMenuItem();
-            MenuViewSimple = new ToolStripMenuItem();
-            MenuViewAdvanced = new ToolStripMenuItem();
-            MenuViewDebug = new ToolStripMenuItem();
+            StripMenuMode = new ToolStripMenuItem();
+            MenuModeSimple = new ToolStripMenuItem();
+            MenuModeAdvanced = new ToolStripMenuItem();
+            MenuModeDebug = new ToolStripMenuItem();
             StripMenuEdit = new ToolStripMenuItem();
             MenuEditTopmost = new ToolStripMenuItem();
             MenuEditDarkmode = new ToolStripMenuItem();
             StripMenuAbout = new ToolStripMenuItem();
-            txtCalc = new TextBox();
             bt9 = new Button();
             btDelete = new Button();
             bt0 = new Button();
@@ -58,50 +57,51 @@
             btCalc = new Button();
             btSub = new Button();
             tableLayout = new TableLayoutPanel();
+            txtCalc = new RichTextBox();
             menuStrip.SuspendLayout();
             tableLayout.SuspendLayout();
             SuspendLayout();
             // 
             // menuStrip
             // 
-            menuStrip.Items.AddRange(new ToolStripItem[] { StripMenuView, StripMenuEdit, StripMenuAbout });
+            menuStrip.Items.AddRange(new ToolStripItem[] { StripMenuMode, StripMenuEdit, StripMenuAbout });
             menuStrip.Location = new Point(0, 0);
             menuStrip.Name = "menuStrip";
             menuStrip.Size = new Size(164, 24);
             menuStrip.TabIndex = 1;
             // 
-            // StripMenuView
+            // StripMenuMode
             // 
-            StripMenuView.DropDownItems.AddRange(new ToolStripItem[] { MenuViewSimple, MenuViewAdvanced, MenuViewDebug });
-            StripMenuView.Name = "StripMenuView";
-            StripMenuView.Size = new Size(44, 20);
-            StripMenuView.Text = "View";
+            StripMenuMode.DropDownItems.AddRange(new ToolStripItem[] { MenuModeSimple, MenuModeAdvanced, MenuModeDebug });
+            StripMenuMode.Name = "StripMenuMode";
+            StripMenuMode.Size = new Size(50, 20);
+            StripMenuMode.Text = "Mode";
             // 
-            // MenuViewSimple
+            // MenuModeSimple
             // 
-            MenuViewSimple.Checked = true;
-            MenuViewSimple.CheckState = CheckState.Checked;
-            MenuViewSimple.Name = "MenuViewSimple";
-            MenuViewSimple.ShortcutKeys = Keys.F1;
-            MenuViewSimple.Size = new Size(146, 22);
-            MenuViewSimple.Text = "Simple";
-            MenuViewSimple.Click += MenuViewSimple_Click;
+            MenuModeSimple.Checked = true;
+            MenuModeSimple.CheckState = CheckState.Checked;
+            MenuModeSimple.Name = "MenuModeSimple";
+            MenuModeSimple.ShortcutKeys = Keys.F1;
+            MenuModeSimple.Size = new Size(146, 22);
+            MenuModeSimple.Text = "Simple";
+            MenuModeSimple.Click += MenuViewSimple_Click;
             // 
-            // MenuViewAdvanced
+            // MenuModeAdvanced
             // 
-            MenuViewAdvanced.Name = "MenuViewAdvanced";
-            MenuViewAdvanced.ShortcutKeys = Keys.F2;
-            MenuViewAdvanced.Size = new Size(146, 22);
-            MenuViewAdvanced.Text = "Advanced";
-            MenuViewAdvanced.Click += MenuViewAdvanced_Click;
+            MenuModeAdvanced.Name = "MenuModeAdvanced";
+            MenuModeAdvanced.ShortcutKeys = Keys.F2;
+            MenuModeAdvanced.Size = new Size(146, 22);
+            MenuModeAdvanced.Text = "Advanced";
+            MenuModeAdvanced.Click += MenuViewAdvanced_Click;
             // 
-            // MenuViewDebug
+            // MenuModeDebug
             // 
-            MenuViewDebug.Name = "MenuViewDebug";
-            MenuViewDebug.ShortcutKeys = Keys.F3;
-            MenuViewDebug.Size = new Size(146, 22);
-            MenuViewDebug.Text = "Debug";
-            MenuViewDebug.Click += MenuViewDebug_Click;
+            MenuModeDebug.Name = "MenuModeDebug";
+            MenuModeDebug.ShortcutKeys = Keys.F3;
+            MenuModeDebug.Size = new Size(146, 22);
+            MenuModeDebug.Text = "Debug";
+            MenuModeDebug.Click += MenuViewDebug_Click;
             // 
             // StripMenuEdit
             // 
@@ -136,21 +136,6 @@
             StripMenuAbout.Size = new Size(52, 20);
             StripMenuAbout.Text = "About";
             StripMenuAbout.Click += StripMenuAbout_Click;
-            // 
-            // txtCalc
-            // 
-            txtCalc.AllowDrop = true;
-            txtCalc.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            txtCalc.BorderStyle = BorderStyle.None;
-            tableLayout.SetColumnSpan(txtCalc, 4);
-            txtCalc.Cursor = Cursors.IBeam;
-            txtCalc.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            txtCalc.Location = new Point(5, 3);
-            txtCalc.Margin = new Padding(5, 3, 5, 3);
-            txtCalc.Multiline = true;
-            txtCalc.Name = "txtCalc";
-            txtCalc.Size = new Size(154, 60);
-            txtCalc.TabIndex = 2;
             // 
             // bt9
             // 
@@ -515,7 +500,6 @@
             tableLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
             tableLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
             tableLayout.Controls.Add(btCom, 0, 5);
-            tableLayout.Controls.Add(txtCalc, 0, 0);
             tableLayout.Controls.Add(bt0, 1, 5);
             tableLayout.Controls.Add(btCalc, 2, 5);
             tableLayout.Controls.Add(btAdd, 3, 5);
@@ -533,6 +517,7 @@
             tableLayout.Controls.Add(bt8, 1, 2);
             tableLayout.Controls.Add(btDelete, 0, 1);
             tableLayout.Controls.Add(btClear, 2, 1);
+            tableLayout.Controls.Add(txtCalc, 0, 0);
             tableLayout.Dock = DockStyle.Fill;
             tableLayout.GrowStyle = TableLayoutPanelGrowStyle.FixedSize;
             tableLayout.Location = new Point(0, 24);
@@ -546,6 +531,21 @@
             tableLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 15.4639177F));
             tableLayout.Size = new Size(164, 272);
             tableLayout.TabIndex = 5;
+            // 
+            // txtCalc
+            // 
+            txtCalc.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            txtCalc.BorderStyle = BorderStyle.None;
+            tableLayout.SetColumnSpan(txtCalc, 4);
+            txtCalc.Cursor = Cursors.IBeam;
+            txtCalc.EnableAutoDragDrop = true;
+            txtCalc.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            txtCalc.Location = new Point(3, 3);
+            txtCalc.Name = "txtCalc";
+            txtCalc.ScrollBars = RichTextBoxScrollBars.None;
+            txtCalc.Size = new Size(158, 60);
+            txtCalc.TabIndex = 4;
+            txtCalc.Text = "";
             // 
             // Calculator
             // 
@@ -562,7 +562,6 @@
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Calculator";
             TopMost = true;
-            KeyPress += Calculator_KeyPress;
             menuStrip.ResumeLayout(false);
             menuStrip.PerformLayout();
             tableLayout.ResumeLayout(false);
@@ -575,14 +574,13 @@
         private MenuStrip menuStrip;
         private TableLayoutPanel tableLayout;
         private ToolStripMenuItem StripMenuEdit;
-        private ToolStripMenuItem StripMenuView;
+        private ToolStripMenuItem StripMenuMode;
         private ToolStripMenuItem StripMenuAbout;
-        private ToolStripMenuItem MenuViewSimple;
-        private ToolStripMenuItem MenuViewAdvanced;
-        private ToolStripMenuItem MenuViewDebug;
+        private ToolStripMenuItem MenuModeSimple;
+        private ToolStripMenuItem MenuModeAdvanced;
+        private ToolStripMenuItem MenuModeDebug;
         private ToolStripMenuItem MenuEditTopmost;
         private ToolStripMenuItem MenuEditDarkmode;
-        private TextBox txtCalc;
         private Button bt9;
         private Button btDelete;
         private Button bt0;
@@ -601,5 +599,6 @@
         private Button bt7;
         private Button btCalc;
         private Button btSub;
+        private RichTextBox txtCalc;
     }
 }
