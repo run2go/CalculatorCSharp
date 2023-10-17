@@ -2,7 +2,6 @@
 using org.matheval; //Solve math equations
 using System.Diagnostics; //Access explorer.exe to open URLs in default browser
 using System.Globalization; //Get System Localization, grab default Comma character
-
 namespace Calculator
 {
     public partial class Calculator : Form
@@ -12,9 +11,9 @@ namespace Calculator
         public Calculator()
         {
             InitializeComponent();
-            if ((int)Registry.GetValue("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "AppsUseLightTheme", -1)! == 0) ColorToggle(MenuEditDarkmode.Checked, this);
-            btCom.Text = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+            if ((int)Registry.GetValue("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "AppsUseLightTheme", -1)! == 0) ColorToggle(MenuEditDarkmode.Checked);
             ActiveControl = txtCalc;
+            btCom.Text = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
             txtCalc.KeyDown += new KeyEventHandler(txtCalc_KeyDown!);
         }
         private void Calc()
@@ -44,7 +43,7 @@ namespace Calculator
         }
         private void TextUpdate()
         {
-            if (textLines[1] != string.Empty) txtCalc.Text = $"{textLines[0]}{Environment.NewLine}= {textLines[1]}";
+            if (textLines[1].Length > 0 && textLines[0].Length != 0) txtCalc.Text = $"{textLines[0]}{Environment.NewLine}= {textLines[1]}";
             else txtCalc.Text = $"{textLines[0]}";
             txtCalc.Select(textLines[0].Length + 2, textLines[1].Length);
             txtCalc.SelectionLength = textLines[1].Length * 3;
@@ -62,12 +61,9 @@ namespace Calculator
         {
             try
             {
-                if (textLines.Length > 1)
-                {
-                    TextSplit();
-                    textLines[0] = textLines[0].Substring(0, textLines[0].Length - 1);
-                    if (textLines.Length >= 1) textLines[1] = string.Empty;
-                }
+                TextSplit();
+                textLines[0] = textLines[0].Substring(0, textLines[0].Length - 1);
+                textLines[1] = string.Empty;
             }
             catch (Exception ex) { HandleError(ex); }
             TextUpdate();
@@ -84,29 +80,15 @@ namespace Calculator
             TextAppend(Environment.NewLine + message);
             TextUpdate();
         }
-        private void ColorToggle(bool boolDarkmode, Control parentControl)
+        private void ColorToggle(bool boolDarkmode)
         {
             MenuEditDarkmode.Checked = !boolDarkmode; //Toggle DM Checkbox
             foreach (Control item in this.GetAllElements())
             {
-                Button? btn = item as Button;
-                if (btn != null) btn.FlatAppearance.BorderColor = Utility.InvertColor(btn.FlatAppearance.BorderColor);
+                Button? button = item as Button;
+                if (button != null) button.FlatAppearance.BorderColor = Utility.InvertColor(button.FlatAppearance.BorderColor);
                 item.BackColor = Utility.InvertColor(item.BackColor);
                 item.ForeColor = Utility.InvertColor(item.ForeColor);
-            }
-        }
-        private static List<Control> FindAllControls(Control container)
-        {
-            List<Control> controlList = new List<Control>();
-            FindAllControls(container, controlList);
-            return controlList;
-        }
-        private static void FindAllControls(Control container, List<Control> ctrlList)
-        {
-            foreach (Control ctrl in container.Controls)
-            {
-                if (ctrl.Controls.Count == 0) ctrlList.Add(ctrl);
-                else FindAllControls(ctrl, ctrlList);
             }
         }
         private void HandleError(Exception ex) { if (MenuModeDebug.Checked) MessageBox.Show(ex.ToString(), "Error"); }
@@ -115,8 +97,8 @@ namespace Calculator
             if (e.KeyCode == Keys.Enter) { Calc(); e.Handled = e.SuppressKeyPress = true; }
             else if (e.Modifiers == Keys.Control && e.KeyCode == Keys.C) Clipboard.SetText(textLines[1]);
         }
-        private void MenuTopMost_Click(object sender, EventArgs e) { this.TopMost = MenuEditTopmost.Checked = !MenuEditTopmost.Checked; }
-        private void MenuDarkmode_Click(object sender, EventArgs e) { ColorToggle(MenuEditDarkmode.Checked, this); }
+        private void MenuTopMost_Click(object sender, EventArgs e) { TopMost = MenuEditTopmost.Checked = !MenuEditTopmost.Checked; }
+        private void MenuDarkmode_Click(object sender, EventArgs e) { ColorToggle(MenuEditDarkmode.Checked); }
         private void StripMenuAbout_Click(object sender, EventArgs e) { Process.Start("explorer.exe", projectWebsite); }
         private void MenuViewSimple_Click(object sender, EventArgs e)
         {
