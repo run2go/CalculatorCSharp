@@ -84,40 +84,17 @@ namespace Calculator
             TextAppend(Environment.NewLine + message);
             TextUpdate();
         }
+        
+
         private void ColorToggle(bool boolDarkmode, Control parentControl)
         {
             MenuEditDarkmode.Checked = !boolDarkmode; //Toggle DM Checkbox
-            var lst = FindAllControls(this);
-            Button? button = parentControl as Button;
-            foreach (Control item in lst)
+            foreach (Control item in this.GetAllElements())
             {
-                if (button != null) button.FlatAppearance.BorderColor = Utility.InvertColor(button.FlatAppearance.BorderColor);
+                Button? btn = item as Button;
+                if (btn != null) btn.FlatAppearance.BorderColor = Utility.InvertColor(btn.FlatAppearance.BorderColor);
                 item.BackColor = Utility.InvertColor(item.BackColor);
                 item.ForeColor = Utility.InvertColor(item.ForeColor);
-            }
-
-            //Debug
-            {
-                tableLayout.BackColor = Utility.InvertColor(tableLayout.BackColor);
-                tableLayout.ForeColor = Utility.InvertColor(tableLayout.ForeColor);
-                btCalc.FlatAppearance.BorderColor = Utility.InvertColor(btCalc.FlatAppearance.BorderColor);
-                btClear.FlatAppearance.BorderColor = Utility.InvertColor(btClear.FlatAppearance.BorderColor);
-                btDelete.FlatAppearance.BorderColor = Utility.InvertColor(btDelete.FlatAppearance.BorderColor);
-                btCom.FlatAppearance.BorderColor = Utility.InvertColor(btCom.FlatAppearance.BorderColor);
-                btAdd.FlatAppearance.BorderColor = Utility.InvertColor(btAdd.FlatAppearance.BorderColor);
-                btSub.FlatAppearance.BorderColor = Utility.InvertColor(btSub.FlatAppearance.BorderColor);
-                btMul.FlatAppearance.BorderColor = Utility.InvertColor(btMul.FlatAppearance.BorderColor);
-                btDiv.FlatAppearance.BorderColor = Utility.InvertColor(btDiv.FlatAppearance.BorderColor);
-                bt0.FlatAppearance.BorderColor = Utility.InvertColor(bt0.FlatAppearance.BorderColor);
-                bt1.FlatAppearance.BorderColor = Utility.InvertColor(bt1.FlatAppearance.BorderColor);
-                bt2.FlatAppearance.BorderColor = Utility.InvertColor(bt2.FlatAppearance.BorderColor);
-                bt3.FlatAppearance.BorderColor = Utility.InvertColor(bt3.FlatAppearance.BorderColor);
-                bt4.FlatAppearance.BorderColor = Utility.InvertColor(bt4.FlatAppearance.BorderColor);
-                bt5.FlatAppearance.BorderColor = Utility.InvertColor(bt5.FlatAppearance.BorderColor);
-                bt6.FlatAppearance.BorderColor = Utility.InvertColor(bt6.FlatAppearance.BorderColor);
-                bt7.FlatAppearance.BorderColor = Utility.InvertColor(bt7.FlatAppearance.BorderColor);
-                bt8.FlatAppearance.BorderColor = Utility.InvertColor(bt8.FlatAppearance.BorderColor);
-                bt9.FlatAppearance.BorderColor = Utility.InvertColor(bt9.FlatAppearance.BorderColor);
             }
         }
         private static List<Control> FindAllControls(Control container)
@@ -183,5 +160,10 @@ namespace Calculator
     public static class Utility
     {
         public static Color InvertColor(this Color color) { return Color.FromArgb(255 - color.R, 255 - color.G, 255 - color.B); }
+        public static IEnumerable<Control> GetAllElements(this Control control)
+        {
+            var controls = control.Controls.Cast<Control>();
+            return controls.SelectMany(ctrl => GetAllElements(ctrl)).Concat(controls);
+        }
     }
 }
