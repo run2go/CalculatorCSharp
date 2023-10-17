@@ -84,8 +84,6 @@ namespace Calculator
             TextAppend(Environment.NewLine + message);
             TextUpdate();
         }
-        
-
         private void ColorToggle(bool boolDarkmode, Control parentControl)
         {
             MenuEditDarkmode.Checked = !boolDarkmode; //Toggle DM Checkbox
