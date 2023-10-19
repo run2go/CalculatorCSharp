@@ -1,14 +1,14 @@
 ﻿using Microsoft.Win32; //Registry checks (Used to get system theme)
-using org.matheval; //Solve math equations
 using System.Diagnostics; //Access explorer.exe to open URLs in default browser
 using System.Globalization; //Get System Localization, grab default Comma character
+using System.Text; //Used by StringBuilder, required by MathExtension
 namespace Calculator
 {
-    public partial class Calculator : Form
+    public partial class Interface : Form
     {
         string[] textLines = new string[2];
         string projectWebsite = "https://github.com/run2go/Calculator";
-        public Calculator()
+        public Interface()
         {
             InitializeComponent();
             if ((int)Registry.GetValue("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "AppsUseLightTheme", -1)! == 0) ColorToggle(MenuEditDarkmode.Checked);
@@ -21,8 +21,8 @@ namespace Calculator
             try
             {
                 TextSplit();
-                Expression calc = new Expression(textLines[0].Replace(',', '.'));
-                textLines[1] = (textLines[0] != string.Empty) ? calc.Eval().ToString()! : "♥";
+                MathExtension math = new MathExtension();
+                textLines[1] = (textLines[0] != string.Empty) ? math.Eval(textLines[0].Replace(',', '.')).ToString()! : "♥";
             }
             catch (Exception ex) { textLines[1] = "Invalid Input"; TextUpdate(); HandleError(ex); }
             TextUpdate();
@@ -91,7 +91,7 @@ namespace Calculator
                 item.ForeColor = Utility.InvertColor(item.ForeColor);
             }
         }
-        private void HandleError(Exception ex) { if (MenuModeDebug.Checked) MessageBox.Show(ex.ToString(), "Error"); }
+        public void HandleError(Exception ex) { if (MenuModeDebug.Checked) MessageBox.Show(ex.ToString(), $"Debug: {ex.GetType()}"); }
         private void txtCalc_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter) { Calc(); e.Handled = e.SuppressKeyPress = true; }
@@ -102,15 +102,29 @@ namespace Calculator
         private void StripMenuAbout_Click(object sender, EventArgs e) { Process.Start("explorer.exe", projectWebsite); }
         private void MenuViewSimple_Click(object sender, EventArgs e)
         {
-            MenuModeSimple.Checked = true;
-            MenuModeAdvanced.Checked = false;
-            TextReplace("Simple Mode");
+            if (!MenuModeSimple.Checked)
+            {
+                MenuModeSimple.Checked = true;
+                MenuModeAdvanced.Checked = false;
+                TextReplace("Simple Mode");
+                int totalColumns = 6;
+                for (int i = 0; i < totalColumns; i++) { tableLayoutButtons.ColumnStyles[i] = new ColumnStyle(SizeType.Percent, 25); }
+                for (int i = 4; i < totalColumns; i++) { tableLayoutButtons.ColumnStyles[i] = new ColumnStyle(SizeType.Percent, 0); }
+                Size = new Size(Size.Width / 15 * 10, Size.Height); //(180, 335)
+            }
         }
         private void MenuViewAdvanced_Click(object sender, EventArgs e)
         {
-            MenuModeSimple.Checked = false;
-            MenuModeAdvanced.Checked = true;
-            TextReplace("Advanced Mode");
+            if (!MenuModeAdvanced.Checked)
+            {
+                MenuModeSimple.Checked = false;
+                MenuModeAdvanced.Checked = true;
+                TextReplace("Advanced Mode");
+                int totalColumns = 6;
+                float columnPercentage = 100f / totalColumns;
+                for (int i = 0; i < totalColumns; i++) { tableLayoutButtons.ColumnStyles[i] = new ColumnStyle(SizeType.Percent, columnPercentage); }
+                Size = new Size(Size.Width * 15 / 10, Size.Height); //(270, 335)
+            }
         }
         private void MenuViewDebug_Click(object sender, EventArgs e)
         {
@@ -121,6 +135,7 @@ namespace Calculator
         private void btCalc_Click(object sender, EventArgs e) { Calc(); }
         private void btClear_Click(object sender, EventArgs e) { TextClear(); }
         private void btDelete_Click(object sender, EventArgs e) { TextDelete(); }
+        private void btCopy_Click(object sender, EventArgs e) { Clipboard.SetText(textLines[1]); }
         private void btAdd_Click(object sender, EventArgs e) { TextAppend("+"); }
         private void btSub_Click(object sender, EventArgs e) { TextAppend("-"); }
         private void btMul_Click(object sender, EventArgs e) { TextAppend("*"); }
@@ -136,6 +151,14 @@ namespace Calculator
         private void bt7_Click(object sender, EventArgs e) { TextAppend("7"); }
         private void bt8_Click(object sender, EventArgs e) { TextAppend("8"); }
         private void bt9_Click(object sender, EventArgs e) { TextAppend("9"); }
+        private void btPercent_Click(object sender, EventArgs e) { }
+        private void btSqrt2_Click(object sender, EventArgs e) { }
+        private void btSqrt3_Click(object sender, EventArgs e) { }
+        private void btSqrt4_Click(object sender, EventArgs e) { }
+        private void btNegate_Click(object sender, EventArgs e) { }
+        private void btBinary_Click(object sender, EventArgs e) { }
+        private void btHex_Click(object sender, EventArgs e) { }
+        private void btDecimal_Click(object sender, EventArgs e) { }
     }
     public static class Utility
     {
@@ -145,5 +168,106 @@ namespace Calculator
             var controls = control.Controls.Cast<Control>();
             return controls.SelectMany(ctrl => GetAllElements(ctrl)).Concat(controls);
         }
+    }
+    public partial class MathExtension
+    {
+        public class EquationElement
+        {
+            public enum ElementType { Number, Operator, OpenBracket, CloseBracket }
+            public ElementType Type { get; set; }
+            public string Value { get; set; }
+            public EquationElement(ElementType type, string value)
+            {
+                Type = type;
+                Value = value;
+            }
+        }
+        public double Eval(string stEquation)
+        {
+            List<EquationElement> equationElements = ParseEquation(stEquation);
+            Stack<double> numbers = new Stack<double>();
+            Stack<char> operators = new Stack<char>();
+
+            foreach (var element in equationElements)
+            {
+                if (element.Type == EquationElement.ElementType.Number) numbers.Push(double.Parse(element.Value));
+                else if (element.Type == EquationElement.ElementType.Operator) operators.Push(element.Value[0]);
+                else if (element.Type == EquationElement.ElementType.OpenBracket) operators.Push('(');
+                else if (element.Type == EquationElement.ElementType.CloseBracket)
+                {
+                    while (operators.Count > 0 && operators.Peek() != '(')
+                    {
+                        PerformOperation(numbers, operators);
+                    }
+                    operators.Pop(); // Pop the '('
+                }
+            }
+            while (operators.Count > 0)
+            {
+                PerformOperation(numbers, operators);
+            }
+            return numbers.Pop();
+        }
+        private void PerformOperation(Stack<double> numbers, Stack<char> operators)
+        {
+            double num2 = numbers.Pop();
+            double num1 = numbers.Pop();
+            char op = operators.Pop();
+            double result = 0;
+            switch (op)
+            {
+                case '+': result = num1 + num2; break;
+                case '-': result = num1 - num2; break;
+                case '*': result = num1 * num2; break;
+                case '/': result = num1 / num2; break;
+            }
+            numbers.Push(result);
+        }
+        private List<EquationElement> ParseEquation(string stEquation)
+        {
+            List<EquationElement> equationElements = new List<EquationElement>();
+            StringBuilder currentElement = new StringBuilder();
+            bool decimalEncountered = false; // Flag to track if decimal point has been encountered
+            foreach (char character in stEquation)
+            {
+                if (char.IsDigit(character) || (character == Convert.ToChar('.') && !decimalEncountered))
+                {
+                    if (character == '.') decimalEncountered = true; // Set the flag if a decimal point is encountered
+                    currentElement.Append(character);
+                }
+                else if (IsOperator(character))
+                {
+                    if (currentElement.Length > 0) // If the current element is not empty, add it to the list
+                    {
+                        equationElements.Add(new EquationElement(EquationElement.ElementType.Number, currentElement.ToString()));
+                        currentElement.Clear(); // Clear the StringBuilder for the next element
+                    }
+                    equationElements.Add(new EquationElement(EquationElement.ElementType.Operator, character.ToString())); // Add the operator to the list
+                }
+                else if (character == '(')
+                {
+                    if (currentElement.Length > 0) // If the current element is not empty, add it to the list
+                    {
+                        equationElements.Add(new EquationElement(EquationElement.ElementType.Number, currentElement.ToString()));
+                        currentElement.Clear(); // Clear the StringBuilder for the next element
+                    }
+                    equationElements.Add(new EquationElement(EquationElement.ElementType.OpenBracket, character.ToString())); // Add the open bracket to the list
+                }
+                else if (character == ')')
+                {
+                    if (currentElement.Length > 0) // If the current element is not empty, add it to the list
+                    {
+                        equationElements.Add(new EquationElement(EquationElement.ElementType.Number, currentElement.ToString()));
+                        currentElement.Clear(); // Clear the StringBuilder for the next element
+                    }
+                    equationElements.Add(new EquationElement(EquationElement.ElementType.CloseBracket, character.ToString())); // Add the close bracket to the list
+                }
+                else if (!char.IsWhiteSpace(character)) throw new InvalidOperationException($"Invalid character '{character}' in the equation."); // Invalid character, throw an exception or handle it according to your requirements.
+                decimalEncountered = false; // Reset the decimal flag for the next number
+            }
+            if (currentElement.Length > 0) equationElements.Add(new EquationElement(EquationElement.ElementType.Number, currentElement.ToString())); // If there's a remaining element in the StringBuilder, add it to the list
+            return equationElements;
+        }
+        private bool IsOperator(char character) { return character == '+' || character == '-' || character == '*' || character == '/'; }
     }
 }
