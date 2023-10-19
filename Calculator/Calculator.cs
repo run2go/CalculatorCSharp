@@ -2,6 +2,7 @@
 using System.Diagnostics; //Access explorer.exe to open URLs in default browser
 using System.Globalization; //Get System Localization, grab default Comma character
 using System.Text; //Used by StringBuilder, required by MathExtension
+using System.Text.RegularExpressions; //Regex Packet to detect Binary & Hex
 namespace Calculator
 {
     public partial class Interface : Form
@@ -15,6 +16,10 @@ namespace Calculator
             ActiveControl = txtCalc;
             btCom.Text = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
             txtCalc.KeyDown += new KeyEventHandler(txtCalc_KeyDown!);
+            MenuViewSimple_Click(this, null!);
+            TextReplace("Aaaa ~♥");
+            //mathextension convert brackets like [ and { 
+            //keep track of last equation .. or result at least
         }
         private void Calc()
         {
@@ -22,7 +27,18 @@ namespace Calculator
             {
                 TextSplit();
                 MathExtension math = new MathExtension();
-                textLines[1] = (textLines[0] != string.Empty) ? math.Eval(textLines[0].Replace(',', '.')).ToString()! : "♥";
+                textLines[1] = (textLines[0] != string.Empty) ? math.Eval(textLines[0].Replace(',', '.')).ToString() : "♥";
+            }
+            catch (Exception ex) { textLines[1] = "Invalid Input"; TextUpdate(); HandleError(ex); }
+            TextUpdate();
+        }
+        private void Convert(string type)
+        {
+            try
+            {
+                TextSplit();
+                MathExtension math = new MathExtension();
+                textLines[1] = (textLines[0] != string.Empty) ? math.Converter(textLines[0], type) : "♥";
             }
             catch (Exception ex) { textLines[1] = "Invalid Input"; TextUpdate(); HandleError(ex); }
             TextUpdate();
@@ -110,7 +126,8 @@ namespace Calculator
                 int totalColumns = 6;
                 for (int i = 0; i < totalColumns; i++) { tableLayoutButtons.ColumnStyles[i] = new ColumnStyle(SizeType.Percent, 25); }
                 for (int i = 4; i < totalColumns; i++) { tableLayoutButtons.ColumnStyles[i] = new ColumnStyle(SizeType.Percent, 0); }
-                Size = new Size(Size.Width / 15 * 10, Size.Height); //(180, 335)
+                MinimumSize = new Size(180, 335);
+                Size = new Size(Size.Width / 15 * 10, Size.Height);
             }
         }
         private void MenuViewAdvanced_Click(object sender, EventArgs e)
@@ -123,7 +140,8 @@ namespace Calculator
                 int totalColumns = 6;
                 float columnPercentage = 100f / totalColumns;
                 for (int i = 0; i < totalColumns; i++) { tableLayoutButtons.ColumnStyles[i] = new ColumnStyle(SizeType.Percent, columnPercentage); }
-                Size = new Size(Size.Width * 15 / 10, Size.Height); //(270, 335)
+                MinimumSize = new Size(270, 335);
+                Size = new Size(Size.Width * 15 / 10, Size.Height);
             }
         }
         private void MenuViewDebug_Click(object sender, EventArgs e)
@@ -151,14 +169,14 @@ namespace Calculator
         private void bt7_Click(object sender, EventArgs e) { TextAppend("7"); }
         private void bt8_Click(object sender, EventArgs e) { TextAppend("8"); }
         private void bt9_Click(object sender, EventArgs e) { TextAppend("9"); }
-        private void btPercent_Click(object sender, EventArgs e) { }
-        private void btSqrt2_Click(object sender, EventArgs e) { }
-        private void btSqrt3_Click(object sender, EventArgs e) { }
-        private void btSqrt4_Click(object sender, EventArgs e) { }
-        private void btNegate_Click(object sender, EventArgs e) { }
-        private void btBinary_Click(object sender, EventArgs e) { }
-        private void btHex_Click(object sender, EventArgs e) { }
-        private void btDecimal_Click(object sender, EventArgs e) { }
+        private void btPercent_Click(object sender, EventArgs e) { TextAppend("%"); }
+        private void btSqrt2_Click(object sender, EventArgs e) { TextAppend("Sqrt¹"); }
+        private void btSqrt3_Click(object sender, EventArgs e) { TextAppend("Sqrt²"); }
+        private void btSqrt4_Click(object sender, EventArgs e) { TextAppend("Sqrt³"); }
+        private void btPow_Click(object sender, EventArgs e) { TextAppend("^"); }
+        private void btBinary_Click(object sender, EventArgs e) { Convert("Binary"); }
+        private void btHex_Click(object sender, EventArgs e) { Convert("Hex"); }
+        private void btDecimal_Click(object sender, EventArgs e) { Convert("Decimal"); }
     }
     public static class Utility
     {
@@ -166,7 +184,7 @@ namespace Calculator
         public static IEnumerable<Control> GetAllElements(this Control control)
         {
             var controls = control.Controls.Cast<Control>();
-            return controls.SelectMany(ctrl => GetAllElements(ctrl)).Concat(controls);
+            return controls.SelectMany(GetAllElements).Concat(controls);
         }
     }
     public partial class MathExtension
@@ -208,6 +226,18 @@ namespace Calculator
             }
             return numbers.Pop();
         }
+        public string Converter(string value, string target)
+        {
+            string result;
+            switch (target)
+            {
+                case "Binary": result = Convert2Binary(value); break;
+                case "Hex": result = Convert2Hex(value); break;
+                case "Decimal": result = Convert2Decimal(value); break;
+                default: result = "Error"; break;
+            }
+            return result;
+        }
         private void PerformOperation(Stack<double> numbers, Stack<char> operators)
         {
             double num2 = numbers.Pop();
@@ -222,6 +252,61 @@ namespace Calculator
                 case '/': result = num1 / num2; break;
             }
             numbers.Push(result);
+        }
+        private string Convert2Binary(string value)
+        {
+            string stBinary = string.Empty;
+            string[] arValue = Regex.Split(value, @"(\d+)");
+            for (int i = 0; i < arValue.Length; i++)
+            {
+                if (i % 2 == 1) // If it's a numeric part, convert it to binary
+                {
+                    int nValue = Convert.ToInt32(arValue[i]);
+                    string binaryValue = string.Empty;
+                    while (nValue > 0) // Calculate binary representation
+                    {
+                        int remainder = nValue % 2;
+                        binaryValue = remainder.ToString() + binaryValue;
+                        nValue /= 2;
+                    }
+                    stBinary += binaryValue; // Add binary representation to the result
+                }
+                else stBinary += arValue[i]; // If it's a non-numeric part, add it directly to the result
+            }
+            return stBinary;
+        }
+        private string Convert2Hex(string value)
+        {
+            string stHex = string.Empty;
+            string[] arValue = Regex.Split(value, @"(\d+)");
+            for (int i = 0; i < arValue.Length; i++)
+            {
+                if (i % 2 == 1) // If it's a numeric part, convert it to hexadecimal
+                {
+                    int nValue = Convert.ToInt32(arValue[i]);
+                    stHex += nValue.ToString("X");
+                }
+                else stHex += arValue[i]; // If it's a non-numeric part, add it directly to the result
+            }
+            return stHex;
+        }
+        private string Convert2Decimal(string value)
+        {
+            string stDecimal = string.Empty;
+            string[] arValue = Regex.Split(value, @"(\d+)");
+            for (int i = 0; i < arValue.Length; i++)
+            {
+                if (i % 2 == 1) // If it's a numeric part, convert it to decimal
+                {
+                    int nValue = 0;
+                    if (arValue[i].All(char.IsDigit)) nValue = Convert.ToInt32(arValue[i], 2); // It's a binary number, convert from binary to decimal
+                    else if (Regex.IsMatch(arValue[i], "^[0-9A-Fa-f]+$")) nValue = Convert.ToInt32(arValue[i], 16); // It's a hexadecimal number, convert from hex to decimal
+                    else nValue = Convert.ToInt32(arValue[i], 16);
+                    stDecimal += nValue.ToString(); // Add decimal representation to the result
+                }
+                else stDecimal += arValue[i]; // If it's a non-numeric part, add it directly to the result
+            }
+            return stDecimal;
         }
         private List<EquationElement> ParseEquation(string stEquation)
         {

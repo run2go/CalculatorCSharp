@@ -57,15 +57,15 @@
             btCalc = new Button();
             btSub = new Button();
             tableLayoutButtons = new TableLayoutPanel();
-            btPercent = new Button();
             btSqrt4 = new Button();
             btSqrt3 = new Button();
             btSqrt2 = new Button();
             btCopy = new Button();
-            btNegate = new Button();
             btBinary = new Button();
             btHex = new Button();
             btDecimal = new Button();
+            btPercent = new Button();
+            btPow = new Button();
             txtCalc = new RichTextBox();
             tableLayoutMain = new TableLayoutPanel();
             menuStrip.SuspendLayout();
@@ -90,8 +90,6 @@
             // 
             // MenuModeSimple
             // 
-            MenuModeSimple.Checked = true;
-            MenuModeSimple.CheckState = CheckState.Checked;
             MenuModeSimple.Name = "MenuModeSimple";
             MenuModeSimple.ShortcutKeys = Keys.F1;
             MenuModeSimple.Size = new Size(146, 22);
@@ -100,6 +98,8 @@
             // 
             // MenuModeAdvanced
             // 
+            MenuModeAdvanced.Checked = true;
+            MenuModeAdvanced.CheckState = CheckState.Checked;
             MenuModeAdvanced.Name = "MenuModeAdvanced";
             MenuModeAdvanced.ShortcutKeys = Keys.F2;
             MenuModeAdvanced.Size = new Size(146, 22);
@@ -531,15 +531,15 @@
             tableLayoutButtons.Controls.Add(bt8, 1, 1);
             tableLayoutButtons.Controls.Add(btDelete, 0, 0);
             tableLayoutButtons.Controls.Add(btClear, 2, 0);
-            tableLayoutButtons.Controls.Add(btPercent, 4, 1);
             tableLayoutButtons.Controls.Add(btSqrt4, 4, 4);
             tableLayoutButtons.Controls.Add(btSqrt3, 4, 3);
             tableLayoutButtons.Controls.Add(btSqrt2, 4, 2);
             tableLayoutButtons.Controls.Add(btCopy, 4, 0);
-            tableLayoutButtons.Controls.Add(btNegate, 5, 1);
             tableLayoutButtons.Controls.Add(btBinary, 5, 2);
             tableLayoutButtons.Controls.Add(btHex, 5, 3);
             tableLayoutButtons.Controls.Add(btDecimal, 5, 4);
+            tableLayoutButtons.Controls.Add(btPercent, 5, 1);
+            tableLayoutButtons.Controls.Add(btPow, 4, 1);
             tableLayoutButtons.GrowStyle = TableLayoutPanelGrowStyle.FixedSize;
             tableLayoutButtons.Location = new Point(3, 55);
             tableLayoutButtons.Name = "tableLayoutButtons";
@@ -551,26 +551,6 @@
             tableLayoutButtons.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
             tableLayoutButtons.Size = new Size(248, 214);
             tableLayoutButtons.TabIndex = 5;
-            // 
-            // btPercent
-            // 
-            btPercent.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            btPercent.AutoSize = true;
-            btPercent.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            btPercent.Cursor = Cursors.Hand;
-            btPercent.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
-            btPercent.FlatAppearance.BorderSize = 2;
-            btPercent.FlatStyle = FlatStyle.Flat;
-            btPercent.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            btPercent.ForeColor = SystemColors.WindowFrame;
-            btPercent.Location = new Point(167, 45);
-            btPercent.Name = "btPercent";
-            btPercent.Size = new Size(35, 36);
-            btPercent.TabIndex = 4;
-            btPercent.TabStop = false;
-            btPercent.Text = "%";
-            btPercent.UseVisualStyleBackColor = false;
-            btPercent.Click += btPercent_Click;
             // 
             // btSqrt4
             // 
@@ -653,26 +633,6 @@
             btCopy.UseVisualStyleBackColor = false;
             btCopy.Click += btCopy_Click;
             // 
-            // btNegate
-            // 
-            btNegate.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            btNegate.AutoSize = true;
-            btNegate.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            btNegate.Cursor = Cursors.Hand;
-            btNegate.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
-            btNegate.FlatAppearance.BorderSize = 2;
-            btNegate.FlatStyle = FlatStyle.Flat;
-            btNegate.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            btNegate.ForeColor = SystemColors.WindowFrame;
-            btNegate.Location = new Point(208, 45);
-            btNegate.Name = "btNegate";
-            btNegate.Size = new Size(37, 36);
-            btNegate.TabIndex = 4;
-            btNegate.TabStop = false;
-            btNegate.Text = "±";
-            btNegate.UseVisualStyleBackColor = false;
-            btNegate.Click += btNegate_Click;
-            // 
             // btBinary
             // 
             btBinary.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
@@ -733,6 +693,46 @@
             btDecimal.UseVisualStyleBackColor = false;
             btDecimal.Click += btDecimal_Click;
             // 
+            // btPercent
+            // 
+            btPercent.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            btPercent.AutoSize = true;
+            btPercent.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            btPercent.Cursor = Cursors.Hand;
+            btPercent.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
+            btPercent.FlatAppearance.BorderSize = 2;
+            btPercent.FlatStyle = FlatStyle.Flat;
+            btPercent.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
+            btPercent.ForeColor = SystemColors.WindowFrame;
+            btPercent.Location = new Point(208, 45);
+            btPercent.Name = "btPercent";
+            btPercent.Size = new Size(37, 36);
+            btPercent.TabIndex = 4;
+            btPercent.TabStop = false;
+            btPercent.Text = "%";
+            btPercent.UseVisualStyleBackColor = false;
+            btPercent.Click += btPercent_Click;
+            // 
+            // btPow
+            // 
+            btPow.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            btPow.AutoSize = true;
+            btPow.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            btPow.Cursor = Cursors.Hand;
+            btPow.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
+            btPow.FlatAppearance.BorderSize = 2;
+            btPow.FlatStyle = FlatStyle.Flat;
+            btPow.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
+            btPow.ForeColor = SystemColors.WindowFrame;
+            btPow.Location = new Point(167, 45);
+            btPow.Name = "btPow";
+            btPow.Size = new Size(35, 36);
+            btPow.TabIndex = 4;
+            btPow.TabStop = false;
+            btPow.Text = "^";
+            btPow.UseVisualStyleBackColor = false;
+            btPow.Click += btPow_Click;
+            // 
             // txtCalc
             // 
             txtCalc.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
@@ -774,7 +774,7 @@
             MainMenuStrip = menuStrip;
             MaximizeBox = false;
             MinimizeBox = false;
-            MinimumSize = new Size(180, 335);
+            MinimumSize = new Size(270, 335);
             Name = "Interface";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Calculator";
@@ -823,7 +823,7 @@
         private Button btSqrt4;
         private Button btSqrt3;
         private Button btSqrt2;
-        private Button btNegate;
+        private Button btPow;
         private Button btBinary;
         private Button btCopy;
         private Button btHex;
