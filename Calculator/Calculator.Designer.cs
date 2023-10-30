@@ -113,7 +113,7 @@
             // 
             MenuModeSim.Name = "MenuModeSim";
             MenuModeSim.ShortcutKeys = Keys.F2;
-            MenuModeSim.Size = new Size(180, 22);
+            MenuModeSim.Size = new Size(160, 22);
             MenuModeSim.Text = "Simple";
             MenuModeSim.Click += MenuModeSim_Click;
             // 
@@ -121,7 +121,7 @@
             // 
             MenuModeAdv.Name = "MenuModeAdv";
             MenuModeAdv.ShortcutKeys = Keys.F3;
-            MenuModeAdv.Size = new Size(180, 22);
+            MenuModeAdv.Size = new Size(160, 22);
             MenuModeAdv.Text = "Advanced";
             MenuModeAdv.Click += MenuModeAdv_Click;
             // 
@@ -131,7 +131,7 @@
             MenuModePro.CheckState = CheckState.Checked;
             MenuModePro.Name = "MenuModePro";
             MenuModePro.ShortcutKeys = Keys.F4;
-            MenuModePro.Size = new Size(180, 22);
+            MenuModePro.Size = new Size(160, 22);
             MenuModePro.Text = "Programmer";
             MenuModePro.Click += MenuModePro_Click;
             // 
@@ -144,6 +144,8 @@
             // 
             // MenuEditTopmost
             // 
+            MenuEditTopmost.Checked = true;
+            MenuEditTopmost.CheckState = CheckState.Checked;
             MenuEditTopmost.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
             MenuEditTopmost.Name = "MenuEditTopmost";
             MenuEditTopmost.ShortcutKeys = Keys.F9;

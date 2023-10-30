@@ -74,7 +74,7 @@ namespace Calculator
                         case Keys.OemPipe: InputAddOperator("*", true); break;
                         //case Keys.Divide:
                         case Keys.OemBackslash: InputAddOperator("/", true); break;
-                        case Keys.Oemcomma: 
+                        case Keys.Oemcomma:
                         case Keys.OemPeriod: InputAddOperator(btCom.Text, true); break; //Get locale symbol for commas 
                     }
                 }
@@ -268,7 +268,7 @@ namespace Calculator
         //Operators
         private void btCalc_Click(object sender, EventArgs e) { Calc(); }
         private void btDelete_Click(object sender, EventArgs e) { InputDelete(); }
-        private void btClear_Click(object sender, EventArgs e) { InputReplace(">", string.Empty); txtEval.Text = string.Empty;  }
+        private void btClear_Click(object sender, EventArgs e) { InputReplace(">", string.Empty); txtEval.Text = string.Empty; }
         private void btCopy_Click(object sender, EventArgs e) { InputAddNum(lastResult.ToString()); }
         private void btCom_Click(object sender, EventArgs e) { InputAddNum("."); }
         private void btAdd_Click(object sender, EventArgs e) { InputAddOperator("+", true); }
