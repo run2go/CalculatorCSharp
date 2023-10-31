@@ -1,17 +1,19 @@
-﻿using Microsoft.Win32; //Registry checks (Used to get system theme)
-using System.Diagnostics; //Access explorer.exe to open URLs in default browser
-using System.Globalization; //Get System Localization, grab default Comma character
+﻿using org.matheval; //Package used to evaluate equations
+using System.Text; //Used for StringBuilder, see Conversion Class
+using System.Numerics; //Used by BigInteger, also Conversion Class
 using System.Text.RegularExpressions; //Regex Packet to detect Binary & Hex
-using org.matheval; //Package used to evaluate equations
+using System.Globalization; //Get System Localization, grab default Comma character
+using Microsoft.Win32; //Registry checks (Used to get system theme)
+using System.Runtime.InteropServices; //Darkmode detection, used to update titlebar
+using System.Diagnostics; //Access explorer.exe to open URLs in default browser
 using System.Net; //Required to check the GitHub Repository
 using System.Text.Json; //Handle JSON formatted responses
 using System.Timers; //Used to Autocheck for Updates every 10min
-using System.Text; //Used for StringBuilder, see Conversion Class
-using System.Numerics; //Used by BigInteger, also Conversion Class
 //update check periodically
 //resize fonts universally
 //subnetting extra <- Optional
-//allow selection * delete/backspace or typing something
+//allow selection * delete/backspace or typing something, don't affect the first 2 chars, only affect InputGet()
+//handle shortcuts (CTRL+key) differently
 namespace Calculator
 {
     public partial class Interface : Form
@@ -210,7 +212,12 @@ namespace Calculator
                 item.BackColor = Utility.InvertColor(item.BackColor);
                 item.ForeColor = Utility.InvertColor(item.ForeColor);
             }
+            Utility.UseImmersiveDarkMode(this.Handle, !MenuEditDarkmode.Checked);
         }
+
+        [DllImport("DwmApi")] //System.Runtime.InteropServices
+        private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, int[] attrValue, int attrSize);
+        protected override void OnHandleCreated(EventArgs e) { if (DwmSetWindowAttribute(Handle, 19, new[] { 1 }, 4) != 0) DwmSetWindowAttribute(Handle, 20, new[] { 1 }, 4); }
         private void ButtonResize()
         {
             foreach (Control item in this.GetAllElements())
@@ -368,6 +375,22 @@ namespace Calculator
             }
             catch { } // Dismiss
         }
+        [DllImport("dwmapi.dll")]
+        private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
+        private const int DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1 = 19;
+        private const int DWMWA_USE_IMMERSIVE_DARK_MODE = 20;
+        internal static bool UseImmersiveDarkMode(IntPtr handle, bool enabled)
+        {
+            if (IsWindows10OrGreater(17763))
+            {
+                var attribute = DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1;
+                if (IsWindows10OrGreater(18985)) attribute = DWMWA_USE_IMMERSIVE_DARK_MODE;
+                int useImmersiveDarkMode = enabled ? 1 : 0;
+                return DwmSetWindowAttribute(handle, (int)attribute, ref useImmersiveDarkMode, sizeof(int)) == 0;
+            }
+            return false;
+        }
+        private static bool IsWindows10OrGreater(int build = -1) { return Environment.OSVersion.Version.Major >= 10 && Environment.OSVersion.Version.Build >= build; }
     }
     internal class Converter
     {
