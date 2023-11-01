@@ -149,7 +149,7 @@
             MenuEditTopmost.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
             MenuEditTopmost.Name = "MenuEditTopmost";
             MenuEditTopmost.ShortcutKeys = Keys.F9;
-            MenuEditTopmost.Size = new Size(180, 22);
+            MenuEditTopmost.Size = new Size(169, 22);
             MenuEditTopmost.Text = "Always on Top";
             MenuEditTopmost.Click += MenuEditTopmost_Click;
             // 
@@ -158,30 +158,31 @@
             MenuEditDarkmode.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
             MenuEditDarkmode.Name = "MenuEditDarkmode";
             MenuEditDarkmode.ShortcutKeys = Keys.F10;
-            MenuEditDarkmode.Size = new Size(180, 22);
+            MenuEditDarkmode.Size = new Size(169, 22);
             MenuEditDarkmode.Text = "Darkmode";
             MenuEditDarkmode.Click += MenuDarkmode_Click;
             // 
             // toolStripSeparator
             // 
             toolStripSeparator.Name = "toolStripSeparator";
-            toolStripSeparator.Size = new Size(177, 6);
+            toolStripSeparator.Size = new Size(166, 6);
             // 
             // MenuEditDebug
             // 
             MenuEditDebug.Name = "MenuEditDebug";
             MenuEditDebug.ShortcutKeys = Keys.F12;
-            MenuEditDebug.Size = new Size(180, 22);
-            MenuEditDebug.Text = "Debug";
+            MenuEditDebug.Size = new Size(169, 22);
+            MenuEditDebug.Text = "Debug Mode";
             MenuEditDebug.Click += MenuEditDebug_Click;
             // 
             // StripMenuVersion
             // 
             StripMenuVersion.Alignment = ToolStripItemAlignment.Right;
+            StripMenuVersion.Font = new Font("Corbel", 9F, FontStyle.Regular, GraphicsUnit.Point);
             StripMenuVersion.ForeColor = SystemColors.ControlDarkDark;
             StripMenuVersion.Name = "StripMenuVersion";
             StripMenuVersion.ShortcutKeys = Keys.F1;
-            StripMenuVersion.Size = new Size(57, 20);
+            StripMenuVersion.Size = new Size(56, 20);
             StripMenuVersion.Text = "Version";
             StripMenuVersion.TextDirection = ToolStripTextDirection.Horizontal;
             StripMenuVersion.Click += StripMenuVersion_Click;
@@ -614,6 +615,7 @@
             btF.AutoSize = true;
             btF.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             btF.Cursor = Cursors.Hand;
+            btF.Enabled = false;
             btF.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             btF.FlatAppearance.BorderSize = 2;
             btF.FlatStyle = FlatStyle.Flat;
@@ -633,6 +635,7 @@
             btE.AutoSize = true;
             btE.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             btE.Cursor = Cursors.Hand;
+            btE.Enabled = false;
             btE.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             btE.FlatAppearance.BorderSize = 2;
             btE.FlatStyle = FlatStyle.Flat;
@@ -652,6 +655,7 @@
             btD.AutoSize = true;
             btD.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             btD.Cursor = Cursors.Hand;
+            btD.Enabled = false;
             btD.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             btD.FlatAppearance.BorderSize = 2;
             btD.FlatStyle = FlatStyle.Flat;
@@ -671,6 +675,7 @@
             btC.AutoSize = true;
             btC.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             btC.Cursor = Cursors.Hand;
+            btC.Enabled = false;
             btC.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             btC.FlatAppearance.BorderSize = 2;
             btC.FlatStyle = FlatStyle.Flat;
@@ -690,6 +695,7 @@
             btB.AutoSize = true;
             btB.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             btB.Cursor = Cursors.Hand;
+            btB.Enabled = false;
             btB.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             btB.FlatAppearance.BorderSize = 2;
             btB.FlatStyle = FlatStyle.Flat;
@@ -709,6 +715,7 @@
             btA.AutoSize = true;
             btA.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             btA.Cursor = Cursors.Hand;
+            btA.Enabled = false;
             btA.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             btA.FlatAppearance.BorderSize = 2;
             btA.FlatStyle = FlatStyle.Flat;
@@ -983,6 +990,7 @@
             btBin.Name = "btBin";
             btBin.Size = new Size(338, 25);
             btBin.TabIndex = 15;
+            btBin.Text = "0";
             btBin.TextAlign = ContentAlignment.MiddleLeft;
             btBin.UseVisualStyleBackColor = true;
             btBin.Click += btBin_Click;
@@ -999,6 +1007,7 @@
             btOct.Name = "btOct";
             btOct.Size = new Size(338, 23);
             btOct.TabIndex = 14;
+            btOct.Text = "0";
             btOct.TextAlign = ContentAlignment.MiddleLeft;
             btOct.UseVisualStyleBackColor = true;
             btOct.Click += btOct_Click;
@@ -1015,6 +1024,7 @@
             btDec.Name = "btDec";
             btDec.Size = new Size(338, 23);
             btDec.TabIndex = 13;
+            btDec.Text = "0";
             btDec.TextAlign = ContentAlignment.MiddleLeft;
             btDec.UseVisualStyleBackColor = true;
             btDec.Click += btDec_Click;
@@ -1093,6 +1103,7 @@
             btHex.Name = "btHex";
             btHex.Size = new Size(338, 23);
             btHex.TabIndex = 12;
+            btHex.Text = "0";
             btHex.TextAlign = ContentAlignment.MiddleLeft;
             btHex.UseVisualStyleBackColor = true;
             btHex.Click += btHex_Click;
@@ -1109,7 +1120,7 @@
             txtInput.ScrollBars = RichTextBoxScrollBars.None;
             txtInput.Size = new Size(421, 37);
             txtInput.TabIndex = 12;
-            txtInput.Text = "> ";
+            txtInput.Text = "";
             txtInput.SizeChanged += txtInput_SizeChanged;
             txtInput.TextChanged += txtInput_TextChanged;
             // 

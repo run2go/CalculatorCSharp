@@ -9,6 +9,7 @@ using System.Diagnostics; //Access explorer.exe to open URLs in default browser
 using System.Net; //Required to check the GitHub Repository
 using System.Text.Json; //Handle JSON formatted responses
 using System.Timers; //Used to Autocheck for Updates every 10min
+using Microsoft.VisualBasic;
 //update check periodically
 //resize fonts universally
 //subnetting extra <- Optional
@@ -29,14 +30,14 @@ namespace Calculator
         int baseCurrent = 10;
         private void InitializeAttributes()
         {
-            SwitchMode(MenuModeSim);
             if ((int)Registry.GetValue("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "AppsUseLightTheme", -1)! == 0) ColorToggle(); MenuEditDarkmode.Checked = !MenuEditDarkmode.Checked;
             btCom.Text = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
             StripMenuVersion.Text = $"v{ProductVersion} ~❤️";
             this.KeyPress += new KeyPressEventHandler(Interface_KeyPress!); //Default Input
             this.KeyDown += new KeyEventHandler(Interface_KeyDown!); //Special Characters & Key Combinations
             this.KeyPreview = true; // Set KeyPreview property to true to capture keyboard events at the form level
-            InputFocus();
+            InputReplace(">", "");
+            SwitchMode(MenuModeSim);
             //UpdateCheck("https://github.com/run2go/Calculator");
         }
         private void Interface_KeyPress(object sender, KeyPressEventArgs e)
@@ -90,7 +91,21 @@ namespace Calculator
             {
                 if (SymbolGet() == ">") txtEval.Text += InputGet();
                 txtInput.Text = $"= {InputGet()}";
-                string dataSanitization = txtEval.Text.Trim().Replace(',', '.').Replace('[', '(').Replace('{', '(').Replace(']', ')').Replace('}', ')').Replace("π", "PI()"); //Sanitize
+
+                string dataConversion = txtEval.Text.Trim();
+                //string[] elements = Regex.Split(dataConversion, @"(?<=[+*/%^()\-])|(?=[+*/%^()\-])");
+                string[] elements = Regex.Split(dataConversion, @"[^0-9A-F]+");
+                for (int i = 0; i < elements.Length; i++)
+                {
+                    if (Utility.IsNumeric(elements[i]))
+                    {
+                        string convertedNumber = Converter.ConvertBase(elements[i], baseCurrent, 10);
+                        elements[i] = convertedNumber;
+                    }
+                }
+                dataConversion = string.Join("", elements);
+
+                string dataSanitization = dataConversion.Replace(',', '.').Replace('[', '(').Replace('{', '(').Replace(']', ')').Replace('}', ')').Replace("π", "PI()"); //Sanitize
                 dataSanitization = Regex.Replace(dataSanitization, @"(\d+|[0-9A-F]+)!+", match =>
                 { // Handle Factorials
                     string innerMatch = match.Groups[1].Value;
@@ -164,7 +179,6 @@ namespace Calculator
             txtInput.SelectionStart = txtInput.Text.Length;
             txtInput.SelectionLength = 0;
             txtInput.Focus();
-            //txtInput.Parent!.Focus();
         }
         private void BaseUpdate(int baseNew)
         {
@@ -212,12 +226,8 @@ namespace Calculator
                 item.BackColor = Utility.InvertColor(item.BackColor);
                 item.ForeColor = Utility.InvertColor(item.ForeColor);
             }
-            Utility.UseImmersiveDarkMode(this.Handle, !MenuEditDarkmode.Checked);
+            Utility.UseImmersiveDarkMode(Handle, !MenuEditDarkmode.Checked);
         }
-
-        [DllImport("DwmApi")] //System.Runtime.InteropServices
-        private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, int[] attrValue, int attrSize);
-        protected override void OnHandleCreated(EventArgs e) { if (DwmSetWindowAttribute(Handle, 19, new[] { 1 }, 4) != 0) DwmSetWindowAttribute(Handle, 20, new[] { 1 }, 4); }
         private void ButtonResize()
         {
             foreach (Control item in this.GetAllElements())
@@ -255,7 +265,7 @@ namespace Calculator
             }
             tableLayoutButtons.ResumeLayout(true);
             tableLayoutButtons.PerformLayout();
-            Size = MinimumSize = new Size(colSize.Sum() * 10, rowSize.Sum() * 10);
+            Size = MinimumSize = new Size(colSize.Sum() * 8, rowSize.Sum() * 8);
             MenuModeSim.Checked = (mode == "MenuModeSim");
             MenuModeAdv.Checked = (mode == "MenuModeAdv");
             MenuModePro.Checked = (mode == "MenuModePro");
@@ -265,7 +275,7 @@ namespace Calculator
             if (!MenuModePro.Checked)
             {
                 Button[] button = { bt0, bt1, bt2, bt3, bt4, bt5, bt6, bt7, bt8, bt9, btA, btB, btC, btD, btE, btF };
-                for (int i = 0; i < 16; i++) button[i].Enabled = true;
+                for (int i = 0; i < 10; i++) button[i].Enabled = true;
                 rbDec.Checked = true;
             }
         }
@@ -330,6 +340,7 @@ namespace Calculator
     }
     internal static class Utility
     {
+        internal static bool IsNumeric(string value) { return value.All(char.IsNumber); }
         internal static Color InvertColor(this Color color) { return Color.FromArgb(255 - color.R, 255 - color.G, 255 - color.B); }
         internal static IEnumerable<Control> GetAllElements(this Control control)
         {
@@ -349,7 +360,7 @@ namespace Calculator
                         float scaleX = textBox.ClientSize.Width / textSize.Width; // Calculate the scaling factor for both width and height
                         float scaleY = textBox.ClientSize.Height / textSize.Height;
                         float newSize = textBox.Font.Size * Math.Min(scaleX, scaleY); // Calculate the new font size using the minimum scaling factor
-                        textBox.Font = new Font(textBox.Font.FontFamily, newSize); ; // Apply the new font to the TextBox
+                        textBox.Font = new Font(textBox.Font.FontFamily, newSize); // Apply the new font to the TextBox
                     }
                 }
             }
@@ -359,19 +370,15 @@ namespace Calculator
         {
             try
             {
-                // Calculate the desired font size based on the button's width and height
                 int fontSize = 10; // Set a default font size
-                using (Graphics g = button.CreateGraphics())
+                using (Graphics g = button.CreateGraphics()) // Calculate the desired font size based on the button's width and height
                 {
                     SizeF textSize = g.MeasureString(button.Text, button.Font);
                     float widthRatio = button.Width / textSize.Width;
                     float heightRatio = button.Height / textSize.Height;
                     float ratio = Math.Min(widthRatio, heightRatio);
-                    fontSize = (int)(button.Font.Size * ratio);
+                    button.Font = new Font(button.Font.FontFamily, (int)(button.Font.Size * ratio), button.Font.Style); // Create a new font with the calculated font size and assign it to the button
                 }
-
-                // Create a new font with the calculated font size and assign it to the button
-                button.Font = new Font(button.Font.FontFamily, fontSize, button.Font.Style);
             }
             catch { } // Dismiss
         }
@@ -410,6 +417,7 @@ namespace Calculator
         };
         internal static string ConvertBase(string input, int fromBase, int toBase)
         {
+            input = input.ToUpper();
             BigInteger value = 0;
             for (int i = input.Length - 1; i >= 0; i--) // Convert input to decimal (base 10)
             {
