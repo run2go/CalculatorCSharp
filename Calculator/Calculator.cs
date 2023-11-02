@@ -90,19 +90,12 @@ namespace Calculator
             try
             {
                 if (SymbolGet() == ">") txtEval.Text += InputGet();
-                txtInput.Text = $"= {InputGet()}";
+                //txtInput.Text = $"= {InputGet()}";
 
                 string dataConversion = txtEval.Text.Trim();
-                //string[] elements = Regex.Split(dataConversion, @"(?<=[+*/%^()\-])|(?=[+*/%^()\-])");
-                string[] elements = Regex.Split(dataConversion, @"[^0-9A-F]+");
-                for (int i = 0; i < elements.Length; i++)
-                {
-                    if (Utility.IsNumeric(elements[i]))
-                    {
-                        string convertedNumber = Converter.ConvertBase(elements[i], baseCurrent, 10);
-                        elements[i] = convertedNumber;
-                    }
-                }
+                string[] elements = Regex.Split(dataConversion, @"(?<=[+*/%^()\-])|(?=[+*/%^()\-])");
+                //string[] elements = Regex.Split(dataConversion, @"[^0-9A-F]+");
+                for (int i = 0; i < elements.Length; i++) if (Utility.IsNumeric(elements[i])) elements[i] = Converter.ConvertBase(elements[i], baseCurrent, 10);
                 dataConversion = string.Join("", elements);
 
                 string dataSanitization = dataConversion.Replace(',', '.').Replace('[', '(').Replace('{', '(').Replace(']', ')').Replace('}', ')').Replace("π", "PI()"); //Sanitize
@@ -125,7 +118,8 @@ namespace Calculator
                 if (txtEval.Text != string.Empty)
                 {
                     Expression equation = new Expression(dataSanitization);
-                    lastResult = equation.Eval().ToString()!;
+                    string result = equation.Eval().ToString()!;
+                    lastResult = MenuModePro.Checked ? result : Converter.ConvertBase(result, 10, baseCurrent);
                     InputReplace("=", lastResult);
                 }
                 if (MenuModePro.Checked) DisplayUpdate();
@@ -340,7 +334,7 @@ namespace Calculator
     }
     internal static class Utility
     {
-        internal static bool IsNumeric(string value) { return value.All(char.IsNumber); }
+        internal static bool IsNumeric(string value) { return Regex.IsMatch(value, @"^[0-9A-F]+$", RegexOptions.IgnoreCase); }
         internal static Color InvertColor(this Color color) { return Color.FromArgb(255 - color.R, 255 - color.G, 255 - color.B); }
         internal static IEnumerable<Control> GetAllElements(this Control control)
         {
