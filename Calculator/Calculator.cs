@@ -15,6 +15,9 @@ using Microsoft.VisualBasic;
 //subnetting extra <- Optional
 //allow selection * delete/backspace or typing something, don't affect the first 2 chars, only affect InputGet()
 //handle shortcuts (CTRL+key) differently
+
+//error msgs add spaces
+//use ^0-9A-F for regex splitting in Calc()
 namespace Calculator
 {
     public partial class Interface : Form
