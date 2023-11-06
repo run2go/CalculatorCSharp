@@ -96,8 +96,8 @@ namespace Calculator
                 //txtInput.Text = $"= {InputGet()}";
 
                 string dataConversion = txtEval.Text.Trim();
-                string[] elements = Regex.Split(dataConversion, @"(?<=[+*/%^()\-])|(?=[+*/%^()\-])");
-                //string[] elements = Regex.Split(dataConversion, @"[^0-9A-F]+");
+                //string[] elements = Regex.Split(dataConversion, @"(?<=[+*/%^()\-])|(?=[+*/%^()\-])");
+                string[] elements = Regex.Split(dataConversion, @"^[0-9A-F]+$");
                 for (int i = 0; i < elements.Length; i++) if (Utility.IsNumeric(elements[i])) elements[i] = Converter.ConvertBase(elements[i], baseCurrent, 10);
                 dataConversion = string.Join("", elements);
 
@@ -224,6 +224,7 @@ namespace Calculator
                 item.ForeColor = Utility.InvertColor(item.ForeColor);
             }
             Utility.UseImmersiveDarkMode(Handle, !MenuEditDarkmode.Checked);
+            Size = new Size(Size.Width, Size.Height + 1); //QQQ
         }
         private void ButtonResize()
         {
@@ -379,7 +380,7 @@ namespace Calculator
             }
             catch { } // Dismiss
         }
-        [DllImport("dwmapi.dll")]
+        [DllImport("dwmapi.dll")] // Used for the following titlebar recoloring
         private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
         private const int DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1 = 19;
         private const int DWMWA_USE_IMMERSIVE_DARK_MODE = 20;

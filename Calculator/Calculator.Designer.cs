@@ -825,7 +825,7 @@
             btPow.Size = new Size(65, 57);
             btPow.TabIndex = 4;
             btPow.TabStop = false;
-            btPow.Text = "^";
+            btPow.Text = "x^y";
             btPow.UseVisualStyleBackColor = false;
             btPow.Click += btPow_Click;
             // 
