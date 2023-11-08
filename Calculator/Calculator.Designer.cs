@@ -78,14 +78,14 @@
             btPi = new Button();
             tableLayoutMain = new TableLayoutPanel();
             tableLayoutBase = new TableLayoutPanel();
-            btBin = new Button();
-            btOct = new Button();
-            btDec = new Button();
-            rbBin = new RadioButton();
-            rbOct = new RadioButton();
-            rbDec = new RadioButton();
-            rbHex = new RadioButton();
-            btHex = new Button();
+            btBase2 = new Button();
+            btBase8 = new Button();
+            btBase10 = new Button();
+            rbBase2 = new RadioButton();
+            rbBase8 = new RadioButton();
+            rbBase10 = new RadioButton();
+            rbBase16 = new RadioButton();
+            btBase16 = new Button();
             txtInput = new RichTextBox();
             txtEval = new RichTextBox();
             menuStrip.SuspendLayout();
@@ -115,7 +115,7 @@
             MenuModeSim.ShortcutKeys = Keys.F2;
             MenuModeSim.Size = new Size(160, 22);
             MenuModeSim.Text = "Simple";
-            MenuModeSim.Click += MenuModeSim_Click;
+            MenuModeSim.Click += SwitchMode;
             // 
             // MenuModeAdv
             // 
@@ -123,7 +123,7 @@
             MenuModeAdv.ShortcutKeys = Keys.F3;
             MenuModeAdv.Size = new Size(160, 22);
             MenuModeAdv.Text = "Advanced";
-            MenuModeAdv.Click += MenuModeAdv_Click;
+            MenuModeAdv.Click += SwitchMode;
             // 
             // MenuModePro
             // 
@@ -133,7 +133,7 @@
             MenuModePro.ShortcutKeys = Keys.F4;
             MenuModePro.Size = new Size(160, 22);
             MenuModePro.Text = "Programmer";
-            MenuModePro.Click += MenuModePro_Click;
+            MenuModePro.Click += SwitchMode;
             // 
             // StripMenuEdit
             // 
@@ -205,7 +205,6 @@
             bt9.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             bt9.FlatAppearance.BorderSize = 2;
             bt9.FlatStyle = FlatStyle.Flat;
-            bt9.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             bt9.Location = new Point(216, 129);
             bt9.Name = "bt9";
             bt9.Size = new Size(65, 57);
@@ -213,7 +212,8 @@
             bt9.TabStop = false;
             bt9.Text = "9";
             bt9.UseVisualStyleBackColor = false;
-            bt9.Click += bt9_Click;
+            bt9.SizeChanged += bt_SizeChanged_HelperNumeric;
+            bt9.Click += btNumeric_Click;
             // 
             // btDelete
             // 
@@ -225,7 +225,6 @@
             btDelete.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             btDelete.FlatAppearance.BorderSize = 2;
             btDelete.FlatStyle = FlatStyle.Flat;
-            btDelete.Font = new Font("Arial Rounded MT Bold", 12F, FontStyle.Regular, GraphicsUnit.Point);
             btDelete.ForeColor = SystemColors.WindowFrame;
             btDelete.Location = new Point(74, 3);
             btDelete.Name = "btDelete";
@@ -234,6 +233,7 @@
             btDelete.TabStop = false;
             btDelete.Text = "Delete";
             btDelete.UseVisualStyleBackColor = false;
+            btDelete.SizeChanged += bt_SizeChanged;
             btDelete.Click += btDelete_Click;
             // 
             // bt0
@@ -245,7 +245,6 @@
             bt0.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             bt0.FlatAppearance.BorderSize = 2;
             bt0.FlatStyle = FlatStyle.Flat;
-            bt0.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             bt0.Location = new Point(145, 318);
             bt0.Name = "bt0";
             bt0.Size = new Size(65, 60);
@@ -253,7 +252,8 @@
             bt0.TabStop = false;
             bt0.Text = "0";
             bt0.UseVisualStyleBackColor = false;
-            bt0.Click += bt0_Click;
+            bt0.SizeChanged += bt_SizeChanged;
+            bt0.Click += btNumeric_Click;
             // 
             // bt6
             // 
@@ -264,7 +264,6 @@
             bt6.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             bt6.FlatAppearance.BorderSize = 2;
             bt6.FlatStyle = FlatStyle.Flat;
-            bt6.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             bt6.Location = new Point(216, 192);
             bt6.Name = "bt6";
             bt6.Size = new Size(65, 57);
@@ -272,7 +271,8 @@
             bt6.TabStop = false;
             bt6.Text = "6";
             bt6.UseVisualStyleBackColor = false;
-            bt6.Click += bt6_Click;
+            bt6.SizeChanged += bt_SizeChanged_HelperNumeric;
+            bt6.Click += btNumeric_Click;
             // 
             // bt2
             // 
@@ -283,7 +283,6 @@
             bt2.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             bt2.FlatAppearance.BorderSize = 2;
             bt2.FlatStyle = FlatStyle.Flat;
-            bt2.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             bt2.Location = new Point(145, 255);
             bt2.Name = "bt2";
             bt2.Size = new Size(65, 57);
@@ -291,7 +290,8 @@
             bt2.TabStop = false;
             bt2.Text = "2";
             bt2.UseVisualStyleBackColor = false;
-            bt2.Click += bt2_Click;
+            bt2.SizeChanged += bt_SizeChanged_HelperNumeric;
+            bt2.Click += btNumeric_Click;
             // 
             // bt3
             // 
@@ -302,7 +302,6 @@
             bt3.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             bt3.FlatAppearance.BorderSize = 2;
             bt3.FlatStyle = FlatStyle.Flat;
-            bt3.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             bt3.Location = new Point(216, 255);
             bt3.Name = "bt3";
             bt3.Size = new Size(65, 57);
@@ -310,7 +309,8 @@
             bt3.TabStop = false;
             bt3.Text = "3";
             bt3.UseVisualStyleBackColor = false;
-            bt3.Click += bt3_Click;
+            bt3.SizeChanged += bt_SizeChanged_HelperNumeric;
+            bt3.Click += btNumeric_Click;
             // 
             // bt5
             // 
@@ -321,7 +321,6 @@
             bt5.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             bt5.FlatAppearance.BorderSize = 2;
             bt5.FlatStyle = FlatStyle.Flat;
-            bt5.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             bt5.Location = new Point(145, 192);
             bt5.Name = "bt5";
             bt5.Size = new Size(65, 57);
@@ -329,7 +328,8 @@
             bt5.TabStop = false;
             bt5.Text = "5";
             bt5.UseVisualStyleBackColor = false;
-            bt5.Click += bt5_Click;
+            bt5.SizeChanged += bt_SizeChanged_HelperNumeric;
+            bt5.Click += btNumeric_Click;
             // 
             // btAdd
             // 
@@ -340,7 +340,6 @@
             btAdd.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             btAdd.FlatAppearance.BorderSize = 2;
             btAdd.FlatStyle = FlatStyle.Flat;
-            btAdd.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             btAdd.ForeColor = SystemColors.WindowFrame;
             btAdd.Location = new Point(287, 318);
             btAdd.Name = "btAdd";
@@ -349,7 +348,8 @@
             btAdd.TabStop = false;
             btAdd.Text = "+";
             btAdd.UseVisualStyleBackColor = false;
-            btAdd.Click += btAdd_Click;
+            btAdd.SizeChanged += bt_SizeChanged_HelperOperator;
+            btAdd.Click += btOperatorRight_Click;
             // 
             // bt8
             // 
@@ -360,7 +360,6 @@
             bt8.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             bt8.FlatAppearance.BorderSize = 2;
             bt8.FlatStyle = FlatStyle.Flat;
-            bt8.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             bt8.Location = new Point(145, 129);
             bt8.Name = "bt8";
             bt8.Size = new Size(65, 57);
@@ -368,7 +367,8 @@
             bt8.TabStop = false;
             bt8.Text = "8";
             bt8.UseVisualStyleBackColor = false;
-            bt8.Click += bt8_Click;
+            bt8.SizeChanged += bt_SizeChanged_HelperNumeric;
+            bt8.Click += btNumeric_Click;
             // 
             // btDiv
             // 
@@ -379,7 +379,6 @@
             btDiv.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             btDiv.FlatAppearance.BorderSize = 2;
             btDiv.FlatStyle = FlatStyle.Flat;
-            btDiv.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             btDiv.ForeColor = SystemColors.WindowFrame;
             btDiv.Location = new Point(287, 129);
             btDiv.Name = "btDiv";
@@ -388,7 +387,8 @@
             btDiv.TabStop = false;
             btDiv.Text = "/";
             btDiv.UseVisualStyleBackColor = false;
-            btDiv.Click += btDiv_Click;
+            btDiv.SizeChanged += bt_SizeChanged_HelperOperator;
+            btDiv.Click += btOperatorRight_Click;
             // 
             // btCom
             // 
@@ -399,7 +399,6 @@
             btCom.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             btCom.FlatAppearance.BorderSize = 2;
             btCom.FlatStyle = FlatStyle.Flat;
-            btCom.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             btCom.ForeColor = SystemColors.WindowFrame;
             btCom.Location = new Point(74, 318);
             btCom.Name = "btCom";
@@ -408,6 +407,7 @@
             btCom.TabStop = false;
             btCom.Text = ".";
             btCom.UseVisualStyleBackColor = false;
+            btCom.SizeChanged += bt_SizeChanged;
             btCom.Click += btCom_Click;
             // 
             // btClear
@@ -420,7 +420,6 @@
             btClear.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             btClear.FlatAppearance.BorderSize = 2;
             btClear.FlatStyle = FlatStyle.Flat;
-            btClear.Font = new Font("Arial Rounded MT Bold", 12F, FontStyle.Regular, GraphicsUnit.Point);
             btClear.ForeColor = SystemColors.WindowFrame;
             btClear.Location = new Point(216, 3);
             btClear.Name = "btClear";
@@ -429,6 +428,7 @@
             btClear.TabStop = false;
             btClear.Text = "Clear";
             btClear.UseVisualStyleBackColor = false;
+            btClear.SizeChanged += bt_SizeChanged;
             btClear.Click += btClear_Click;
             // 
             // bt1
@@ -440,7 +440,6 @@
             bt1.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             bt1.FlatAppearance.BorderSize = 2;
             bt1.FlatStyle = FlatStyle.Flat;
-            bt1.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             bt1.Location = new Point(74, 255);
             bt1.Name = "bt1";
             bt1.Size = new Size(65, 57);
@@ -448,7 +447,8 @@
             bt1.TabStop = false;
             bt1.Text = "1";
             bt1.UseVisualStyleBackColor = false;
-            bt1.Click += bt1_Click;
+            bt1.SizeChanged += bt_SizeChanged_HelperNumeric;
+            bt1.Click += btNumeric_Click;
             // 
             // btMul
             // 
@@ -459,7 +459,6 @@
             btMul.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             btMul.FlatAppearance.BorderSize = 2;
             btMul.FlatStyle = FlatStyle.Flat;
-            btMul.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             btMul.ForeColor = SystemColors.WindowFrame;
             btMul.Location = new Point(287, 192);
             btMul.Name = "btMul";
@@ -468,7 +467,8 @@
             btMul.TabStop = false;
             btMul.Text = "x";
             btMul.UseVisualStyleBackColor = false;
-            btMul.Click += btMul_Click;
+            btMul.SizeChanged += bt_SizeChanged_HelperOperator;
+            btMul.Click += btOperatorRight_Click;
             // 
             // bt4
             // 
@@ -479,7 +479,6 @@
             bt4.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             bt4.FlatAppearance.BorderSize = 2;
             bt4.FlatStyle = FlatStyle.Flat;
-            bt4.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             bt4.Location = new Point(74, 192);
             bt4.Name = "bt4";
             bt4.Size = new Size(65, 57);
@@ -487,7 +486,8 @@
             bt4.TabStop = false;
             bt4.Text = "4";
             bt4.UseVisualStyleBackColor = false;
-            bt4.Click += bt4_Click;
+            bt4.SizeChanged += bt_SizeChanged_HelperNumeric;
+            bt4.Click += btNumeric_Click;
             // 
             // bt7
             // 
@@ -498,7 +498,6 @@
             bt7.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             bt7.FlatAppearance.BorderSize = 2;
             bt7.FlatStyle = FlatStyle.Flat;
-            bt7.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             bt7.Location = new Point(74, 129);
             bt7.Name = "bt7";
             bt7.Size = new Size(65, 57);
@@ -506,7 +505,8 @@
             bt7.TabStop = false;
             bt7.Text = "7";
             bt7.UseVisualStyleBackColor = false;
-            bt7.Click += bt7_Click;
+            bt7.SizeChanged += bt_SizeChanged_HelperNumeric;
+            bt7.Click += btNumeric_Click;
             // 
             // btCalc
             // 
@@ -527,6 +527,7 @@
             btCalc.TabStop = false;
             btCalc.Text = "=";
             btCalc.UseVisualStyleBackColor = false;
+            btCalc.SizeChanged += bt_SizeChanged;
             btCalc.Click += btCalc_Click;
             // 
             // btSub
@@ -538,7 +539,6 @@
             btSub.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             btSub.FlatAppearance.BorderSize = 2;
             btSub.FlatStyle = FlatStyle.Flat;
-            btSub.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             btSub.ForeColor = SystemColors.WindowFrame;
             btSub.Location = new Point(287, 255);
             btSub.Name = "btSub";
@@ -547,7 +547,8 @@
             btSub.TabStop = false;
             btSub.Text = "-";
             btSub.UseVisualStyleBackColor = false;
-            btSub.Click += btSub_Click;
+            btSub.SizeChanged += bt_SizeChanged_HelperOperator;
+            btSub.Click += btOperatorRight_Click;
             // 
             // tableLayoutButtons
             // 
@@ -619,7 +620,6 @@
             btF.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             btF.FlatAppearance.BorderSize = 2;
             btF.FlatStyle = FlatStyle.Flat;
-            btF.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             btF.Location = new Point(3, 318);
             btF.Name = "btF";
             btF.Size = new Size(65, 60);
@@ -627,7 +627,8 @@
             btF.TabStop = false;
             btF.Text = "F";
             btF.UseVisualStyleBackColor = false;
-            btF.Click += btF_Click;
+            btF.SizeChanged += bt_SizeChanged_HelperNumeric;
+            btF.Click += btNumeric_Click;
             // 
             // btE
             // 
@@ -639,7 +640,6 @@
             btE.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             btE.FlatAppearance.BorderSize = 2;
             btE.FlatStyle = FlatStyle.Flat;
-            btE.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             btE.Location = new Point(3, 255);
             btE.Name = "btE";
             btE.Size = new Size(65, 57);
@@ -647,7 +647,8 @@
             btE.TabStop = false;
             btE.Text = "E";
             btE.UseVisualStyleBackColor = false;
-            btE.Click += btE_Click;
+            btE.SizeChanged += bt_SizeChanged_HelperNumeric;
+            btE.Click += btNumeric_Click;
             // 
             // btD
             // 
@@ -659,7 +660,6 @@
             btD.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             btD.FlatAppearance.BorderSize = 2;
             btD.FlatStyle = FlatStyle.Flat;
-            btD.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             btD.Location = new Point(3, 192);
             btD.Name = "btD";
             btD.Size = new Size(65, 57);
@@ -667,7 +667,8 @@
             btD.TabStop = false;
             btD.Text = "D";
             btD.UseVisualStyleBackColor = false;
-            btD.Click += btD_Click;
+            btD.SizeChanged += bt_SizeChanged_HelperNumeric;
+            btD.Click += btNumeric_Click;
             // 
             // btC
             // 
@@ -679,7 +680,6 @@
             btC.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             btC.FlatAppearance.BorderSize = 2;
             btC.FlatStyle = FlatStyle.Flat;
-            btC.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             btC.Location = new Point(3, 129);
             btC.Name = "btC";
             btC.Size = new Size(65, 57);
@@ -687,7 +687,8 @@
             btC.TabStop = false;
             btC.Text = "C";
             btC.UseVisualStyleBackColor = false;
-            btC.Click += btC_Click;
+            btC.SizeChanged += bt_SizeChanged_HelperNumeric;
+            btC.Click += btNumeric_Click;
             // 
             // btB
             // 
@@ -699,7 +700,6 @@
             btB.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             btB.FlatAppearance.BorderSize = 2;
             btB.FlatStyle = FlatStyle.Flat;
-            btB.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             btB.Location = new Point(3, 66);
             btB.Name = "btB";
             btB.Size = new Size(65, 57);
@@ -707,7 +707,8 @@
             btB.TabStop = false;
             btB.Text = "B";
             btB.UseVisualStyleBackColor = false;
-            btB.Click += btB_Click;
+            btB.SizeChanged += bt_SizeChanged_HelperNumeric;
+            btB.Click += btNumeric_Click;
             // 
             // btA
             // 
@@ -719,7 +720,6 @@
             btA.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             btA.FlatAppearance.BorderSize = 2;
             btA.FlatStyle = FlatStyle.Flat;
-            btA.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             btA.Location = new Point(3, 3);
             btA.Name = "btA";
             btA.Size = new Size(65, 57);
@@ -727,7 +727,8 @@
             btA.TabStop = false;
             btA.Text = "A";
             btA.UseVisualStyleBackColor = false;
-            btA.Click += btA_Click;
+            btA.SizeChanged += bt_SizeChanged_HelperNumeric;
+            btA.Click += btNumeric_Click;
             // 
             // btAnswer
             // 
@@ -738,7 +739,6 @@
             btAnswer.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             btAnswer.FlatAppearance.BorderSize = 2;
             btAnswer.FlatStyle = FlatStyle.Flat;
-            btAnswer.Font = new Font("Arial Rounded MT Bold", 12F, FontStyle.Regular, GraphicsUnit.Point);
             btAnswer.ForeColor = SystemColors.WindowFrame;
             btAnswer.Location = new Point(358, 3);
             btAnswer.Name = "btAnswer";
@@ -747,6 +747,7 @@
             btAnswer.TabStop = false;
             btAnswer.Text = "📋";
             btAnswer.UseVisualStyleBackColor = false;
+            btAnswer.SizeChanged += bt_SizeChanged;
             btAnswer.Click += btCopy_Click;
             // 
             // btFactorial
@@ -758,7 +759,6 @@
             btFactorial.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             btFactorial.FlatAppearance.BorderSize = 2;
             btFactorial.FlatStyle = FlatStyle.Flat;
-            btFactorial.Font = new Font("Arial Rounded MT Bold", 13F, FontStyle.Regular, GraphicsUnit.Point);
             btFactorial.ForeColor = SystemColors.WindowFrame;
             btFactorial.Location = new Point(358, 66);
             btFactorial.Name = "btFactorial";
@@ -767,6 +767,7 @@
             btFactorial.TabStop = false;
             btFactorial.Text = "n!";
             btFactorial.UseVisualStyleBackColor = false;
+            btFactorial.SizeChanged += bt_SizeChanged_HelperOperator;
             btFactorial.Click += btFactorial_Click;
             // 
             // btBracketClose
@@ -778,7 +779,6 @@
             btBracketClose.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             btBracketClose.FlatAppearance.BorderSize = 2;
             btBracketClose.FlatStyle = FlatStyle.Flat;
-            btBracketClose.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             btBracketClose.ForeColor = SystemColors.WindowFrame;
             btBracketClose.Location = new Point(145, 66);
             btBracketClose.Name = "btBracketClose";
@@ -787,7 +787,8 @@
             btBracketClose.TabStop = false;
             btBracketClose.Text = ")";
             btBracketClose.UseVisualStyleBackColor = false;
-            btBracketClose.Click += btBracketClose_Click;
+            btBracketClose.SizeChanged += bt_SizeChanged_HelperOperator;
+            btBracketClose.Click += btOperatorRight_Click;
             // 
             // btBracketOpen
             // 
@@ -798,7 +799,6 @@
             btBracketOpen.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             btBracketOpen.FlatAppearance.BorderSize = 2;
             btBracketOpen.FlatStyle = FlatStyle.Flat;
-            btBracketOpen.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             btBracketOpen.ForeColor = SystemColors.WindowFrame;
             btBracketOpen.Location = new Point(74, 66);
             btBracketOpen.Name = "btBracketOpen";
@@ -807,7 +807,8 @@
             btBracketOpen.TabStop = false;
             btBracketOpen.Text = "(";
             btBracketOpen.UseVisualStyleBackColor = false;
-            btBracketOpen.Click += btBracketOpen_Click;
+            btBracketOpen.SizeChanged += bt_SizeChanged_HelperOperator;
+            btBracketOpen.Click += btOperatorRight_Click;
             // 
             // btPow
             // 
@@ -818,15 +819,15 @@
             btPow.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             btPow.FlatAppearance.BorderSize = 2;
             btPow.FlatStyle = FlatStyle.Flat;
-            btPow.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             btPow.ForeColor = SystemColors.WindowFrame;
             btPow.Location = new Point(216, 66);
             btPow.Name = "btPow";
             btPow.Size = new Size(65, 57);
             btPow.TabIndex = 4;
             btPow.TabStop = false;
-            btPow.Text = "x^y";
+            btPow.Text = "xʸ";
             btPow.UseVisualStyleBackColor = false;
+            btPow.SizeChanged += bt_SizeChanged_HelperOperator;
             btPow.Click += btPow_Click;
             // 
             // btModulo
@@ -838,7 +839,6 @@
             btModulo.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             btModulo.FlatAppearance.BorderSize = 2;
             btModulo.FlatStyle = FlatStyle.Flat;
-            btModulo.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             btModulo.ForeColor = SystemColors.WindowFrame;
             btModulo.Location = new Point(358, 318);
             btModulo.Name = "btModulo";
@@ -847,7 +847,8 @@
             btModulo.TabStop = false;
             btModulo.Text = "%";
             btModulo.UseVisualStyleBackColor = false;
-            btModulo.Click += btModulo_Click;
+            btModulo.SizeChanged += bt_SizeChanged_HelperOperator;
+            btModulo.Click += btOperatorRight_Click;
             // 
             // btSqrt
             // 
@@ -858,7 +859,6 @@
             btSqrt.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             btSqrt.FlatAppearance.BorderSize = 2;
             btSqrt.FlatStyle = FlatStyle.Flat;
-            btSqrt.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             btSqrt.ForeColor = SystemColors.WindowFrame;
             btSqrt.Location = new Point(287, 66);
             btSqrt.Name = "btSqrt";
@@ -867,7 +867,8 @@
             btSqrt.TabStop = false;
             btSqrt.Text = "√";
             btSqrt.UseVisualStyleBackColor = false;
-            btSqrt.Click += btSqrt_Click;
+            btSqrt.SizeChanged += bt_SizeChanged_HelperOperator;
+            btSqrt.Click += btOperatorLeft_Click;
             // 
             // btNegate
             // 
@@ -878,7 +879,6 @@
             btNegate.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             btNegate.FlatAppearance.BorderSize = 2;
             btNegate.FlatStyle = FlatStyle.Flat;
-            btNegate.Font = new Font("Arial Rounded MT Bold", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             btNegate.ForeColor = SystemColors.WindowFrame;
             btNegate.Location = new Point(358, 129);
             btNegate.Name = "btNegate";
@@ -887,6 +887,7 @@
             btNegate.TabStop = false;
             btNegate.Text = "±";
             btNegate.UseVisualStyleBackColor = false;
+            btNegate.SizeChanged += bt_SizeChanged_HelperOperator;
             btNegate.Click += btNegate_Click;
             // 
             // btReciprocal
@@ -898,7 +899,6 @@
             btReciprocal.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             btReciprocal.FlatAppearance.BorderSize = 2;
             btReciprocal.FlatStyle = FlatStyle.Flat;
-            btReciprocal.Font = new Font("Arial Rounded MT Bold", 12F, FontStyle.Regular, GraphicsUnit.Point);
             btReciprocal.ForeColor = SystemColors.WindowFrame;
             btReciprocal.Location = new Point(358, 192);
             btReciprocal.Name = "btReciprocal";
@@ -907,6 +907,7 @@
             btReciprocal.TabStop = false;
             btReciprocal.Text = "1/n";
             btReciprocal.UseVisualStyleBackColor = false;
+            btReciprocal.SizeChanged += bt_SizeChanged_HelperOperator;
             btReciprocal.Click += btReciprocal_Click;
             // 
             // btPi
@@ -918,7 +919,6 @@
             btPi.FlatAppearance.BorderColor = Color.FromArgb(224, 224, 224);
             btPi.FlatAppearance.BorderSize = 2;
             btPi.FlatStyle = FlatStyle.Flat;
-            btPi.Font = new Font("Arial Rounded MT Bold", 15F, FontStyle.Regular, GraphicsUnit.Point);
             btPi.ForeColor = SystemColors.WindowFrame;
             btPi.Location = new Point(358, 255);
             btPi.Name = "btPi";
@@ -927,7 +927,8 @@
             btPi.TabStop = false;
             btPi.Text = "π";
             btPi.UseVisualStyleBackColor = false;
-            btPi.Click += btPi_Click;
+            btPi.SizeChanged += bt_SizeChanged_HelperOperator;
+            btPi.Click += btOperatorRight_Click;
             // 
             // tableLayoutMain
             // 
@@ -958,14 +959,14 @@
             tableLayoutBase.ColumnCount = 2;
             tableLayoutBase.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 21.0023861F));
             tableLayoutBase.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 78.99761F));
-            tableLayoutBase.Controls.Add(btBin, 1, 3);
-            tableLayoutBase.Controls.Add(btOct, 1, 2);
-            tableLayoutBase.Controls.Add(btDec, 1, 1);
-            tableLayoutBase.Controls.Add(rbBin, 0, 3);
-            tableLayoutBase.Controls.Add(rbOct, 0, 2);
-            tableLayoutBase.Controls.Add(rbDec, 0, 1);
-            tableLayoutBase.Controls.Add(rbHex, 0, 0);
-            tableLayoutBase.Controls.Add(btHex, 1, 0);
+            tableLayoutBase.Controls.Add(btBase2, 1, 3);
+            tableLayoutBase.Controls.Add(btBase8, 1, 2);
+            tableLayoutBase.Controls.Add(btBase10, 1, 1);
+            tableLayoutBase.Controls.Add(rbBase2, 0, 3);
+            tableLayoutBase.Controls.Add(rbBase8, 0, 2);
+            tableLayoutBase.Controls.Add(rbBase10, 0, 1);
+            tableLayoutBase.Controls.Add(rbBase16, 0, 0);
+            tableLayoutBase.Controls.Add(btBase16, 1, 0);
             tableLayoutBase.Location = new Point(3, 70);
             tableLayoutBase.Margin = new Padding(0);
             tableLayoutBase.Name = "tableLayoutBase";
@@ -978,135 +979,139 @@
             tableLayoutBase.Size = new Size(427, 94);
             tableLayoutBase.TabIndex = 17;
             // 
-            // btBin
+            // btBase2
             // 
-            btBin.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            btBin.Cursor = Cursors.IBeam;
-            btBin.FlatAppearance.BorderSize = 0;
-            btBin.FlatStyle = FlatStyle.Flat;
-            btBin.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            btBin.Location = new Point(89, 69);
-            btBin.Margin = new Padding(0);
-            btBin.Name = "btBin";
-            btBin.Size = new Size(338, 25);
-            btBin.TabIndex = 15;
-            btBin.Text = "0";
-            btBin.TextAlign = ContentAlignment.MiddleLeft;
-            btBin.UseVisualStyleBackColor = true;
-            btBin.Click += btBin_Click;
+            btBase2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            btBase2.Cursor = Cursors.IBeam;
+            btBase2.FlatAppearance.BorderSize = 0;
+            btBase2.FlatStyle = FlatStyle.Flat;
+            btBase2.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            btBase2.Location = new Point(89, 69);
+            btBase2.Margin = new Padding(0);
+            btBase2.Name = "btBase2";
+            btBase2.Size = new Size(338, 25);
+            btBase2.TabIndex = 15;
+            btBase2.Text = "0";
+            btBase2.TextAlign = ContentAlignment.MiddleLeft;
+            btBase2.UseVisualStyleBackColor = true;
+            btBase2.SizeChanged += bt_SizeChanged;
+            btBase2.Click += btBase_Click;
             // 
-            // btOct
+            // btBase8
             // 
-            btOct.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            btOct.Cursor = Cursors.IBeam;
-            btOct.FlatAppearance.BorderSize = 0;
-            btOct.FlatStyle = FlatStyle.Flat;
-            btOct.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            btOct.Location = new Point(89, 46);
-            btOct.Margin = new Padding(0);
-            btOct.Name = "btOct";
-            btOct.Size = new Size(338, 23);
-            btOct.TabIndex = 14;
-            btOct.Text = "0";
-            btOct.TextAlign = ContentAlignment.MiddleLeft;
-            btOct.UseVisualStyleBackColor = true;
-            btOct.Click += btOct_Click;
+            btBase8.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            btBase8.Cursor = Cursors.IBeam;
+            btBase8.FlatAppearance.BorderSize = 0;
+            btBase8.FlatStyle = FlatStyle.Flat;
+            btBase8.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            btBase8.Location = new Point(89, 46);
+            btBase8.Margin = new Padding(0);
+            btBase8.Name = "btBase8";
+            btBase8.Size = new Size(338, 23);
+            btBase8.TabIndex = 14;
+            btBase8.Text = "0";
+            btBase8.TextAlign = ContentAlignment.MiddleLeft;
+            btBase8.UseVisualStyleBackColor = true;
+            btBase8.SizeChanged += bt_SizeChanged;
+            btBase8.Click += btBase_Click;
             // 
-            // btDec
+            // btBase10
             // 
-            btDec.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            btDec.Cursor = Cursors.IBeam;
-            btDec.FlatAppearance.BorderSize = 0;
-            btDec.FlatStyle = FlatStyle.Flat;
-            btDec.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            btDec.Location = new Point(89, 23);
-            btDec.Margin = new Padding(0);
-            btDec.Name = "btDec";
-            btDec.Size = new Size(338, 23);
-            btDec.TabIndex = 13;
-            btDec.Text = "0";
-            btDec.TextAlign = ContentAlignment.MiddleLeft;
-            btDec.UseVisualStyleBackColor = true;
-            btDec.Click += btDec_Click;
+            btBase10.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            btBase10.Cursor = Cursors.IBeam;
+            btBase10.FlatAppearance.BorderSize = 0;
+            btBase10.FlatStyle = FlatStyle.Flat;
+            btBase10.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            btBase10.Location = new Point(89, 23);
+            btBase10.Margin = new Padding(0);
+            btBase10.Name = "btBase10";
+            btBase10.Size = new Size(338, 23);
+            btBase10.TabIndex = 13;
+            btBase10.Text = "0";
+            btBase10.TextAlign = ContentAlignment.MiddleLeft;
+            btBase10.UseVisualStyleBackColor = true;
+            btBase10.SizeChanged += bt_SizeChanged;
+            btBase10.Click += btBase_Click;
             // 
-            // rbBin
+            // rbBase2
             // 
-            rbBin.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            rbBin.AutoSize = true;
-            rbBin.Cursor = Cursors.Hand;
-            rbBin.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            rbBin.Location = new Point(3, 72);
-            rbBin.Name = "rbBin";
-            rbBin.Size = new Size(83, 19);
-            rbBin.TabIndex = 11;
-            rbBin.Text = "Bin  (2)";
-            rbBin.TextAlign = ContentAlignment.MiddleCenter;
-            rbBin.UseVisualStyleBackColor = true;
-            rbBin.CheckedChanged += rbBin_CheckedChanged;
+            rbBase2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            rbBase2.AutoSize = true;
+            rbBase2.Cursor = Cursors.Hand;
+            rbBase2.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            rbBase2.Location = new Point(3, 72);
+            rbBase2.Name = "rbBase2";
+            rbBase2.Size = new Size(83, 19);
+            rbBase2.TabIndex = 11;
+            rbBase2.Text = "Bin  (2)";
+            rbBase2.TextAlign = ContentAlignment.MiddleCenter;
+            rbBase2.UseVisualStyleBackColor = true;
+            rbBase2.CheckedChanged += BaseUpdate;
             // 
-            // rbOct
+            // rbBase8
             // 
-            rbOct.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            rbOct.AutoSize = true;
-            rbOct.Cursor = Cursors.Hand;
-            rbOct.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            rbOct.Location = new Point(3, 49);
-            rbOct.Name = "rbOct";
-            rbOct.Size = new Size(83, 17);
-            rbOct.TabIndex = 11;
-            rbOct.Text = "Oct  (8)";
-            rbOct.TextAlign = ContentAlignment.MiddleCenter;
-            rbOct.UseVisualStyleBackColor = true;
-            rbOct.CheckedChanged += rbOct_CheckedChanged;
+            rbBase8.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            rbBase8.AutoSize = true;
+            rbBase8.Cursor = Cursors.Hand;
+            rbBase8.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            rbBase8.Location = new Point(3, 49);
+            rbBase8.Name = "rbBase8";
+            rbBase8.Size = new Size(83, 17);
+            rbBase8.TabIndex = 11;
+            rbBase8.Text = "Oct  (8)";
+            rbBase8.TextAlign = ContentAlignment.MiddleCenter;
+            rbBase8.UseVisualStyleBackColor = true;
+            rbBase8.CheckedChanged += BaseUpdate;
             // 
-            // rbDec
+            // rbBase10
             // 
-            rbDec.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            rbDec.AutoSize = true;
-            rbDec.Checked = true;
-            rbDec.Cursor = Cursors.Hand;
-            rbDec.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            rbDec.Location = new Point(3, 26);
-            rbDec.Name = "rbDec";
-            rbDec.Size = new Size(83, 17);
-            rbDec.TabIndex = 11;
-            rbDec.TabStop = true;
-            rbDec.Text = "Dec (10)";
-            rbDec.TextAlign = ContentAlignment.MiddleCenter;
-            rbDec.UseVisualStyleBackColor = true;
-            rbDec.CheckedChanged += rbDec_CheckedChanged;
+            rbBase10.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            rbBase10.AutoSize = true;
+            rbBase10.Checked = true;
+            rbBase10.Cursor = Cursors.Hand;
+            rbBase10.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            rbBase10.Location = new Point(3, 26);
+            rbBase10.Name = "rbBase10";
+            rbBase10.Size = new Size(83, 17);
+            rbBase10.TabIndex = 11;
+            rbBase10.TabStop = true;
+            rbBase10.Text = "Dec (10)";
+            rbBase10.TextAlign = ContentAlignment.MiddleCenter;
+            rbBase10.UseVisualStyleBackColor = true;
+            rbBase10.CheckedChanged += BaseUpdate;
             // 
-            // rbHex
+            // rbBase16
             // 
-            rbHex.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            rbHex.AutoSize = true;
-            rbHex.Cursor = Cursors.Hand;
-            rbHex.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            rbHex.Location = new Point(3, 3);
-            rbHex.Name = "rbHex";
-            rbHex.Size = new Size(83, 17);
-            rbHex.TabIndex = 0;
-            rbHex.Text = "Hex (16)";
-            rbHex.TextAlign = ContentAlignment.MiddleCenter;
-            rbHex.UseVisualStyleBackColor = true;
-            rbHex.CheckedChanged += rbHex_CheckedChanged;
+            rbBase16.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            rbBase16.AutoSize = true;
+            rbBase16.Cursor = Cursors.Hand;
+            rbBase16.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            rbBase16.Location = new Point(3, 3);
+            rbBase16.Name = "rbBase16";
+            rbBase16.Size = new Size(83, 17);
+            rbBase16.TabIndex = 0;
+            rbBase16.Text = "Hex (16)";
+            rbBase16.TextAlign = ContentAlignment.MiddleCenter;
+            rbBase16.UseVisualStyleBackColor = true;
+            rbBase16.CheckedChanged += BaseUpdate;
             // 
-            // btHex
+            // btBase16
             // 
-            btHex.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            btHex.Cursor = Cursors.IBeam;
-            btHex.FlatAppearance.BorderSize = 0;
-            btHex.FlatStyle = FlatStyle.Flat;
-            btHex.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            btHex.Location = new Point(89, 0);
-            btHex.Margin = new Padding(0);
-            btHex.Name = "btHex";
-            btHex.Size = new Size(338, 23);
-            btHex.TabIndex = 12;
-            btHex.Text = "0";
-            btHex.TextAlign = ContentAlignment.MiddleLeft;
-            btHex.UseVisualStyleBackColor = true;
-            btHex.Click += btHex_Click;
+            btBase16.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            btBase16.Cursor = Cursors.IBeam;
+            btBase16.FlatAppearance.BorderSize = 0;
+            btBase16.FlatStyle = FlatStyle.Flat;
+            btBase16.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            btBase16.Location = new Point(89, 0);
+            btBase16.Margin = new Padding(0);
+            btBase16.Name = "btBase16";
+            btBase16.Size = new Size(338, 23);
+            btBase16.TabIndex = 12;
+            btBase16.Text = "0";
+            btBase16.TextAlign = ContentAlignment.MiddleLeft;
+            btBase16.UseVisualStyleBackColor = true;
+            btBase16.SizeChanged += bt_SizeChanged;
+            btBase16.Click += btBase_Click;
             // 
             // txtInput
             // 
@@ -1121,8 +1126,8 @@
             txtInput.Size = new Size(421, 37);
             txtInput.TabIndex = 12;
             txtInput.Text = "";
-            txtInput.SizeChanged += txtInput_SizeChanged;
-            txtInput.TextChanged += txtInput_TextChanged;
+            txtInput.SizeChanged += txtBox_SizeTextChanged;
+            txtInput.TextChanged += txtBox_SizeTextChanged;
             // 
             // txtEval
             // 
@@ -1137,8 +1142,8 @@
             txtEval.Size = new Size(421, 24);
             txtEval.TabIndex = 13;
             txtEval.Text = "";
-            txtEval.SizeChanged += txtEval_SizeChanged;
-            txtEval.TextChanged += txtEval_TextChanged;
+            txtEval.SizeChanged += txtBox_SizeTextChanged;
+            txtEval.TextChanged += txtBox_SizeTextChanged;
             // 
             // Interface
             // 
@@ -1219,13 +1224,13 @@
         private RichTextBox txtEval;
         private ToolStripMenuItem StripMenuInfo;
         private TableLayoutPanel tableLayoutBase;
-        private Button btDec;
-        private RadioButton rbBin;
-        private RadioButton rbOct;
-        private RadioButton rbDec;
-        private RadioButton rbHex;
-        private Button btHex;
-        private Button btBin;
-        private Button btOct;
+        private Button btBase10;
+        private RadioButton rbBase2;
+        private RadioButton rbBase8;
+        private RadioButton rbBase10;
+        private RadioButton rbBase16;
+        private Button btBase16;
+        private Button btBase2;
+        private Button btBase8;
     }
 }

@@ -17,7 +17,6 @@ using Microsoft.VisualBasic;
 //handle shortcuts (CTRL+key) differently
 
 //error msgs add spaces
-//use ^0-9A-F for regex splitting in Calc()
 namespace Calculator
 {
     public partial class Interface : Form
@@ -36,11 +35,11 @@ namespace Calculator
             if ((int)Registry.GetValue("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "AppsUseLightTheme", -1)! == 0) ColorToggle(); MenuEditDarkmode.Checked = !MenuEditDarkmode.Checked;
             btCom.Text = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
             StripMenuVersion.Text = $"v{ProductVersion} ~❤️";
-            this.KeyPress += new KeyPressEventHandler(Interface_KeyPress!); //Default Input
-            this.KeyDown += new KeyEventHandler(Interface_KeyDown!); //Special Characters & Key Combinations
-            this.KeyPreview = true; // Set KeyPreview property to true to capture keyboard events at the form level
-            InputReplace(">", "");
-            SwitchMode(MenuModeSim);
+            KeyPress += new KeyPressEventHandler(Interface_KeyPress!); //Default Input
+            KeyDown += new KeyEventHandler(Interface_KeyDown!); //Special Characters & Key Combinations
+            KeyPreview = true; // Set KeyPreview property to true to capture keyboard events at the form level
+            InputReplace(">", string.Empty);
+            SwitchMode(MenuModeSim, null!);
             //UpdateCheck("https://github.com/run2go/Calculator");
         }
         private void Interface_KeyPress(object sender, KeyPressEventArgs e)
@@ -93,15 +92,10 @@ namespace Calculator
             try
             {
                 if (SymbolGet() == ">") txtEval.Text += InputGet();
-                //txtInput.Text = $"= {InputGet()}";
-
-                string dataConversion = txtEval.Text.Trim();
-                //string[] elements = Regex.Split(dataConversion, @"(?<=[+*/%^()\-])|(?=[+*/%^()\-])");
-                string[] elements = Regex.Split(dataConversion, @"^[0-9A-F]+$");
+                string dataSanitization = txtEval.Text.Trim();
+                string[] elements = Regex.Split(dataSanitization, @"^[0-9A-F]+$");
                 for (int i = 0; i < elements.Length; i++) if (Utility.IsNumeric(elements[i])) elements[i] = Converter.ConvertBase(elements[i], baseCurrent, 10);
-                dataConversion = string.Join("", elements);
-
-                string dataSanitization = dataConversion.Replace(',', '.').Replace('[', '(').Replace('{', '(').Replace(']', ')').Replace('}', ')').Replace("π", "PI()"); //Sanitize
+                dataSanitization = string.Join("", elements).Replace('x', '*').Replace(',', '.').Replace('[', '(').Replace('{', '(').Replace(']', ')').Replace('}', ')').Replace("π", "PI()"); //Sanitize
                 dataSanitization = Regex.Replace(dataSanitization, @"(\d+|[0-9A-F]+)!+", match =>
                 { // Handle Factorials
                     string innerMatch = match.Groups[1].Value;
@@ -117,14 +111,13 @@ namespace Calculator
                     for (int i = 1; i < numberOfSquareRoots; i++) innerMatch = $"SQRT({innerMatch})";
                     return innerMatch;
                 });
-                if (MenuEditDebug.Checked) txtEval.Text = dataSanitization;
                 if (txtEval.Text != string.Empty)
                 {
                     Expression equation = new Expression(dataSanitization);
                     string result = equation.Eval().ToString()!;
-                    lastResult = MenuModePro.Checked ? result : Converter.ConvertBase(result, 10, baseCurrent);
-                    InputReplace("=", lastResult);
+                    InputReplace("=", (MenuModePro.Checked) ? Converter.ConvertBase(result, 10, baseCurrent) : result);
                 }
+                if (MenuEditDebug.Checked) txtEval.Text = dataSanitization;
                 if (MenuModePro.Checked) DisplayUpdate();
             }
             catch (Exception ex) { HandleError(ex); }
@@ -140,7 +133,8 @@ namespace Calculator
         }
         private void InputReplace(string symbol, string text)
         {
-            txtInput.Text = $"{symbol} {text}"; InputFocus();
+            txtInput.Text = $"{symbol} {text}";
+            InputFocus();
             if (MenuModePro.Checked) DisplayUpdate();
         }
         private void InputDelete()
@@ -177,23 +171,6 @@ namespace Calculator
             txtInput.SelectionLength = 0;
             txtInput.Focus();
         }
-        private void BaseUpdate(int baseNew)
-        {
-            try
-            {
-                Button[] button = { bt0, bt1, bt2, bt3, bt4, bt5, bt6, bt7, bt8, bt9, btA, btB, btC, btD, btE, btF };
-                foreach (Button bt in button) bt.Enabled = false;
-                switch (baseNew)
-                {
-                    case 16: for (int i = 0; i < 16; i++) button[i].Enabled = true; break;
-                    case 10: for (int i = 0; i < 10; i++) button[i].Enabled = true; break;
-                    case 8: for (int i = 0; i < 8; i++) button[i].Enabled = true; break;
-                    case 2: for (int i = 0; i < 2; i++) button[i].Enabled = true; break;
-                }
-                baseCurrent = baseNew;
-            }
-            catch (Exception ex) { HandleError(ex); }
-        }
         private void DisplayUpdate()
         {
             try
@@ -201,50 +178,50 @@ namespace Calculator
                 string input = InputGet();
                 switch (baseCurrent)
                 {
-                    case 16: input = Regex.Replace(input.ToUpper(), "[^0-9A-F]", ""); break;
-                    case 10: input = Regex.Replace(input, "[^0-9]", ""); break;
-                    case 8: input = Regex.Replace(input, "[^0-7]", ""); break;
-                    case 2: input = Regex.Replace(input, "[^0-1]", ""); break;
+                    case 16: input = Regex.Replace(input, $"[^0-9A-F{btCom.Text}]", ""); break;
+                    case 10: input = Regex.Replace(input, $"[^0-9{btCom.Text}]", ""); break;
+                    case 8: input = Regex.Replace(input, $"[^0-7{btCom.Text}]", ""); break;
+                    case 2: input = Regex.Replace(input, $"[^0-1{btCom.Text}]", ""); break;
                 }
-                input = Regex.Replace(input.ToUpper(), "[^0-9A-F]", "");
-                btHex.Text = Converter.ConvertBase(input, baseCurrent, 16);
-                btDec.Text = Converter.ConvertBase(input, baseCurrent, 10);
-                btOct.Text = Converter.ConvertBase(input, baseCurrent, 8);
-                btBin.Text = Converter.ConvertBase(input, baseCurrent, 2);
+                btBase16.Text = Converter.ConvertBase(input, baseCurrent, 16);
+                btBase10.Text = Converter.ConvertBase(input, baseCurrent, 10);
+                btBase8.Text = Converter.ConvertBase(input, baseCurrent, 8);
+                btBase2.Text = Regex.Replace(Converter.ConvertBase(input, baseCurrent, 2), ".{4}", "$0 ");
             }
             catch (Exception ex) { HandleError(ex); }
         }
         private void ColorToggle()
         {
-            foreach (Control item in this.GetAllElements())
-            {
-                Button? button = item as Button;
-                if (button != null) button.FlatAppearance.BorderColor = Utility.InvertColor(button.FlatAppearance.BorderColor);
-                item.BackColor = Utility.InvertColor(item.BackColor);
-                item.ForeColor = Utility.InvertColor(item.ForeColor);
-            }
             Utility.UseImmersiveDarkMode(Handle, !MenuEditDarkmode.Checked);
-            Size = new Size(Size.Width, Size.Height + 1); //QQQ
-        }
-        private void ButtonResize()
-        {
+            Size = new Size(Size.Width, Size.Height + 1); //Workaround to update Titlebar on W10
+            Size = MinimumSize;
             foreach (Control item in this.GetAllElements())
             {
                 Button? button = item as Button;
-                Utility.ButtonResizeContents(button!);
+                if (button != null) button.FlatAppearance.BorderColor = Utility.ColorInvert(button.FlatAppearance.BorderColor);
+                item.BackColor = Utility.ColorInvert(item.BackColor);
+                item.ForeColor = Utility.ColorInvert(item.ForeColor);
             }
         }
         private void StatusText(bool visibility, string status) { StripMenuVersion.Text = (visibility) ? $"{status} v{ProductVersion} ~❤️" : $"v{ProductVersion} ~❤️"; }
         public void HandleError(Exception ex)
         {
+            InputReplace("�", InputGet());
             if (MenuEditDebug.Checked) MessageBox.Show(ex.ToString(), $"Debug: {ex.GetType()}");
-            InputReplace("⚠️", InputGet());
+        }
+        private void BaseUpdate(object sender, EventArgs e)
+        {
+            RadioButton radioButton = (RadioButton)sender;
+            baseCurrent = int.Parse(radioButton.Name.Substring(6));
+            Button[] button = { bt0, bt1, bt2, bt3, bt4, bt5, bt6, bt7, bt8, bt9, btA, btB, btC, btD, btE, btF };
+            for (int i = baseCurrent; i < button.Length; i++) { button[i].Enabled = false; button[i].ForeColor = Utility.ColorOffset(bt0.ForeColor, 200, MenuEditDarkmode.Checked); } //Disable unused buttons
+            for (int i = 0; i < baseCurrent; i++) { button[i].Enabled = true; button[i].ForeColor = bt0.ForeColor; } //Enable required buttons
         }
         private void MenuEditTopmost_Click(object sender, EventArgs e) { TopMost = MenuEditTopmost.Checked = !MenuEditTopmost.Checked; }
         private void MenuDarkmode_Click(object sender, EventArgs e) { ColorToggle(); MenuEditDarkmode.Checked = !MenuEditDarkmode.Checked; }
         private void MenuEditDebug_Click(object sender, EventArgs e) { StatusText((MenuEditDebug.Checked = !MenuEditDebug.Checked), "[Debug Mode]"); }
         private void StripMenuVersion_Click(object sender, EventArgs e) { Process.Start("explorer.exe", ProductWebsite); }
-        private void SwitchMode(object sender)
+        private void SwitchMode(object sender, EventArgs e)
         {
             string mode = ((ToolStripMenuItem)sender).Name;
             int[] colSize = new int[6];
@@ -274,78 +251,55 @@ namespace Calculator
             {
                 Button[] button = { bt0, bt1, bt2, bt3, bt4, bt5, bt6, bt7, bt8, bt9, btA, btB, btC, btD, btE, btF };
                 for (int i = 0; i < 10; i++) button[i].Enabled = true;
-                rbDec.Checked = true;
+                rbBase10.Checked = true;
             }
         }
-        private void MenuModeSim_Click(object sender, EventArgs e) { SwitchMode(sender); }
-        private void MenuModeAdv_Click(object sender, EventArgs e) { SwitchMode(sender); }
-        private void MenuModePro_Click(object sender, EventArgs e) { SwitchMode(sender); }
         //Operators
         private void btCalc_Click(object sender, EventArgs e) { Calc(); }
         private void btDelete_Click(object sender, EventArgs e) { InputDelete(); }
         private void btClear_Click(object sender, EventArgs e) { InputReplace(">", string.Empty); txtEval.Text = string.Empty; }
-        private void btCopy_Click(object sender, EventArgs e) { InputAddNum(lastResult.ToString()); }
-        private void btCom_Click(object sender, EventArgs e) { InputAddNum("."); }
-        private void btAdd_Click(object sender, EventArgs e) { InputAddOperator("+", true); }
-        private void btSub_Click(object sender, EventArgs e) { InputAddOperator("-", true); }
-        private void btMul_Click(object sender, EventArgs e) { InputAddOperator("*", true); }
-        private void btDiv_Click(object sender, EventArgs e) { InputAddOperator("/", true); }
-        private void btPow_Click(object sender, EventArgs e) { InputAddOperator("^", true); }
-        private void btModulo_Click(object sender, EventArgs e) { InputAddOperator("%", true); }
-        private void btBracketOpen_Click(object sender, EventArgs e) { InputAddOperator("(", true); }
-        private void btBracketClose_Click(object sender, EventArgs e) { InputAddOperator(")", true); }
-        private void btPi_Click(object sender, EventArgs e) { InputAddOperator("π", true); }
-        private void btFactorial_Click(object sender, EventArgs e) { InputAddOperator("!", true); }
-        private void btSqrt_Click(object sender, EventArgs e) { InputAddOperator("√", false); }
+        private void btCopy_Click(object sender, EventArgs e) { InputAddNum(lastResult); }
+        private void btCom_Click(object sender, EventArgs e) { InputAddNum(btCom.Text); }
+        private void btFactorial_Click(object sender, EventArgs e) { InputAddNum("!"); }
         private void btReciprocal_Click(object sender, EventArgs e) { InputAddOperator("1/", false); }
+        private void btPow_Click(object sender, EventArgs e) { InputAddOperator("^", true); }
+        private void btOperatorRight_Click(object sender, EventArgs e)
+        {
+            Button button = (Button)sender;
+            InputAddOperator(button.Text, true);
+        }
+        private void btOperatorLeft_Click(object sender, EventArgs e)
+        {
+            Button button = (Button)sender;
+            InputAddOperator(button.Text, false);
+        }
         private void btNegate_Click(object sender, EventArgs e) { InputReplace(">", txtInput.Text.Length >= 3 && txtInput.Text[2] == '-' ? txtInput.Text.Substring(3) : '-' + InputGet()); } //Negate the current input
-        //Base 2
-        private void bt0_Click(object sender, EventArgs e) { InputAddNum("0"); }
-        private void bt1_Click(object sender, EventArgs e) { InputAddNum("1"); }
-        //Base 8
-        private void bt2_Click(object sender, EventArgs e) { InputAddNum("2"); }
-        private void bt3_Click(object sender, EventArgs e) { InputAddNum("3"); }
-        private void bt4_Click(object sender, EventArgs e) { InputAddNum("4"); }
-        private void bt5_Click(object sender, EventArgs e) { InputAddNum("5"); }
-        private void bt6_Click(object sender, EventArgs e) { InputAddNum("6"); }
-        private void bt7_Click(object sender, EventArgs e) { InputAddNum("7"); }
-        //Base 10
-        private void bt8_Click(object sender, EventArgs e) { InputAddNum("8"); }
-        private void bt9_Click(object sender, EventArgs e) { InputAddNum("9"); }
-        //Base 16
-        private void btA_Click(object sender, EventArgs e) { InputAddNum("A"); }
-        private void btB_Click(object sender, EventArgs e) { InputAddNum("B"); }
-        private void btC_Click(object sender, EventArgs e) { InputAddNum("C"); }
-        private void btD_Click(object sender, EventArgs e) { InputAddNum("D"); }
-        private void btE_Click(object sender, EventArgs e) { InputAddNum("E"); }
-        private void btF_Click(object sender, EventArgs e) { InputAddNum("F"); }
-        //TextBox Autoresize Contents
-        private void txtInput_SizeChanged(object sender, EventArgs e) { Utility.TextBoxResizeContents(sender, e); }
-        private void txtInput_TextChanged(object sender, EventArgs e) { Utility.TextBoxResizeContents(sender, e); }
-        private void txtEval_SizeChanged(object sender, EventArgs e) { Utility.TextBoxResizeContents(sender, e); }
-        private void txtEval_TextChanged(object sender, EventArgs e) { Utility.TextBoxResizeContents(sender, e); }
-        private void textProgrammer_SizeChanged(object sender, EventArgs e) { Utility.TextBoxResizeContents(sender, e); }
-        private void textProgrammer_TextChanged(object sender, EventArgs e) { Utility.TextBoxResizeContents(sender, e); }
-        //Programmer Buttons
-        private void btHex_Click(object sender, EventArgs e) { Clipboard.SetText(btHex.Text); }
-        private void btDec_Click(object sender, EventArgs e) { Clipboard.SetText(btDec.Text); }
-        private void btOct_Click(object sender, EventArgs e) { Clipboard.SetText(btOct.Text); }
-        private void btBin_Click(object sender, EventArgs e) { Clipboard.SetText(btBin.Text); }
-        private void rbHex_CheckedChanged(object sender, EventArgs e) { BaseUpdate(16); }
-        private void rbDec_CheckedChanged(object sender, EventArgs e) { BaseUpdate(10); }
-        private void rbOct_CheckedChanged(object sender, EventArgs e) { BaseUpdate(8); }
-        private void rbBin_CheckedChanged(object sender, EventArgs e) { BaseUpdate(2); }
+        private void btNumeric_Click(object sender, EventArgs e)
+        {
+            Button button = (Button)sender;
+            InputAddNum(button.Name.Substring(2, 1));
+        }
+        private void txtBox_SizeTextChanged(object sender, EventArgs e) { Utility.TextBoxResizeContents(sender); } //TextBox Autoresize Contents
+        private void bt_SizeChanged(object sender, EventArgs e) { Utility.ButtonResizeContents(sender); } //Button Autoresize Contents
+        private void bt_SizeChanged_HelperNumeric(object sender, EventArgs e) { Utility.ButtonResizeHelper(sender, bt0); } //Numeric Buttons Autoresize Helper
+        private void bt_SizeChanged_HelperOperator(object sender, EventArgs e) { Utility.ButtonResizeHelper(sender, btCom); } //Operator Buttons Autoresize Helper
+        private void btBase_Click(object sender, EventArgs e) //Copy Converted Bases
+        {
+            Button button = (Button)sender;
+            Clipboard.SetText(button.Text);
+        }
     }
     internal static class Utility
     {
         internal static bool IsNumeric(string value) { return Regex.IsMatch(value, @"^[0-9A-F]+$", RegexOptions.IgnoreCase); }
-        internal static Color InvertColor(this Color color) { return Color.FromArgb(255 - color.R, 255 - color.G, 255 - color.B); }
+        internal static Color ColorInvert(Color color) { return Color.FromArgb(255 - color.R, 255 - color.G, 255 - color.B); }
+        internal static Color ColorOffset(Color col, int off, bool negative) { return negative ? Color.FromArgb(col.A - off, col.R - off, col.B - off) : Color.FromArgb(col.A + off, col.R + off, col.B + off); }
         internal static IEnumerable<Control> GetAllElements(this Control control)
         {
             var controls = control.Controls.Cast<Control>();
             return controls.SelectMany(GetAllElements).Concat(controls);
         }
-        internal static void TextBoxResizeContents(object sender, EventArgs e)
+        internal static void TextBoxResizeContents(object sender)
         {
             try
             {
@@ -357,28 +311,31 @@ namespace Calculator
                         SizeF textSize = g.MeasureString(textBox.Text, textBox.Font); // Calculate the size of the text with the current font
                         float scaleX = textBox.ClientSize.Width / textSize.Width; // Calculate the scaling factor for both width and height
                         float scaleY = textBox.ClientSize.Height / textSize.Height;
-                        float newSize = textBox.Font.Size * Math.Min(scaleX, scaleY); // Calculate the new font size using the minimum scaling factor
-                        textBox.Font = new Font(textBox.Font.FontFamily, newSize); // Apply the new font to the TextBox
+                        textBox.Font = new Font(textBox.Font.FontFamily, textBox.Font.Size * Math.Min(scaleX, scaleY)); // Apply the new font to the TextBox
                     }
                 }
             }
             catch { } // Dismiss
         }
-        internal static void ButtonResizeContents(Button button)
+        internal static void ButtonResizeContents(object sender)
         {
             try
             {
-                int fontSize = 10; // Set a default font size
+                Button button = (Button)sender;
                 using (Graphics g = button.CreateGraphics()) // Calculate the desired font size based on the button's width and height
                 {
                     SizeF textSize = g.MeasureString(button.Text, button.Font);
                     float widthRatio = button.Width / textSize.Width;
                     float heightRatio = button.Height / textSize.Height;
-                    float ratio = Math.Min(widthRatio, heightRatio);
-                    button.Font = new Font(button.Font.FontFamily, (int)(button.Font.Size * ratio), button.Font.Style); // Create a new font with the calculated font size and assign it to the button
+                    button.Font = new Font(button.Font.FontFamily, (int)(button.Font.Size * (Math.Min(widthRatio, heightRatio) / 100 * 80)), button.Font.Style); // Create a new font with the calculated font size and assign it to the button
                 }
             }
             catch { } // Dismiss
+        }
+        internal static void ButtonResizeHelper(object sender, Button bt)
+        {
+            Button button = (Button)sender;
+            button.Font = new Font(bt.Font.FontFamily, bt.Font.Size, bt.Font.Style);
         }
         [DllImport("dwmapi.dll")] // Used for the following titlebar recoloring
         private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
@@ -399,32 +356,15 @@ namespace Calculator
     }
     internal class Converter
     {
-        private static readonly Dictionary<char, int> CharToInt = new Dictionary<char, int>
-        {
-            { '0', 0 }, { '1', 1 }, { '2', 2 }, { '3', 3 },
-            { '4', 4 }, { '5', 5 }, { '6', 6 }, { '7', 7 },
-            { '8', 8 }, { '9', 9 }, { 'A', 10 }, { 'B', 11 },
-            { 'C', 12 }, { 'D', 13 }, { 'E', 14 }, { 'F', 15 }
-        };
-        private static readonly Dictionary<int, char> IntToChar = new Dictionary<int, char>
-        {
-            { 0, '0' }, { 1, '1' }, { 2, '2' }, { 3, '3' },
-            { 4, '4' }, { 5, '5' }, { 6, '6' }, { 7, '7' },
-            { 8, '8' }, { 9, '9' }, { 10, 'A' }, { 11, 'B' },
-            { 12, 'C' }, { 13, 'D' }, { 14, 'E' }, { 15, 'F' }
-        };
+        private static readonly Dictionary<char, int> CharToInt = new Dictionary<char, int> { { '0', 0 }, { '1', 1 }, { '2', 2 }, { '3', 3 }, { '4', 4 }, { '5', 5 }, { '6', 6 }, { '7', 7 }, { '8', 8 }, { '9', 9 }, { 'A', 10 }, { 'B', 11 }, { 'C', 12 }, { 'D', 13 }, { 'E', 14 }, { 'F', 15 } };
+        private static readonly Dictionary<int, char> IntToChar = new Dictionary<int, char> { { 0, '0' }, { 1, '1' }, { 2, '2' }, { 3, '3' }, { 4, '4' }, { 5, '5' }, { 6, '6' }, { 7, '7' }, { 8, '8' }, { 9, '9' }, { 10, 'A' }, { 11, 'B' }, { 12, 'C' }, { 13, 'D' }, { 14, 'E' }, { 15, 'F' } };
         internal static string ConvertBase(string input, int fromBase, int toBase)
         {
             input = input.ToUpper();
             BigInteger value = 0;
-            for (int i = input.Length - 1; i >= 0; i--) // Convert input to decimal (base 10)
-            {
-                char c = input[i];
-                int digitValue = CharToInt[c];
-                value += digitValue * BigInteger.Pow(fromBase, input.Length - 1 - i);
-            }
-            StringBuilder result = new StringBuilder(); // Convert decimal to the desired base
-            while (value > 0)
+            for (int i = input.Length - 1; i >= 0; i--) value += CharToInt[input[i]] * BigInteger.Pow(fromBase, input.Length - 1 - i); // Convert input to decimal (base 10)
+            StringBuilder result = new StringBuilder();
+            while (value > 0) // Convert decimal to the desired base
             {
                 result.Insert(0, IntToChar[(int)(value % toBase)]);
                 value /= toBase;
