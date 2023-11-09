@@ -9,14 +9,14 @@ using System.Diagnostics; //Access explorer.exe to open URLs in default browser
 using System.Net; //Required to check the GitHub Repository
 using System.Text.Json; //Handle JSON formatted responses
 using System.Timers; //Used to Autocheck for Updates every 10min
-using Microsoft.VisualBasic;
 //update check periodically
 //resize fonts universally
 //subnetting extra <- Optional
 //allow selection * delete/backspace or typing something, don't affect the first 2 chars, only affect InputGet()
 //handle shortcuts (CTRL+key) differently
-
+//2(3-1) => 2*(3-1)
 //error msgs add spaces
+
 namespace Calculator
 {
     public partial class Interface : Form
@@ -96,6 +96,7 @@ namespace Calculator
                 string[] elements = Regex.Split(dataSanitization, @"^[0-9A-F]+$");
                 for (int i = 0; i < elements.Length; i++) if (Utility.IsNumeric(elements[i])) elements[i] = Converter.ConvertBase(elements[i], baseCurrent, 10);
                 dataSanitization = string.Join("", elements).Replace('x', '*').Replace(',', '.').Replace('[', '(').Replace('{', '(').Replace(']', ')').Replace('}', ')').Replace("π", "PI()"); //Sanitize
+                dataSanitization = Regex.Replace(dataSanitization, @"(?<=[^0-9A-F)])[\(πPS]", "*$0");// Insert * before (,π,P,S if the leading character is NOT 0-9A-F or )
                 dataSanitization = Regex.Replace(dataSanitization, @"(\d+|[0-9A-F]+)!+", match =>
                 { // Handle Factorials
                     string innerMatch = match.Groups[1].Value;
