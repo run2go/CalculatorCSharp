@@ -212,8 +212,8 @@
             bt9.TabStop = false;
             bt9.Text = "9";
             bt9.UseVisualStyleBackColor = false;
-            bt9.SizeChanged += bt_SizeChanged_HelperNumeric;
-            bt9.Click += btNumeric_Click;
+            bt9.SizeChanged += Bt_SizeChanged_HelperNumeric;
+            bt9.Click += BtNumeric_Click;
             // 
             // btDelete
             // 
@@ -233,8 +233,8 @@
             btDelete.TabStop = false;
             btDelete.Text = "Delete";
             btDelete.UseVisualStyleBackColor = false;
-            btDelete.SizeChanged += bt_SizeChanged;
-            btDelete.Click += btDelete_Click;
+            btDelete.SizeChanged += Bt_SizeChanged;
+            btDelete.Click += BtDelete_Click;
             // 
             // bt0
             // 
@@ -252,8 +252,8 @@
             bt0.TabStop = false;
             bt0.Text = "0";
             bt0.UseVisualStyleBackColor = false;
-            bt0.SizeChanged += bt_SizeChanged;
-            bt0.Click += btNumeric_Click;
+            bt0.SizeChanged += Bt_SizeChanged;
+            bt0.Click += BtNumeric_Click;
             // 
             // bt6
             // 
@@ -271,8 +271,8 @@
             bt6.TabStop = false;
             bt6.Text = "6";
             bt6.UseVisualStyleBackColor = false;
-            bt6.SizeChanged += bt_SizeChanged_HelperNumeric;
-            bt6.Click += btNumeric_Click;
+            bt6.SizeChanged += Bt_SizeChanged_HelperNumeric;
+            bt6.Click += BtNumeric_Click;
             // 
             // bt2
             // 
@@ -290,8 +290,8 @@
             bt2.TabStop = false;
             bt2.Text = "2";
             bt2.UseVisualStyleBackColor = false;
-            bt2.SizeChanged += bt_SizeChanged_HelperNumeric;
-            bt2.Click += btNumeric_Click;
+            bt2.SizeChanged += Bt_SizeChanged_HelperNumeric;
+            bt2.Click += BtNumeric_Click;
             // 
             // bt3
             // 
@@ -309,8 +309,8 @@
             bt3.TabStop = false;
             bt3.Text = "3";
             bt3.UseVisualStyleBackColor = false;
-            bt3.SizeChanged += bt_SizeChanged_HelperNumeric;
-            bt3.Click += btNumeric_Click;
+            bt3.SizeChanged += Bt_SizeChanged_HelperNumeric;
+            bt3.Click += BtNumeric_Click;
             // 
             // bt5
             // 
@@ -328,8 +328,8 @@
             bt5.TabStop = false;
             bt5.Text = "5";
             bt5.UseVisualStyleBackColor = false;
-            bt5.SizeChanged += bt_SizeChanged_HelperNumeric;
-            bt5.Click += btNumeric_Click;
+            bt5.SizeChanged += Bt_SizeChanged_HelperNumeric;
+            bt5.Click += BtNumeric_Click;
             // 
             // btAdd
             // 
@@ -348,8 +348,8 @@
             btAdd.TabStop = false;
             btAdd.Text = "+";
             btAdd.UseVisualStyleBackColor = false;
-            btAdd.SizeChanged += bt_SizeChanged_HelperOperator;
-            btAdd.Click += btOperatorRight_Click;
+            btAdd.SizeChanged += Bt_SizeChanged_HelperOperator;
+            btAdd.Click += BtOperatorRight_Click;
             // 
             // bt8
             // 
@@ -367,8 +367,8 @@
             bt8.TabStop = false;
             bt8.Text = "8";
             bt8.UseVisualStyleBackColor = false;
-            bt8.SizeChanged += bt_SizeChanged_HelperNumeric;
-            bt8.Click += btNumeric_Click;
+            bt8.SizeChanged += Bt_SizeChanged_HelperNumeric;
+            bt8.Click += BtNumeric_Click;
             // 
             // btDiv
             // 
@@ -387,8 +387,8 @@
             btDiv.TabStop = false;
             btDiv.Text = "/";
             btDiv.UseVisualStyleBackColor = false;
-            btDiv.SizeChanged += bt_SizeChanged_HelperOperator;
-            btDiv.Click += btOperatorRight_Click;
+            btDiv.SizeChanged += Bt_SizeChanged_HelperOperator;
+            btDiv.Click += BtOperatorRight_Click;
             // 
             // btCom
             // 
@@ -407,8 +407,8 @@
             btCom.TabStop = false;
             btCom.Text = ".";
             btCom.UseVisualStyleBackColor = false;
-            btCom.SizeChanged += bt_SizeChanged;
-            btCom.Click += btCom_Click;
+            btCom.SizeChanged += Bt_SizeChanged;
+            btCom.Click += BtCom_Click;
             // 
             // btClear
             // 
@@ -428,8 +428,8 @@
             btClear.TabStop = false;
             btClear.Text = "Clear";
             btClear.UseVisualStyleBackColor = false;
-            btClear.SizeChanged += bt_SizeChanged;
-            btClear.Click += btClear_Click;
+            btClear.SizeChanged += Bt_SizeChanged;
+            btClear.Click += BtClear_Click;
             // 
             // bt1
             // 
@@ -447,8 +447,8 @@
             bt1.TabStop = false;
             bt1.Text = "1";
             bt1.UseVisualStyleBackColor = false;
-            bt1.SizeChanged += bt_SizeChanged_HelperNumeric;
-            bt1.Click += btNumeric_Click;
+            bt1.SizeChanged += Bt_SizeChanged_HelperNumeric;
+            bt1.Click += BtNumeric_Click;
             // 
             // btMul
             // 
@@ -467,8 +467,8 @@
             btMul.TabStop = false;
             btMul.Text = "x";
             btMul.UseVisualStyleBackColor = false;
-            btMul.SizeChanged += bt_SizeChanged_HelperOperator;
-            btMul.Click += btOperatorRight_Click;
+            btMul.SizeChanged += Bt_SizeChanged_HelperOperator;
+            btMul.Click += BtOperatorRight_Click;
             // 
             // bt4
             // 
@@ -486,8 +486,8 @@
             bt4.TabStop = false;
             bt4.Text = "4";
             bt4.UseVisualStyleBackColor = false;
-            bt4.SizeChanged += bt_SizeChanged_HelperNumeric;
-            bt4.Click += btNumeric_Click;
+            bt4.SizeChanged += Bt_SizeChanged_HelperNumeric;
+            bt4.Click += BtNumeric_Click;
             // 
             // bt7
             // 
@@ -505,8 +505,8 @@
             bt7.TabStop = false;
             bt7.Text = "7";
             bt7.UseVisualStyleBackColor = false;
-            bt7.SizeChanged += bt_SizeChanged_HelperNumeric;
-            bt7.Click += btNumeric_Click;
+            bt7.SizeChanged += Bt_SizeChanged_HelperNumeric;
+            bt7.Click += BtNumeric_Click;
             // 
             // btCalc
             // 
@@ -527,8 +527,8 @@
             btCalc.TabStop = false;
             btCalc.Text = "=";
             btCalc.UseVisualStyleBackColor = false;
-            btCalc.SizeChanged += bt_SizeChanged;
-            btCalc.Click += btCalc_Click;
+            btCalc.SizeChanged += Bt_SizeChanged;
+            btCalc.Click += BtCalc_Click;
             // 
             // btSub
             // 
@@ -547,8 +547,8 @@
             btSub.TabStop = false;
             btSub.Text = "-";
             btSub.UseVisualStyleBackColor = false;
-            btSub.SizeChanged += bt_SizeChanged_HelperOperator;
-            btSub.Click += btOperatorRight_Click;
+            btSub.SizeChanged += Bt_SizeChanged_HelperOperator;
+            btSub.Click += BtOperatorRight_Click;
             // 
             // tableLayoutButtons
             // 
@@ -627,8 +627,8 @@
             btF.TabStop = false;
             btF.Text = "F";
             btF.UseVisualStyleBackColor = false;
-            btF.SizeChanged += bt_SizeChanged_HelperNumeric;
-            btF.Click += btNumeric_Click;
+            btF.SizeChanged += Bt_SizeChanged_HelperNumeric;
+            btF.Click += BtNumeric_Click;
             // 
             // btE
             // 
@@ -647,8 +647,8 @@
             btE.TabStop = false;
             btE.Text = "E";
             btE.UseVisualStyleBackColor = false;
-            btE.SizeChanged += bt_SizeChanged_HelperNumeric;
-            btE.Click += btNumeric_Click;
+            btE.SizeChanged += Bt_SizeChanged_HelperNumeric;
+            btE.Click += BtNumeric_Click;
             // 
             // btD
             // 
@@ -667,8 +667,8 @@
             btD.TabStop = false;
             btD.Text = "D";
             btD.UseVisualStyleBackColor = false;
-            btD.SizeChanged += bt_SizeChanged_HelperNumeric;
-            btD.Click += btNumeric_Click;
+            btD.SizeChanged += Bt_SizeChanged_HelperNumeric;
+            btD.Click += BtNumeric_Click;
             // 
             // btC
             // 
@@ -687,8 +687,8 @@
             btC.TabStop = false;
             btC.Text = "C";
             btC.UseVisualStyleBackColor = false;
-            btC.SizeChanged += bt_SizeChanged_HelperNumeric;
-            btC.Click += btNumeric_Click;
+            btC.SizeChanged += Bt_SizeChanged_HelperNumeric;
+            btC.Click += BtNumeric_Click;
             // 
             // btB
             // 
@@ -707,8 +707,8 @@
             btB.TabStop = false;
             btB.Text = "B";
             btB.UseVisualStyleBackColor = false;
-            btB.SizeChanged += bt_SizeChanged_HelperNumeric;
-            btB.Click += btNumeric_Click;
+            btB.SizeChanged += Bt_SizeChanged_HelperNumeric;
+            btB.Click += BtNumeric_Click;
             // 
             // btA
             // 
@@ -727,8 +727,8 @@
             btA.TabStop = false;
             btA.Text = "A";
             btA.UseVisualStyleBackColor = false;
-            btA.SizeChanged += bt_SizeChanged_HelperNumeric;
-            btA.Click += btNumeric_Click;
+            btA.SizeChanged += Bt_SizeChanged_HelperNumeric;
+            btA.Click += BtNumeric_Click;
             // 
             // btAnswer
             // 
@@ -747,8 +747,8 @@
             btAnswer.TabStop = false;
             btAnswer.Text = "📋";
             btAnswer.UseVisualStyleBackColor = false;
-            btAnswer.SizeChanged += bt_SizeChanged;
-            btAnswer.Click += btCopy_Click;
+            btAnswer.SizeChanged += Bt_SizeChanged;
+            btAnswer.Click += BtCopy_Click;
             // 
             // btFactorial
             // 
@@ -767,8 +767,8 @@
             btFactorial.TabStop = false;
             btFactorial.Text = "n!";
             btFactorial.UseVisualStyleBackColor = false;
-            btFactorial.SizeChanged += bt_SizeChanged_HelperOperator;
-            btFactorial.Click += btFactorial_Click;
+            btFactorial.SizeChanged += Bt_SizeChanged_HelperOperator;
+            btFactorial.Click += BtFactorial_Click;
             // 
             // btBracketClose
             // 
@@ -787,8 +787,8 @@
             btBracketClose.TabStop = false;
             btBracketClose.Text = ")";
             btBracketClose.UseVisualStyleBackColor = false;
-            btBracketClose.SizeChanged += bt_SizeChanged_HelperOperator;
-            btBracketClose.Click += btOperatorRight_Click;
+            btBracketClose.SizeChanged += Bt_SizeChanged_HelperOperator;
+            btBracketClose.Click += BtOperatorRight_Click;
             // 
             // btBracketOpen
             // 
@@ -807,8 +807,8 @@
             btBracketOpen.TabStop = false;
             btBracketOpen.Text = "(";
             btBracketOpen.UseVisualStyleBackColor = false;
-            btBracketOpen.SizeChanged += bt_SizeChanged_HelperOperator;
-            btBracketOpen.Click += btOperatorRight_Click;
+            btBracketOpen.SizeChanged += Bt_SizeChanged_HelperOperator;
+            btBracketOpen.Click += BtOperatorRight_Click;
             // 
             // btPow
             // 
@@ -827,8 +827,8 @@
             btPow.TabStop = false;
             btPow.Text = "xʸ";
             btPow.UseVisualStyleBackColor = false;
-            btPow.SizeChanged += bt_SizeChanged_HelperOperator;
-            btPow.Click += btPow_Click;
+            btPow.SizeChanged += Bt_SizeChanged_HelperOperator;
+            btPow.Click += BtPow_Click;
             // 
             // btModulo
             // 
@@ -847,8 +847,8 @@
             btModulo.TabStop = false;
             btModulo.Text = "%";
             btModulo.UseVisualStyleBackColor = false;
-            btModulo.SizeChanged += bt_SizeChanged_HelperOperator;
-            btModulo.Click += btOperatorRight_Click;
+            btModulo.SizeChanged += Bt_SizeChanged_HelperOperator;
+            btModulo.Click += BtOperatorRight_Click;
             // 
             // btSqrt
             // 
@@ -867,8 +867,8 @@
             btSqrt.TabStop = false;
             btSqrt.Text = "√";
             btSqrt.UseVisualStyleBackColor = false;
-            btSqrt.SizeChanged += bt_SizeChanged_HelperOperator;
-            btSqrt.Click += btOperatorLeft_Click;
+            btSqrt.SizeChanged += Bt_SizeChanged_HelperOperator;
+            btSqrt.Click += BtOperatorLeft_Click;
             // 
             // btNegate
             // 
@@ -887,8 +887,8 @@
             btNegate.TabStop = false;
             btNegate.Text = "±";
             btNegate.UseVisualStyleBackColor = false;
-            btNegate.SizeChanged += bt_SizeChanged_HelperOperator;
-            btNegate.Click += btNegate_Click;
+            btNegate.SizeChanged += Bt_SizeChanged_HelperOperator;
+            btNegate.Click += BtNegate_Click;
             // 
             // btReciprocal
             // 
@@ -907,8 +907,8 @@
             btReciprocal.TabStop = false;
             btReciprocal.Text = "1/n";
             btReciprocal.UseVisualStyleBackColor = false;
-            btReciprocal.SizeChanged += bt_SizeChanged_HelperOperator;
-            btReciprocal.Click += btReciprocal_Click;
+            btReciprocal.SizeChanged += Bt_SizeChanged_HelperOperator;
+            btReciprocal.Click += BtReciprocal_Click;
             // 
             // btPi
             // 
@@ -927,8 +927,8 @@
             btPi.TabStop = false;
             btPi.Text = "π";
             btPi.UseVisualStyleBackColor = false;
-            btPi.SizeChanged += bt_SizeChanged_HelperOperator;
-            btPi.Click += btOperatorRight_Click;
+            btPi.SizeChanged += Bt_SizeChanged_HelperOperator;
+            btPi.Click += BtOperatorRight_Click;
             // 
             // tableLayoutMain
             // 
@@ -994,8 +994,8 @@
             btBase2.Text = "0";
             btBase2.TextAlign = ContentAlignment.MiddleLeft;
             btBase2.UseVisualStyleBackColor = true;
-            btBase2.SizeChanged += bt_SizeChanged;
-            btBase2.Click += btBase_Click;
+            btBase2.SizeChanged += Bt_SizeChanged;
+            btBase2.Click += BtBase_Click;
             // 
             // btBase8
             // 
@@ -1012,8 +1012,8 @@
             btBase8.Text = "0";
             btBase8.TextAlign = ContentAlignment.MiddleLeft;
             btBase8.UseVisualStyleBackColor = true;
-            btBase8.SizeChanged += bt_SizeChanged;
-            btBase8.Click += btBase_Click;
+            btBase8.SizeChanged += Bt_SizeChanged;
+            btBase8.Click += BtBase_Click;
             // 
             // btBase10
             // 
@@ -1030,8 +1030,8 @@
             btBase10.Text = "0";
             btBase10.TextAlign = ContentAlignment.MiddleLeft;
             btBase10.UseVisualStyleBackColor = true;
-            btBase10.SizeChanged += bt_SizeChanged;
-            btBase10.Click += btBase_Click;
+            btBase10.SizeChanged += Bt_SizeChanged;
+            btBase10.Click += BtBase_Click;
             // 
             // rbBase2
             // 
@@ -1110,8 +1110,8 @@
             btBase16.Text = "0";
             btBase16.TextAlign = ContentAlignment.MiddleLeft;
             btBase16.UseVisualStyleBackColor = true;
-            btBase16.SizeChanged += bt_SizeChanged;
-            btBase16.Click += btBase_Click;
+            btBase16.SizeChanged += Bt_SizeChanged;
+            btBase16.Click += BtBase_Click;
             // 
             // txtInput
             // 
@@ -1126,8 +1126,8 @@
             txtInput.Size = new Size(421, 37);
             txtInput.TabIndex = 12;
             txtInput.Text = "";
-            txtInput.SizeChanged += txtBox_SizeTextChanged;
-            txtInput.TextChanged += txtBox_SizeTextChanged;
+            txtInput.SizeChanged += TxtBox_SizeTextChanged;
+            txtInput.TextChanged += TxtBox_SizeTextChanged;
             // 
             // txtEval
             // 
@@ -1142,8 +1142,8 @@
             txtEval.Size = new Size(421, 24);
             txtEval.TabIndex = 13;
             txtEval.Text = "";
-            txtEval.SizeChanged += txtBox_SizeTextChanged;
-            txtEval.TextChanged += txtBox_SizeTextChanged;
+            txtEval.SizeChanged += TxtBox_SizeTextChanged;
+            txtEval.TextChanged += TxtBox_SizeTextChanged;
             // 
             // Interface
             // 

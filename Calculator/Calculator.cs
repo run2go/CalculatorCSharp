@@ -11,7 +11,6 @@ using System.Text.Json; //Handle JSON formatted responses
 using System.Timers; //Used to Autocheck for Updates every 10min
 //update check periodically
 //resize fonts universally
-//subnetting extra <- Optional
 //allow selection * delete/backspace or typing something, don't affect the first 2 chars, only affect InputGet()
 //handle shortcuts (CTRL+key) differently
 //2(3-1) => 2*(3-1)
@@ -26,8 +25,8 @@ namespace Calculator
             InitializeComponent();
             InitializeAttributes();
         }
-        string ProductAuthor = "run2go";
-        string ProductWebsite = "https://github.com/run2go/Calculator/tree/Latest";
+        //const string ProductAuthor = "run2go";
+        const string ProductWebsite = "https://github.com/run2go/Calculator/tree/Latest";
         string lastResult = "0";
         int baseCurrent = 10;
         private void InitializeAttributes()
@@ -92,19 +91,21 @@ namespace Calculator
             try
             {
                 if (SymbolGet() == ">") txtEval.Text += InputGet();
-                string dataSanitization = txtEval.Text.Trim();
-                string[] elements = Regex.Split(dataSanitization, @"^[0-9A-F]+$");
+                string eval = txtEval.Text.Trim();
+                string[] elements = Regex.Split(eval, @"^[\dA-F]+$"); //Split by Numeric & Non-Numeric parts
                 for (int i = 0; i < elements.Length; i++) if (Utility.IsNumeric(elements[i])) elements[i] = Converter.ConvertBase(elements[i], baseCurrent, 10);
-                dataSanitization = string.Join("", elements).Replace('x', '*').Replace(',', '.').Replace('[', '(').Replace('{', '(').Replace(']', ')').Replace('}', ')').Replace("π", "PI()"); //Sanitize
-                dataSanitization = Regex.Replace(dataSanitization, @"(?<=[^0-9A-F)])[\(πPS]", "*$0");// Insert * before (,π,P,S if the leading character is NOT 0-9A-F or )
-                dataSanitization = Regex.Replace(dataSanitization, @"(\d+|[0-9A-F]+)!+", match =>
+                eval = string.Join("", elements);
+                eval = eval.Replace('x', '*').Replace(',', '.').Replace('[', '(').Replace('{', '(').Replace(']', ')').Replace('}', ')');
+                eval = Regex.Replace(eval, @"(?<=[\dA-F()√π])[\(√π]", "*$0"); // Insert missing multiplier operators
+                eval = eval.Replace("π", "PI()"); //Sanitize
+                eval = Regex.Replace(eval, @"(\d+|[0-9A-F]+)!+", match =>
                 { // Handle Factorials
                     string innerMatch = match.Groups[1].Value;
                     int numberOfExclamationMarks = match.Value.Count(c => c == '!');
                     for (int i = 0; i < numberOfExclamationMarks; i++) innerMatch = $"FACT({innerMatch})";
                     return innerMatch;
                 });
-                dataSanitization = Regex.Replace(dataSanitization, @"√+([0-9A-F]+)", match =>
+                eval = Regex.Replace(eval, @"√+([0-9A-F]+)", match =>
                 { // Handle Square Roots
                     string innerMatch = match.Groups[1].Value;
                     int numberOfSquareRoots = match.Value.Count(c => c == '√');
@@ -114,11 +115,11 @@ namespace Calculator
                 });
                 if (txtEval.Text != string.Empty)
                 {
-                    Expression equation = new Expression(dataSanitization);
+                    Expression equation = new Expression(eval);
                     string result = equation.Eval().ToString()!;
                     InputReplace("=", (MenuModePro.Checked) ? Converter.ConvertBase(result, 10, baseCurrent) : result);
                 }
-                if (MenuEditDebug.Checked) txtEval.Text = dataSanitization;
+                if (MenuEditDebug.Checked) txtEval.Text = eval;
                 if (MenuModePro.Checked) DisplayUpdate();
             }
             catch (Exception ex) { HandleError(ex); }
@@ -154,17 +155,24 @@ namespace Calculator
         }
         private void InputAddOperator(string op, bool left_or_right)
         {
-            if (SymbolGet() == "=")
+            if (txtEval.Text.Length > 0 && (txtEval.Text.EndsWith("+") || txtEval.Text.EndsWith("x") || txtEval.Text.EndsWith("*") || txtEval.Text.EndsWith("/")))
             {
-                if (left_or_right) EvalReplace(InputGet() + op);
-                else EvalReplace((Regex.IsMatch(txtEval.Text.Substring(txtEval.Text.Length), @"[^0-9A-F]$")) ? $"*{op}{InputGet()}" : $"{op}{InputGet()}"); //Add * if the last eval char was a number
+                txtEval.Text = (op == "-") ? txtEval.Text + op : txtEval.Text.Substring(0, txtEval.Text.Length - 1) + op;
             }
             else
             {
-                if (left_or_right) EvalAdd(InputGet() + op);
-                else EvalAdd((Regex.IsMatch(txtEval.Text.Substring(txtEval.Text.Length), @"[^0-9A-F]$")) ? $"*{op}{InputGet()}" : $"{op}{InputGet()}"); //Add * if the last eval char was a number
+                if (SymbolGet() == "=")
+                {
+                    if (left_or_right) EvalReplace(InputGet() + op);
+                    else EvalReplace((Regex.IsMatch(txtEval.Text.Substring(txtEval.Text.Length), @"[^\dA-F]$")) ? $"*{op}{InputGet()}" : $"{op}{InputGet()}"); //Add * if the last eval char was a number
+                }
+                else
+                {
+                    if (left_or_right) EvalAdd(InputGet() + op);
+                    else EvalAdd((Regex.IsMatch(txtEval.Text.Substring(txtEval.Text.Length), @"[^\dA-F]$")) ? $"*{op}{InputGet()}" : $"{op}{InputGet()}"); //Add * if the last eval char was a number
+                }
+                InputReplace(">", string.Empty);
             }
-            InputReplace(">", string.Empty);
         }
         private void InputFocus()
         {
@@ -179,10 +187,10 @@ namespace Calculator
                 string input = InputGet();
                 switch (baseCurrent)
                 {
-                    case 16: input = Regex.Replace(input, $"[^0-9A-F{btCom.Text}]", ""); break;
-                    case 10: input = Regex.Replace(input, $"[^0-9{btCom.Text}]", ""); break;
-                    case 8: input = Regex.Replace(input, $"[^0-7{btCom.Text}]", ""); break;
-                    case 2: input = Regex.Replace(input, $"[^0-1{btCom.Text}]", ""); break;
+                    case 16: input = Regex.Replace(input, $@"[^\dA-F{btCom.Text}]", ""); break;
+                    case 10: input = Regex.Replace(input, $@"[^\d{btCom.Text}]", ""); break;
+                    case 8: input = Regex.Replace(input, $@"[^0-7{btCom.Text}]", ""); break;
+                    case 2: input = Regex.Replace(input, $@"[^0-1{btCom.Text}]", ""); break;
                 }
                 btBase16.Text = Converter.ConvertBase(input, baseCurrent, 16);
                 btBase10.Text = Converter.ConvertBase(input, baseCurrent, 10);
@@ -256,35 +264,35 @@ namespace Calculator
             }
         }
         //Operators
-        private void btCalc_Click(object sender, EventArgs e) { Calc(); }
-        private void btDelete_Click(object sender, EventArgs e) { InputDelete(); }
-        private void btClear_Click(object sender, EventArgs e) { InputReplace(">", string.Empty); txtEval.Text = string.Empty; }
-        private void btCopy_Click(object sender, EventArgs e) { InputAddNum(lastResult); }
-        private void btCom_Click(object sender, EventArgs e) { InputAddNum(btCom.Text); }
-        private void btFactorial_Click(object sender, EventArgs e) { InputAddNum("!"); }
-        private void btReciprocal_Click(object sender, EventArgs e) { InputAddOperator("1/", false); }
-        private void btPow_Click(object sender, EventArgs e) { InputAddOperator("^", true); }
-        private void btOperatorRight_Click(object sender, EventArgs e)
+        private void BtCalc_Click(object sender, EventArgs e) { Calc(); }
+        private void BtDelete_Click(object sender, EventArgs e) { InputDelete(); }
+        private void BtClear_Click(object sender, EventArgs e) { InputReplace(">", string.Empty); txtEval.Text = string.Empty; }
+        private void BtCopy_Click(object sender, EventArgs e) { InputAddNum(lastResult); }
+        private void BtCom_Click(object sender, EventArgs e) { InputAddNum(btCom.Text); }
+        private void BtFactorial_Click(object sender, EventArgs e) { InputAddNum("!"); }
+        private void BtReciprocal_Click(object sender, EventArgs e) { InputAddOperator("1/", false); }
+        private void BtPow_Click(object sender, EventArgs e) { InputAddOperator("^", true); }
+        private void BtOperatorRight_Click(object sender, EventArgs e)
         {
             Button button = (Button)sender;
             InputAddOperator(button.Text, true);
         }
-        private void btOperatorLeft_Click(object sender, EventArgs e)
+        private void BtOperatorLeft_Click(object sender, EventArgs e)
         {
             Button button = (Button)sender;
             InputAddOperator(button.Text, false);
         }
-        private void btNegate_Click(object sender, EventArgs e) { InputReplace(">", txtInput.Text.Length >= 3 && txtInput.Text[2] == '-' ? txtInput.Text.Substring(3) : '-' + InputGet()); } //Negate the current input
-        private void btNumeric_Click(object sender, EventArgs e)
+        private void BtNegate_Click(object sender, EventArgs e) { InputReplace(">", txtInput.Text.Length >= 3 && txtInput.Text[2] == '-' ? txtInput.Text.Substring(3) : '-' + InputGet()); } //Negate the current input
+        private void BtNumeric_Click(object sender, EventArgs e)
         {
             Button button = (Button)sender;
             InputAddNum(button.Name.Substring(2, 1));
         }
-        private void txtBox_SizeTextChanged(object sender, EventArgs e) { Utility.TextBoxResizeContents(sender); } //TextBox Autoresize Contents
-        private void bt_SizeChanged(object sender, EventArgs e) { Utility.ButtonResizeContents(sender); } //Button Autoresize Contents
-        private void bt_SizeChanged_HelperNumeric(object sender, EventArgs e) { Utility.ButtonResizeHelper(sender, bt0); } //Numeric Buttons Autoresize Helper
-        private void bt_SizeChanged_HelperOperator(object sender, EventArgs e) { Utility.ButtonResizeHelper(sender, btCom); } //Operator Buttons Autoresize Helper
-        private void btBase_Click(object sender, EventArgs e) //Copy Converted Bases
+        private void TxtBox_SizeTextChanged(object sender, EventArgs e) { Utility.TextBoxResizeContents(sender); } //TextBox Autoresize Contents
+        private void Bt_SizeChanged(object sender, EventArgs e) { Utility.ButtonResizeContents(sender); } //Button Autoresize Contents
+        private void Bt_SizeChanged_HelperNumeric(object sender, EventArgs e) { Utility.ButtonResizeHelper(sender, bt0); } //Numeric Buttons Autoresize Helper
+        private void Bt_SizeChanged_HelperOperator(object sender, EventArgs e) { Utility.ButtonResizeHelper(sender, btCom); } //Operator Buttons Autoresize Helper
+        private void BtBase_Click(object sender, EventArgs e) //Copy Converted Bases
         {
             Button button = (Button)sender;
             Clipboard.SetText(button.Text);
@@ -302,52 +310,48 @@ namespace Calculator
         }
         internal static void TextBoxResizeContents(object sender)
         {
-            try
+            RichTextBox textBox = (RichTextBox)sender;
+            if (textBox.Text.Length > 0)
             {
-                RichTextBox textBox = (RichTextBox)sender;
-                if (textBox.Text.Length > 0)
+                using (Graphics g = textBox.CreateGraphics()) // Create a temporary Graphics object to measure text size
                 {
-                    using (Graphics g = textBox.CreateGraphics()) // Create a temporary Graphics object to measure text size
-                    {
-                        SizeF textSize = g.MeasureString(textBox.Text, textBox.Font); // Calculate the size of the text with the current font
-                        float scaleX = textBox.ClientSize.Width / textSize.Width; // Calculate the scaling factor for both width and height
-                        float scaleY = textBox.ClientSize.Height / textSize.Height;
-                        textBox.Font = new Font(textBox.Font.FontFamily, textBox.Font.Size * Math.Min(scaleX, scaleY)); // Apply the new font to the TextBox
-                    }
+                    SizeF textSize = g.MeasureString(textBox.Text, textBox.Font); // Calculate the size of the text with the current font
+                    float scaleX = textBox.ClientSize.Width / textSize.Width; // Calculate the scaling factor for both width and height
+                    float scaleY = textBox.ClientSize.Height / textSize.Height;
+                    textBox.Font = new Font(textBox.Font.FontFamily, textBox.Font.Size * Math.Min(scaleX, scaleY)); // Apply the new font to the TextBox
                 }
             }
-            catch { } // Dismiss
         }
         internal static void ButtonResizeContents(object sender)
         {
-            try
+            Button button = (Button)sender;
+            if (button.Width <= 0 || button.Height <= 0) return; // Ensure the button's width and height are greater than 0
+            float maxFontSize = float.MaxValue; // Maximum font size
+            using (Graphics g = button.CreateGraphics())
             {
-                Button button = (Button)sender;
-                using (Graphics g = button.CreateGraphics()) // Calculate the desired font size based on the button's width and height
-                {
-                    SizeF textSize = g.MeasureString(button.Text, button.Font);
-                    float widthRatio = button.Width / textSize.Width;
-                    float heightRatio = button.Height / textSize.Height;
-                    button.Font = new Font(button.Font.FontFamily, (int)(button.Font.Size * (Math.Min(widthRatio, heightRatio) / 100 * 80)), button.Font.Style); // Create a new font with the calculated font size and assign it to the button
-                }
+                SizeF textSize = g.MeasureString(button.Text, button.Font);
+                if (textSize.Width <= 0 || textSize.Height <= 0) return; // Ensure that the width and height ratios are greater than 0
+                float widthRatio = button.Width / textSize.Width;
+                float heightRatio = button.Height / textSize.Height;
+                float ratio = (int)(button.Font.Size * (Math.Min(widthRatio, heightRatio) / 100 * 60)); // Calculate the desired font size
+                ratio = Math.Max(1, Math.Min(ratio, maxFontSize)); // Ensure that the calculated font size is within a valid range
+                button.Font = new Font(button.Font.FontFamily, ratio, button.Font.Style);
             }
-            catch { } // Dismiss
         }
         internal static void ButtonResizeHelper(object sender, Button bt)
         {
             Button button = (Button)sender;
             button.Font = new Font(bt.Font.FontFamily, bt.Font.Size, bt.Font.Style);
         }
+
         [DllImport("dwmapi.dll")] // Used for the following titlebar recoloring
         private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
-        private const int DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1 = 19;
-        private const int DWMWA_USE_IMMERSIVE_DARK_MODE = 20;
         internal static bool UseImmersiveDarkMode(IntPtr handle, bool enabled)
         {
             if (IsWindows10OrGreater(17763))
             {
-                var attribute = DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1;
-                if (IsWindows10OrGreater(18985)) attribute = DWMWA_USE_IMMERSIVE_DARK_MODE;
+                var attribute = 19; //DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1
+                if (IsWindows10OrGreater(18985)) attribute = 20; //DWMWA_USE_IMMERSIVE_DARK_MODE
                 int useImmersiveDarkMode = enabled ? 1 : 0;
                 return DwmSetWindowAttribute(handle, (int)attribute, ref useImmersiveDarkMode, sizeof(int)) == 0;
             }
