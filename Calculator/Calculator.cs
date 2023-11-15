@@ -14,7 +14,6 @@ using System.Timers; //Used to Autocheck for Updates every 10min
 //allow selection * delete/backspace or typing something, don't affect the first 2 chars, only affect InputGet()
 //handle shortcuts (CTRL+key) differently
 //2(3-1) => 2*(3-1)
-//error msgs add spaces
 
 namespace Calculator
 {
@@ -25,21 +24,25 @@ namespace Calculator
             InitializeComponent();
             InitializeAttributes();
         }
-        //const string ProductAuthor = "run2go";
-        const string ProductWebsite = "https://github.com/run2go/Calculator/tree/Latest";
+        const string ProjectName = "Calculator";
+        const string ProjectAuthor = "run2go";
+        readonly string ProjectWebsite = $"https://github.com/{ProjectAuthor}/{ProjectName}/tree/Latest";
+        readonly string ProjectAPI = $"https://api.github.com/repos/{ProjectAuthor}/{ProjectName}";
+        readonly string SymbolComma = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+        readonly string SymbolGroupSeparator = CultureInfo.CurrentCulture.NumberFormat.NumberGroupSeparator;
         string lastResult = "0";
         int baseCurrent = 10;
         private void InitializeAttributes()
         {
             if ((int)Registry.GetValue("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "AppsUseLightTheme", -1)! == 0) ColorToggle(); MenuEditDarkmode.Checked = !MenuEditDarkmode.Checked;
-            btCom.Text = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+            btCom.Text = SymbolComma;
             StripMenuVersion.Text = $"v{ProductVersion} ~❤️";
             KeyPress += new KeyPressEventHandler(Interface_KeyPress!); //Default Input
             KeyDown += new KeyEventHandler(Interface_KeyDown!); //Special Characters & Key Combinations
             KeyPreview = true; // Set KeyPreview property to true to capture keyboard events at the form level
-            InputReplace(">", string.Empty);
+            SymbolSet(">");
             SwitchMode(MenuModeSim, null!);
-            //UpdateCheck("https://github.com/run2go/Calculator");
+            //Utility.UpdateCheck("https://github.com/run2go/Calculator");
         }
         private void Interface_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -67,112 +70,80 @@ namespace Calculator
                 {
                     switch (e.KeyCode)
                     {
-                        case Keys.Enter: Calc(); break;
+                        case Keys.Enter: Calculate(); break;
                         case Keys.Back:
                         case Keys.Delete: InputDelete(); break;
                         case Keys.Add:
-                        case Keys.Oemplus: InputAddOperator("+", true); break;
+                        case Keys.Oemplus: InputAddOperatorRight("+"); break;
                         //case Keys.Subtract:
-                        case Keys.OemMinus: InputAddOperator("-", true); break;
+                        case Keys.OemMinus: InputAddOperatorRight("-"); break;
                         //case Keys.Multiply:
-                        case Keys.OemPipe: InputAddOperator("*", true); break;
+                        case Keys.OemPipe: InputAddOperatorRight("*"); break;
                         //case Keys.Divide:
-                        case Keys.OemBackslash: InputAddOperator("/", true); break;
+                        case Keys.OemBackslash: InputAddOperatorRight("/"); break;
                         case Keys.Oemcomma:
-                        case Keys.OemPeriod: InputAddOperator(btCom.Text, true); break; //Get locale symbol for commas 
+                        case Keys.OemPeriod: InputAddOperatorRight(SymbolComma); break; //Get locale symbol for commas 
                     }
                 }
                 InputFocus();
             }
             catch (Exception ex) { HandleError(ex); }
         }
-        private void Calc()
+        private void Calculate()
         {
-            try
-            {
-                if (SymbolGet() == ">") txtEval.Text += InputGet();
-                string eval = txtEval.Text.Trim();
-                string[] elements = Regex.Split(eval, @"^[\dA-F]+$"); //Split by Numeric & Non-Numeric parts
-                for (int i = 0; i < elements.Length; i++) if (Utility.IsNumeric(elements[i])) elements[i] = Converter.ConvertBase(elements[i], baseCurrent, 10);
-                eval = string.Join("", elements);
-                eval = eval.Replace('x', '*').Replace(',', '.').Replace('[', '(').Replace('{', '(').Replace(']', ')').Replace('}', ')');
-                eval = Regex.Replace(eval, @"(?<=[\dA-F()√π])[\(√π]", "*$0"); // Insert missing multiplier operators
-                eval = eval.Replace("π", "PI()"); //Sanitize
-                eval = Regex.Replace(eval, @"(\d+|[0-9A-F]+)!+", match =>
-                { // Handle Factorials
-                    string innerMatch = match.Groups[1].Value;
-                    int numberOfExclamationMarks = match.Value.Count(c => c == '!');
-                    for (int i = 0; i < numberOfExclamationMarks; i++) innerMatch = $"FACT({innerMatch})";
-                    return innerMatch;
-                });
-                eval = Regex.Replace(eval, @"√+([0-9A-F]+)", match =>
-                { // Handle Square Roots
-                    string innerMatch = match.Groups[1].Value;
-                    int numberOfSquareRoots = match.Value.Count(c => c == '√');
-                    innerMatch = $"SQRT({innerMatch})"; //'√' is a leading symbol
-                    for (int i = 1; i < numberOfSquareRoots; i++) innerMatch = $"SQRT({innerMatch})";
-                    return innerMatch;
-                });
-                if (txtEval.Text != string.Empty)
-                {
-                    Expression equation = new Expression(eval);
-                    string result = equation.Eval().ToString()!;
-                    InputReplace("=", (MenuModePro.Checked) ? Converter.ConvertBase(result, 10, baseCurrent) : result);
-                }
-                if (MenuEditDebug.Checked) txtEval.Text = eval;
-                if (MenuModePro.Checked) DisplayUpdate();
-            }
-            catch (Exception ex) { HandleError(ex); }
+            if (SymbolGet() == ">") EvalAdd(InputGet());
+            SymbolSet("=");
+            Evaluation evaluation = new Evaluation();
+            string sanitizedEvaluation = evaluation.Sanitize(EvalGet(), baseCurrent);
+            EvalSet((MenuEditDebug.Checked) ? EvalGet() : sanitizedEvaluation);
+            EvalSet(sanitizedEvaluation);
+
+            Expression equation = new Expression(EvalGet());
+            string result = equation.Eval().ToString()!;
+            InputSet((MenuModePro.Checked) ? Converter.ConvertBase(result, 10, baseCurrent) : result);
+
+            if (MenuModePro.Checked) DisplayUpdate();
         }
-        private string SymbolGet() { return txtInput.Text.Substring(0, 1); } //Get the first character
+        private string SymbolGet() { return txtSymbol.Text; } //Get the indicator symbol
+        private void SymbolSet(string symbol) { txtSymbol.Text = symbol; }
+        private string EvalGet() { return txtEval.Text; } //Get current Equation
         private void EvalAdd(string text) { txtEval.Text += text; InputFocus(); }
-        private void EvalReplace(string text) { txtEval.Text = text; InputFocus(); }
-        private string InputGet() { return txtInput.Text.Substring(2); } //Trim the first 2 characters
-        private void InputAdd(string text)
-        {
-            txtInput.Text += text; InputFocus();
-            if (MenuModePro.Checked) DisplayUpdate();
-        }
-        private void InputReplace(string symbol, string text)
-        {
-            txtInput.Text = $"{symbol} {text}";
-            InputFocus();
-            if (MenuModePro.Checked) DisplayUpdate();
-        }
+        private void EvalSet(string text) { txtEval.Text = text; InputFocus(); }
+        private string InputGet() { return txtInput.Text; } //Get the current input
+        private void InputAdd(string text) { txtInput.Text += text; InputFocus(); DisplayUpdate(); }
+        private void InputSet(string text) { txtInput.Text = text; InputFocus(); DisplayUpdate(); }
         private void InputDelete()
         {
             if (txtInput.SelectedText.Length > 0) txtInput.SelectedText = string.Empty;
-            if (txtInput.Text.Length > 2) InputReplace(">", InputGet().Substring(0, InputGet().Length - 1));
+            if (InputGet().Length > 0)
+            {
+                SymbolSet(">");
+                InputSet(InputGet().Substring(0, InputGet().Length - 1));
+            }
         }
         private void InputAddNum(string num)
         {
             if (SymbolGet() == "=")
             {
-                EvalReplace(string.Empty);
-                InputReplace(">", num);
+                EvalSet(string.Empty);
+                SymbolSet(">");
+                InputSet(num);
             }
             else InputAdd(num);
         }
-        private void InputAddOperator(string op, bool left_or_right)
+        private void InputAddOperatorLeft(string op)
         {
-            if (txtEval.Text.Length > 0 && (txtEval.Text.EndsWith("+") || txtEval.Text.EndsWith("x") || txtEval.Text.EndsWith("*") || txtEval.Text.EndsWith("/")))
-            {
-                txtEval.Text = (op == "-") ? txtEval.Text + op : txtEval.Text.Substring(0, txtEval.Text.Length - 1) + op;
-            }
-            else
-            {
-                if (SymbolGet() == "=")
-                {
-                    if (left_or_right) EvalReplace(InputGet() + op);
-                    else EvalReplace((Regex.IsMatch(txtEval.Text.Substring(txtEval.Text.Length), @"[^\dA-F]$")) ? $"*{op}{InputGet()}" : $"{op}{InputGet()}"); //Add * if the last eval char was a number
-                }
-                else
-                {
-                    if (left_or_right) EvalAdd(InputGet() + op);
-                    else EvalAdd((Regex.IsMatch(txtEval.Text.Substring(txtEval.Text.Length), @"[^\dA-F]$")) ? $"*{op}{InputGet()}" : $"{op}{InputGet()}"); //Add * if the last eval char was a number
-                }
-                InputReplace(">", string.Empty);
-            }
+            if (SymbolGet() == "=") EvalSet((Regex.IsMatch(EvalGet().Substring(EvalGet().Length), @"[^\dA-F]$")) ? $"*{op}{InputGet()}" : $"{op}{InputGet()}"); //Add * if the last eval char was a number
+            else EvalAdd((Regex.IsMatch(EvalGet().Substring(EvalGet().Length), @"[^\dA-F]$")) ? $"*{op}{InputGet()}" : $"{op}{InputGet()}"); //Add * if the last eval char was a number
+            SymbolSet(">");
+            InputSet(string.Empty);
+        }
+        private void InputAddOperatorRight(string op)
+        {
+            if (SymbolGet() == "=") EvalSet(InputGet() + op);
+            else EvalAdd(InputGet() + op);
+            SymbolSet(">");
+            InputSet(string.Empty);
         }
         private void InputFocus()
         {
@@ -184,18 +155,21 @@ namespace Calculator
         {
             try
             {
-                string input = InputGet();
-                switch (baseCurrent)
-                {
-                    case 16: input = Regex.Replace(input, $@"[^\dA-F{btCom.Text}]", ""); break;
-                    case 10: input = Regex.Replace(input, $@"[^\d{btCom.Text}]", ""); break;
-                    case 8: input = Regex.Replace(input, $@"[^0-7{btCom.Text}]", ""); break;
-                    case 2: input = Regex.Replace(input, $@"[^0-1{btCom.Text}]", ""); break;
+                if (MenuModePro.Checked)
+                { 
+                    string input = InputGet();
+                    switch (baseCurrent)
+                    {
+                        case 16: input = Regex.Replace(input, $@"[^\dA-F{SymbolComma}]", ""); break;
+                        case 10: input = Regex.Replace(input, $@"[^\d{SymbolComma}]", ""); break;
+                        case 8: input = Regex.Replace(input, $@"[^0-7{SymbolComma}]", ""); break;
+                        case 2: input = Regex.Replace(input, $@"[^0-1{SymbolComma}]", ""); break;
+                    }
+                    btBase16.Text = Converter.ConvertBase(input, baseCurrent, 16);
+                    btBase10.Text = Converter.ConvertBase(input, baseCurrent, 10);
+                    btBase8.Text = Converter.ConvertBase(input, baseCurrent, 8);
+                    btBase2.Text = Regex.Replace(Converter.ConvertBase(input, baseCurrent, 2), ".{4}", "$0 "); //Use regex replace to append spaces every 4 digits
                 }
-                btBase16.Text = Converter.ConvertBase(input, baseCurrent, 16);
-                btBase10.Text = Converter.ConvertBase(input, baseCurrent, 10);
-                btBase8.Text = Converter.ConvertBase(input, baseCurrent, 8);
-                btBase2.Text = Regex.Replace(Converter.ConvertBase(input, baseCurrent, 2), ".{4}", "$0 ");
             }
             catch (Exception ex) { HandleError(ex); }
         }
@@ -212,12 +186,8 @@ namespace Calculator
                 item.ForeColor = Utility.ColorInvert(item.ForeColor);
             }
         }
-        private void StatusText(bool visibility, string status) { StripMenuVersion.Text = (visibility) ? $"{status} v{ProductVersion} ~❤️" : $"v{ProductVersion} ~❤️"; }
-        public void HandleError(Exception ex)
-        {
-            InputReplace("�", InputGet());
-            if (MenuEditDebug.Checked) MessageBox.Show(ex.ToString(), $"Debug: {ex.GetType()}");
-        }
+        private void StatusText(string status) { StripMenuVersion.Text = (status.Length > 0) ? $"{status} v{ProductVersion} ~❤️" : $"v{ProductVersion} ~❤️"; }
+        public void HandleError(Exception ex) { SymbolSet("⚠️"); if (MenuEditDebug.Checked) MessageBox.Show(ex.ToString(), $"Debug: {ex.GetType()}"); }
         private void BaseUpdate(object sender, EventArgs e)
         {
             RadioButton radioButton = (RadioButton)sender;
@@ -226,13 +196,13 @@ namespace Calculator
             for (int i = baseCurrent; i < button.Length; i++) { button[i].Enabled = false; button[i].ForeColor = Utility.ColorOffset(bt0.ForeColor, 200, MenuEditDarkmode.Checked); } //Disable unused buttons
             for (int i = 0; i < baseCurrent; i++) { button[i].Enabled = true; button[i].ForeColor = bt0.ForeColor; } //Enable required buttons
         }
-        private void MenuEditTopmost_Click(object sender, EventArgs e) { TopMost = MenuEditTopmost.Checked = !MenuEditTopmost.Checked; }
-        private void MenuDarkmode_Click(object sender, EventArgs e) { ColorToggle(); MenuEditDarkmode.Checked = !MenuEditDarkmode.Checked; }
-        private void MenuEditDebug_Click(object sender, EventArgs e) { StatusText((MenuEditDebug.Checked = !MenuEditDebug.Checked), "[Debug Mode]"); }
-        private void StripMenuVersion_Click(object sender, EventArgs e) { Process.Start("explorer.exe", ProductWebsite); }
-        private void SwitchMode(object sender, EventArgs e)
+        private void MenuEditTopmost_Click(object ob, EventArgs e) { TopMost = MenuEditTopmost.Checked = !MenuEditTopmost.Checked; }
+        private void MenuDarkmode_Click(object ob, EventArgs e) { ColorToggle(); MenuEditDarkmode.Checked = !MenuEditDarkmode.Checked; }
+        private void MenuEditDebug_Click(object ob, EventArgs e) { StatusText("[Debug Mode]"); MenuEditDebug.Checked = !MenuEditDebug.Checked; }
+        private void StripMenuVersion_Click(object ob, EventArgs e) { Process.Start("explorer.exe", ProjectWebsite); }
+        private void SwitchMode(object ob, EventArgs e)
         {
-            string mode = ((ToolStripMenuItem)sender).Name;
+            string mode = ((ToolStripMenuItem)ob).Name;
             int[] colSize = new int[6];
             int[] rowSize = new int[6];
             switch (mode)
@@ -264,39 +234,23 @@ namespace Calculator
             }
         }
         //Operators
-        private void BtCalc_Click(object sender, EventArgs e) { Calc(); }
-        private void BtDelete_Click(object sender, EventArgs e) { InputDelete(); }
-        private void BtClear_Click(object sender, EventArgs e) { InputReplace(">", string.Empty); txtEval.Text = string.Empty; }
-        private void BtCopy_Click(object sender, EventArgs e) { InputAddNum(lastResult); }
-        private void BtCom_Click(object sender, EventArgs e) { InputAddNum(btCom.Text); }
-        private void BtFactorial_Click(object sender, EventArgs e) { InputAddNum("!"); }
-        private void BtReciprocal_Click(object sender, EventArgs e) { InputAddOperator("1/", false); }
-        private void BtPow_Click(object sender, EventArgs e) { InputAddOperator("^", true); }
-        private void BtOperatorRight_Click(object sender, EventArgs e)
-        {
-            Button button = (Button)sender;
-            InputAddOperator(button.Text, true);
-        }
-        private void BtOperatorLeft_Click(object sender, EventArgs e)
-        {
-            Button button = (Button)sender;
-            InputAddOperator(button.Text, false);
-        }
-        private void BtNegate_Click(object sender, EventArgs e) { InputReplace(">", txtInput.Text.Length >= 3 && txtInput.Text[2] == '-' ? txtInput.Text.Substring(3) : '-' + InputGet()); } //Negate the current input
-        private void BtNumeric_Click(object sender, EventArgs e)
-        {
-            Button button = (Button)sender;
-            InputAddNum(button.Name.Substring(2, 1));
-        }
-        private void TxtBox_SizeTextChanged(object sender, EventArgs e) { Utility.TextBoxResizeContents(sender); } //TextBox Autoresize Contents
-        private void Bt_SizeChanged(object sender, EventArgs e) { Utility.ButtonResizeContents(sender); } //Button Autoresize Contents
-        private void Bt_SizeChanged_HelperNumeric(object sender, EventArgs e) { Utility.ButtonResizeHelper(sender, bt0); } //Numeric Buttons Autoresize Helper
-        private void Bt_SizeChanged_HelperOperator(object sender, EventArgs e) { Utility.ButtonResizeHelper(sender, btCom); } //Operator Buttons Autoresize Helper
-        private void BtBase_Click(object sender, EventArgs e) //Copy Converted Bases
-        {
-            Button button = (Button)sender;
-            Clipboard.SetText(button.Text);
-        }
+        private void BtCalc_Click(object ob, EventArgs e) { Calculate(); }
+        private void BtDelete_Click(object ob, EventArgs e) { InputDelete(); }
+        private void BtClear_Click(object ob, EventArgs e) { SymbolSet(">"); InputSet(string.Empty); txtEval.Text = string.Empty; }
+        private void BtCopy_Click(object ob, EventArgs e) { InputAddNum(lastResult); Clipboard.SetText(InputGet()); }
+        private void BtCom_Click(object ob, EventArgs e) { InputAddNum(SymbolComma); }
+        private void BtFactorial_Click(object ob, EventArgs e) { InputAddNum("!"); }
+        private void BtReciprocal_Click(object ob, EventArgs e) { InputAddOperatorLeft("1/"); }
+        private void BtPow_Click(object ob, EventArgs e) { InputAddOperatorRight("^"); }
+        private void BtOperatorRight_Click(object ob, EventArgs e) { Button bt = (Button)ob; InputAddOperatorRight(bt.Text); }
+        private void BtOperatorLeft_Click(object ob, EventArgs e) { Button bt = (Button)ob; InputAddOperatorLeft(bt.Text); }
+        private void BtNegate_Click(object ob, EventArgs e) { SymbolSet(">"); InputSet(InputGet().Length >= 1 && InputGet()[0] == '-' ? InputGet().Substring(1) : '-' + InputGet()); } //Negate the current input
+        private void BtNumeric_Click(object ob, EventArgs e) { Button bt = (Button)ob; InputAddNum(bt.Name.Substring(2, 1)); }
+        private void TxtBox_SizeTextChanged(object ob, EventArgs e) { Utility.TextBoxResizeContents(ob); } //TextBox Autoresize Contents
+        private void Bt_SizeChanged(object ob, EventArgs e) { Utility.ButtonResizeContents(ob); } //Button Autoresize Contents
+        private void Bt_SizeChanged_HelperNumeric(object ob, EventArgs e) { Utility.ButtonResizeHelper(ob, bt0); } //Numeric Buttons Autoresize Helper
+        private void Bt_SizeChanged_HelperOperator(object ob, EventArgs e) { Utility.ButtonResizeHelper(ob, btCom); } //Operator Buttons Autoresize Helper
+        private void BtBase_Click(object ob, EventArgs e)  { Button bt = (Button)ob; Clipboard.SetText(bt.Text); } //Copy Converted Bases
     }
     internal static class Utility
     {
@@ -358,6 +312,34 @@ namespace Calculator
             return false;
         }
         private static bool IsWindows10OrGreater(int build = -1) { return Environment.OSVersion.Version.Major >= 10 && Environment.OSVersion.Version.Build >= build; }
+    }
+    internal partial class Evaluation
+    {
+        internal string Sanitize(string eval, int baseCurrent)
+        {
+            string[] elements = Regex.Split(eval.Trim(), @"^[\dA-F]+$"); //Split by Numeric & Non-Numeric parts
+            for (int i = 0; i < elements.Length; i++) if (Utility.IsNumeric(elements[i])) elements[i] = Converter.ConvertBase(elements[i], baseCurrent, 10);
+            eval = string.Join("", elements);
+            eval = eval.Replace('x', '*').Replace(',', '.').Replace('[', '(').Replace('{', '(').Replace(']', ')').Replace('}', ')');
+            eval = Regex.Replace(eval, @"(?<=[\dA-F()√π])[\(√π]", "*$0"); // Insert missing multiplier operators
+            eval = eval.Replace("π", "PI()"); //Sanitize
+            eval = Regex.Replace(eval, @"(\d+|[0-9A-F]+)!+", match =>
+            { // Handle Factorials
+                string innerMatch = match.Groups[1].Value;
+                int numberOfExclamationMarks = match.Value.Count(c => c == '!');
+                for (int i = 0; i < numberOfExclamationMarks; i++) innerMatch = $"FACT({innerMatch})";
+                return innerMatch;
+            });
+            eval = Regex.Replace(eval, @"√+([0-9A-F]+)", match =>
+            { // Handle Square Roots
+                string innerMatch = match.Groups[1].Value;
+                int numberOfSquareRoots = match.Value.Count(c => c == '√');
+                innerMatch = $"SQRT({innerMatch})"; //'√' is a leading symbol
+                for (int i = 1; i < numberOfSquareRoots; i++) innerMatch = $"SQRT({innerMatch})";
+                return innerMatch;
+            });
+            return eval;
+        }
     }
     internal class Converter
     {

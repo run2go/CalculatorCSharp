@@ -86,12 +86,15 @@
             rbBase10 = new RadioButton();
             rbBase16 = new RadioButton();
             btBase16 = new Button();
-            txtInput = new RichTextBox();
             txtEval = new RichTextBox();
+            tableLayoutInput = new TableLayoutPanel();
+            txtInput = new RichTextBox();
+            txtSymbol = new RichTextBox();
             menuStrip.SuspendLayout();
             tableLayoutButtons.SuspendLayout();
             tableLayoutMain.SuspendLayout();
             tableLayoutBase.SuspendLayout();
+            tableLayoutInput.SuspendLayout();
             SuspendLayout();
             // 
             // menuStrip
@@ -937,8 +940,8 @@
             tableLayoutMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             tableLayoutMain.Controls.Add(tableLayoutBase, 0, 2);
             tableLayoutMain.Controls.Add(tableLayoutButtons, 0, 3);
-            tableLayoutMain.Controls.Add(txtInput, 0, 1);
             tableLayoutMain.Controls.Add(txtEval, 0, 0);
+            tableLayoutMain.Controls.Add(tableLayoutInput, 0, 1);
             tableLayoutMain.Dock = DockStyle.Fill;
             tableLayoutMain.Location = new Point(0, 24);
             tableLayoutMain.Margin = new Padding(0);
@@ -950,6 +953,7 @@
             tableLayoutMain.RowStyles.Add(new RowStyle(SizeType.Percent, 7.5F));
             tableLayoutMain.RowStyles.Add(new RowStyle(SizeType.Percent, 17.5F));
             tableLayoutMain.RowStyles.Add(new RowStyle(SizeType.Percent, 70F));
+            tableLayoutMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             tableLayoutMain.Size = new Size(433, 548);
             tableLayoutMain.TabIndex = 6;
             // 
@@ -1113,22 +1117,6 @@
             btBase16.SizeChanged += Bt_SizeChanged;
             btBase16.Click += BtBase_Click;
             // 
-            // txtInput
-            // 
-            txtInput.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            txtInput.BorderStyle = BorderStyle.None;
-            txtInput.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point);
-            txtInput.Location = new Point(6, 30);
-            txtInput.Margin = new Padding(3, 0, 3, 3);
-            txtInput.Name = "txtInput";
-            txtInput.ReadOnly = true;
-            txtInput.ScrollBars = RichTextBoxScrollBars.None;
-            txtInput.Size = new Size(421, 37);
-            txtInput.TabIndex = 12;
-            txtInput.Text = "";
-            txtInput.SizeChanged += TxtBox_SizeTextChanged;
-            txtInput.TextChanged += TxtBox_SizeTextChanged;
-            // 
             // txtEval
             // 
             txtEval.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
@@ -1144,6 +1132,53 @@
             txtEval.Text = "";
             txtEval.SizeChanged += TxtBox_SizeTextChanged;
             txtEval.TextChanged += TxtBox_SizeTextChanged;
+            // 
+            // tableLayoutInput
+            // 
+            tableLayoutInput.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            tableLayoutInput.ColumnCount = 2;
+            tableLayoutInput.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10F));
+            tableLayoutInput.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 90F));
+            tableLayoutInput.Controls.Add(txtInput, 1, 0);
+            tableLayoutInput.Controls.Add(txtSymbol, 0, 0);
+            tableLayoutInput.Location = new Point(6, 33);
+            tableLayoutInput.Name = "tableLayoutInput";
+            tableLayoutInput.RowCount = 1;
+            tableLayoutInput.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tableLayoutInput.Size = new Size(421, 34);
+            tableLayoutInput.TabIndex = 18;
+            // 
+            // txtInput
+            // 
+            txtInput.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            txtInput.BorderStyle = BorderStyle.None;
+            txtInput.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point);
+            txtInput.Location = new Point(45, 0);
+            txtInput.Margin = new Padding(3, 0, 3, 3);
+            txtInput.Name = "txtInput";
+            txtInput.ReadOnly = true;
+            txtInput.ScrollBars = RichTextBoxScrollBars.None;
+            txtInput.Size = new Size(373, 31);
+            txtInput.TabIndex = 13;
+            txtInput.Text = "";
+            txtInput.SizeChanged += TxtBox_SizeTextChanged;
+            txtInput.TextChanged += TxtBox_SizeTextChanged;
+            // 
+            // txtSymbol
+            // 
+            txtSymbol.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            txtSymbol.BorderStyle = BorderStyle.None;
+            txtSymbol.Font = new Font("Segoe UI", 28F, FontStyle.Regular, GraphicsUnit.Point);
+            txtSymbol.Location = new Point(3, 0);
+            txtSymbol.Margin = new Padding(3, 0, 3, 3);
+            txtSymbol.Name = "txtSymbol";
+            txtSymbol.ReadOnly = true;
+            txtSymbol.ScrollBars = RichTextBoxScrollBars.None;
+            txtSymbol.Size = new Size(36, 31);
+            txtSymbol.TabIndex = 14;
+            txtSymbol.Text = ">";
+            txtSymbol.SizeChanged += TxtBox_SizeTextChanged;
+            txtSymbol.TextChanged += TxtBox_SizeTextChanged;
             // 
             // Interface
             // 
@@ -1168,6 +1203,7 @@
             tableLayoutMain.PerformLayout();
             tableLayoutBase.ResumeLayout(false);
             tableLayoutBase.PerformLayout();
+            tableLayoutInput.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -1220,7 +1256,6 @@
         private Button btModulo;
         private Button btNegate;
         private Button btReciprocal;
-        private RichTextBox txtInput;
         private RichTextBox txtEval;
         private ToolStripMenuItem StripMenuInfo;
         private TableLayoutPanel tableLayoutBase;
@@ -1232,5 +1267,8 @@
         private Button btBase16;
         private Button btBase2;
         private Button btBase8;
+        private TableLayoutPanel tableLayoutInput;
+        private RichTextBox txtInput;
+        private RichTextBox txtSymbol;
     }
 }
