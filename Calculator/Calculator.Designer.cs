@@ -89,7 +89,7 @@
             txtEval = new RichTextBox();
             tableLayoutInput = new TableLayoutPanel();
             txtInput = new RichTextBox();
-            txtSymbol = new RichTextBox();
+            txtSymbol = new Label();
             menuStrip.SuspendLayout();
             tableLayoutButtons.SuspendLayout();
             tableLayoutMain.SuspendLayout();
@@ -995,6 +995,7 @@
             btBase2.Name = "btBase2";
             btBase2.Size = new Size(338, 25);
             btBase2.TabIndex = 15;
+            btBase2.TabStop = false;
             btBase2.Text = "0";
             btBase2.TextAlign = ContentAlignment.MiddleLeft;
             btBase2.UseVisualStyleBackColor = true;
@@ -1013,6 +1014,7 @@
             btBase8.Name = "btBase8";
             btBase8.Size = new Size(338, 23);
             btBase8.TabIndex = 14;
+            btBase8.TabStop = false;
             btBase8.Text = "0";
             btBase8.TextAlign = ContentAlignment.MiddleLeft;
             btBase8.UseVisualStyleBackColor = true;
@@ -1031,6 +1033,7 @@
             btBase10.Name = "btBase10";
             btBase10.Size = new Size(338, 23);
             btBase10.TabIndex = 13;
+            btBase10.TabStop = false;
             btBase10.Text = "0";
             btBase10.TextAlign = ContentAlignment.MiddleLeft;
             btBase10.UseVisualStyleBackColor = true;
@@ -1077,7 +1080,7 @@
             rbBase10.Location = new Point(3, 26);
             rbBase10.Name = "rbBase10";
             rbBase10.Size = new Size(83, 17);
-            rbBase10.TabIndex = 11;
+            rbBase10.TabIndex = 12;
             rbBase10.TabStop = true;
             rbBase10.Text = "Dec (10)";
             rbBase10.TextAlign = ContentAlignment.MiddleCenter;
@@ -1111,6 +1114,7 @@
             btBase16.Name = "btBase16";
             btBase16.Size = new Size(338, 23);
             btBase16.TabIndex = 12;
+            btBase16.TabStop = false;
             btBase16.Text = "0";
             btBase16.TextAlign = ContentAlignment.MiddleLeft;
             btBase16.UseVisualStyleBackColor = true;
@@ -1129,6 +1133,7 @@
             txtEval.ScrollBars = RichTextBoxScrollBars.None;
             txtEval.Size = new Size(421, 24);
             txtEval.TabIndex = 13;
+            txtEval.TabStop = false;
             txtEval.Text = "";
             txtEval.SizeChanged += TxtBox_SizeTextChanged;
             txtEval.TextChanged += TxtBox_SizeTextChanged;
@@ -1153,12 +1158,12 @@
             txtInput.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             txtInput.BorderStyle = BorderStyle.None;
             txtInput.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point);
-            txtInput.Location = new Point(45, 0);
-            txtInput.Margin = new Padding(3, 0, 3, 3);
+            txtInput.Location = new Point(42, 0);
+            txtInput.Margin = new Padding(0, 0, 3, 3);
             txtInput.Name = "txtInput";
             txtInput.ReadOnly = true;
             txtInput.ScrollBars = RichTextBoxScrollBars.None;
-            txtInput.Size = new Size(373, 31);
+            txtInput.Size = new Size(376, 31);
             txtInput.TabIndex = 13;
             txtInput.Text = "";
             txtInput.SizeChanged += TxtBox_SizeTextChanged;
@@ -1167,18 +1172,15 @@
             // txtSymbol
             // 
             txtSymbol.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            txtSymbol.BorderStyle = BorderStyle.None;
-            txtSymbol.Font = new Font("Segoe UI", 28F, FontStyle.Regular, GraphicsUnit.Point);
+            txtSymbol.AutoSize = true;
+            txtSymbol.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point);
             txtSymbol.Location = new Point(3, 0);
-            txtSymbol.Margin = new Padding(3, 0, 3, 3);
+            txtSymbol.Margin = new Padding(3, 0, 0, 3);
             txtSymbol.Name = "txtSymbol";
-            txtSymbol.ReadOnly = true;
-            txtSymbol.ScrollBars = RichTextBoxScrollBars.None;
-            txtSymbol.Size = new Size(36, 31);
+            txtSymbol.Size = new Size(39, 31);
             txtSymbol.TabIndex = 14;
-            txtSymbol.Text = ">";
-            txtSymbol.SizeChanged += TxtBox_SizeTextChanged;
-            txtSymbol.TextChanged += TxtBox_SizeTextChanged;
+            txtSymbol.SizeChanged += Label_SizeTextChanged;
+            txtSymbol.TextChanged += Label_SizeTextChanged;
             // 
             // Interface
             // 
@@ -1204,6 +1206,7 @@
             tableLayoutBase.ResumeLayout(false);
             tableLayoutBase.PerformLayout();
             tableLayoutInput.ResumeLayout(false);
+            tableLayoutInput.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -1269,6 +1272,6 @@
         private Button btBase8;
         private TableLayoutPanel tableLayoutInput;
         private RichTextBox txtInput;
-        private RichTextBox txtSymbol;
+        private Label txtSymbol;
     }
 }

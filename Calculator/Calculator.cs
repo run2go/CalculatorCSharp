@@ -1,13 +1,13 @@
 ﻿using org.matheval; //Package used to evaluate equations
-using System.Text; //Used for StringBuilder, see Conversion Class
-using System.Numerics; //Used by BigInteger, also Conversion Class
-using System.Text.RegularExpressions; //Regex Packet to detect Binary & Hex
-using System.Globalization; //Get System Localization, grab default Comma character
 using Microsoft.Win32; //Registry checks (Used to get system theme)
-using System.Runtime.InteropServices; //Darkmode detection, used to update titlebar
-using System.Diagnostics; //Access explorer.exe to open URLs in default browser
-using System.Net; //Required to check the GitHub Repository
+using System.Text; //Used for StringBuilder, see Conversion Class
 using System.Text.Json; //Handle JSON formatted responses
+using System.Text.RegularExpressions; //Regex Packet to detect Binary & Hex
+using System.Diagnostics; //Access explorer.exe to open URLs in default browser
+using System.Globalization; //Get System Localization, grab default Comma character
+using System.Net; //Required to check the GitHub Repository
+using System.Numerics; //Used by BigInteger, also Conversion Class
+using System.Runtime.InteropServices; //Darkmode detection, used to update titlebar
 using System.Timers; //Used to Autocheck for Updates every 10min
 //update check periodically
 //resize fonts universally
@@ -40,8 +40,8 @@ namespace Calculator
             KeyPress += new KeyPressEventHandler(Interface_KeyPress!); //Default Input
             KeyDown += new KeyEventHandler(Interface_KeyDown!); //Special Characters & Key Combinations
             KeyPreview = true; // Set KeyPreview property to true to capture keyboard events at the form level
-            SymbolSet(">");
-            SwitchMode(MenuModeSim, null!);
+            BtClear_Click(this, null!);
+            SwitchMode(MenuModePro, null!);
             //Utility.UpdateCheck("https://github.com/run2go/Calculator");
         }
         private void Interface_KeyPress(object sender, KeyPressEventArgs e)
@@ -85,24 +85,29 @@ namespace Calculator
                         case Keys.OemPeriod: InputAddOperatorRight(SymbolComma); break; //Get locale symbol for commas 
                     }
                 }
-                InputFocus();
+                //InputFocus();
             }
             catch (Exception ex) { HandleError(ex); }
         }
         private void Calculate()
         {
-            if (SymbolGet() == ">") EvalAdd(InputGet());
-            SymbolSet("=");
-            Evaluation evaluation = new Evaluation();
-            string sanitizedEvaluation = evaluation.Sanitize(EvalGet(), baseCurrent);
-            EvalSet((MenuEditDebug.Checked) ? EvalGet() : sanitizedEvaluation);
-            EvalSet(sanitizedEvaluation);
+            try
+            {
+                if (SymbolGet() == ">") EvalAdd(InputGet());
+                SymbolSet("=");
+                Evaluation evaluation = new Evaluation();
+                string sanitizedEvaluation = evaluation.Sanitize(EvalGet(), baseCurrent);
+                EvalSet((MenuEditDebug.Checked) ? EvalGet() : sanitizedEvaluation);
+                EvalSet(sanitizedEvaluation);
 
-            Expression equation = new Expression(EvalGet());
-            string result = equation.Eval().ToString()!;
-            InputSet((MenuModePro.Checked) ? Converter.ConvertBase(result, 10, baseCurrent) : result);
+                Expression equation = new Expression(EvalGet());
+                string result = equation.Eval().ToString()!;
+                InputSet((MenuModePro.Checked) ? Converter.ConvertBase(result, 10, baseCurrent) : result);
+                lastResult = result;
 
-            if (MenuModePro.Checked) DisplayUpdate();
+                if (MenuModePro.Checked) DisplayUpdate();
+            }
+            catch (Exception ex) { HandleError(ex); }
         }
         private string SymbolGet() { return txtSymbol.Text; } //Get the indicator symbol
         private void SymbolSet(string symbol) { txtSymbol.Text = symbol; }
@@ -115,7 +120,7 @@ namespace Calculator
         private void InputDelete()
         {
             if (txtInput.SelectedText.Length > 0) txtInput.SelectedText = string.Empty;
-            if (InputGet().Length > 0)
+            else if (InputGet().Length > 0)
             {
                 SymbolSet(">");
                 InputSet(InputGet().Substring(0, InputGet().Length - 1));
@@ -156,7 +161,7 @@ namespace Calculator
             try
             {
                 if (MenuModePro.Checked)
-                { 
+                {
                     string input = InputGet();
                     switch (baseCurrent)
                     {
@@ -198,7 +203,7 @@ namespace Calculator
         }
         private void MenuEditTopmost_Click(object ob, EventArgs e) { TopMost = MenuEditTopmost.Checked = !MenuEditTopmost.Checked; }
         private void MenuDarkmode_Click(object ob, EventArgs e) { ColorToggle(); MenuEditDarkmode.Checked = !MenuEditDarkmode.Checked; }
-        private void MenuEditDebug_Click(object ob, EventArgs e) { StatusText("[Debug Mode]"); MenuEditDebug.Checked = !MenuEditDebug.Checked; }
+        private void MenuEditDebug_Click(object ob, EventArgs e) { StatusText((MenuEditDebug.Checked = !MenuEditDebug.Checked) ? "[Debug Mode]" : ""); }
         private void StripMenuVersion_Click(object ob, EventArgs e) { Process.Start("explorer.exe", ProjectWebsite); }
         private void SwitchMode(object ob, EventArgs e)
         {
@@ -236,8 +241,8 @@ namespace Calculator
         //Operators
         private void BtCalc_Click(object ob, EventArgs e) { Calculate(); }
         private void BtDelete_Click(object ob, EventArgs e) { InputDelete(); }
-        private void BtClear_Click(object ob, EventArgs e) { SymbolSet(">"); InputSet(string.Empty); txtEval.Text = string.Empty; }
-        private void BtCopy_Click(object ob, EventArgs e) { InputAddNum(lastResult); Clipboard.SetText(InputGet()); }
+        private void BtClear_Click(object ob, EventArgs e) { SymbolSet(">"); InputSet(""); EvalSet(""); }
+        private void BtCopy_Click(object ob, EventArgs e) { InputAddNum(lastResult); }
         private void BtCom_Click(object ob, EventArgs e) { InputAddNum(SymbolComma); }
         private void BtFactorial_Click(object ob, EventArgs e) { InputAddNum("!"); }
         private void BtReciprocal_Click(object ob, EventArgs e) { InputAddOperatorLeft("1/"); }
@@ -247,10 +252,11 @@ namespace Calculator
         private void BtNegate_Click(object ob, EventArgs e) { SymbolSet(">"); InputSet(InputGet().Length >= 1 && InputGet()[0] == '-' ? InputGet().Substring(1) : '-' + InputGet()); } //Negate the current input
         private void BtNumeric_Click(object ob, EventArgs e) { Button bt = (Button)ob; InputAddNum(bt.Name.Substring(2, 1)); }
         private void TxtBox_SizeTextChanged(object ob, EventArgs e) { Utility.TextBoxResizeContents(ob); } //TextBox Autoresize Contents
+        private void Label_SizeTextChanged(object ob, EventArgs e) { Utility.LabelResizeContents(ob); } //TextBox Autoresize Contents
         private void Bt_SizeChanged(object ob, EventArgs e) { Utility.ButtonResizeContents(ob); } //Button Autoresize Contents
         private void Bt_SizeChanged_HelperNumeric(object ob, EventArgs e) { Utility.ButtonResizeHelper(ob, bt0); } //Numeric Buttons Autoresize Helper
         private void Bt_SizeChanged_HelperOperator(object ob, EventArgs e) { Utility.ButtonResizeHelper(ob, btCom); } //Operator Buttons Autoresize Helper
-        private void BtBase_Click(object ob, EventArgs e)  { Button bt = (Button)ob; Clipboard.SetText(bt.Text); } //Copy Converted Bases
+        private void BtBase_Click(object ob, EventArgs e) { Button bt = (Button)ob; Clipboard.SetText(bt.Text); } //Copy Converted Bases
     }
     internal static class Utility
     {
@@ -273,6 +279,20 @@ namespace Calculator
                     float scaleX = textBox.ClientSize.Width / textSize.Width; // Calculate the scaling factor for both width and height
                     float scaleY = textBox.ClientSize.Height / textSize.Height;
                     textBox.Font = new Font(textBox.Font.FontFamily, textBox.Font.Size * Math.Min(scaleX, scaleY)); // Apply the new font to the TextBox
+                }
+            }
+        }
+        internal static void LabelResizeContents(object sender)
+        {
+            Label label = (Label)sender;
+            if (label.Text.Length > 0)
+            {
+                using (Graphics g = label.CreateGraphics()) // Create a temporary Graphics object to measure text size
+                {
+                    SizeF textSize = g.MeasureString(label.Text, label.Font); // Calculate the size of the text with the current font
+                    float scaleX = label.ClientSize.Width / textSize.Width; // Calculate the scaling factor for both width and height
+                    float scaleY = label.ClientSize.Height / textSize.Height;
+                    label.Font = new Font(label.Font.FontFamily, label.Font.Size * Math.Min(scaleX, scaleY)); // Apply the new font to the TextBox
                 }
             }
         }
