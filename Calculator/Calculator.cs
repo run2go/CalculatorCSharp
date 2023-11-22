@@ -5,8 +5,7 @@ using System.Text.RegularExpressions; //Regex Packet to detect Binary & Hex
 using System.Diagnostics; //Access explorer.exe to open URLs in default browser
 using System.Globalization; //Get System Localization, grab default Comma character
 using System.Numerics; //Used by BigInteger, also Conversion Class
-using System.Runtime.InteropServices;
-using org.matheval.Implements;
+using System.Runtime.InteropServices; //Required for darkmode
 
 namespace Calculator {
     public partial class Interface : Form {
@@ -14,9 +13,11 @@ namespace Calculator {
         const string ProjectAuthor = "run2go";
         const string ProjectVersion = "1.1.9";
         readonly string ProjectWebsite = $"https://github.com/{ProjectAuthor}/{ProjectName}/tree/Latest";
-        readonly string ProjectFile = $"https://raw.githubusercontent.com/{ProjectAuthor}/{ProjectName}/master/{ProjectName}/{ProjectName}.cs";//https://api.github.com/repos/
+        readonly string ProjectFile = $"https://raw.githubusercontent.com/{ProjectAuthor}/{ProjectName}/master/{ProjectName}/{ProjectName}.cs"; //https://api.github.com/repos/
         readonly string SymbolComma = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
         readonly string SymbolGroupSeparator = CultureInfo.CurrentCulture.NumberFormat.NumberGroupSeparator;
+        string currentInput = "";
+        string currentEval = "";
         string lastResult = "0";
         int baseCurrent = 10; //Decimal = Base 10
         internal Interface() {
@@ -29,13 +30,16 @@ namespace Calculator {
             SwitchMode(MenuViewSim, null!);
             StatusText(Utility.UpdateCheck(ProjectFile, ProjectVersion) ? "[Update Available]" : string.Empty);
         }
-        private void Interface_KeyPress(object sender, KeyPressEventArgs e) { if (e.KeyChar != (char)13 && e.KeyChar != (char)46 && e.KeyChar != (char)8) InputAdd($"{e.KeyChar}"); }
-        private void Interface_KeyDown(object sender, KeyEventArgs e) {
-            switch (e.KeyCode) {
-                case Keys.Enter: Calculate(); break;
-                case Keys.Back:
-                case Keys.Delete: InputDelete(); break;
+        private void Interface_KeyPress(object sender, KeyPressEventArgs e) {
+            if (e.KeyChar != 13 && e.KeyChar != 46 && e.KeyChar != 8) InputAdd($"{e.KeyChar}");
+            switch (e.KeyChar)
+            {
+                case (char)Keys.Enter: Calculate(); break;
+                case (char)Keys.Back:
+                case (char)Keys.Delete: InputDelete(); break;
             }
+        }
+        private void Interface_KeyDown(object sender, KeyEventArgs e) {
             if (e.Control && e.KeyCode == Keys.C && !string.IsNullOrEmpty(lastResult)) Clipboard.SetText(lastResult);
             else if (e.Control && e.KeyCode == Keys.V && Clipboard.ContainsText(TextDataFormat.Text)) InputSet(Clipboard.GetText(TextDataFormat.Text));
         }
@@ -48,7 +52,7 @@ namespace Calculator {
                     EvalSet((MenuEditDebug.Checked) ? sanitizedEvaluation : EvalGet()); //Display sanitized string when in debug mode
                     Expression equation = new Expression(sanitizedEvaluation);
                     string result = lastResult = equation.Eval().ToString()!;
-                    result = (baseCurrent != 10) ? Converter.ConvertBase(result, 10, baseCurrent) : string.Format("{0:#,0.####}", result);
+                    result = (baseCurrent != 10) ? Converter.ConvertBase(result, 10, baseCurrent) : result; //string.Format("{0:#,0.####}", result)
                     InputSet(result);
                     SymbolSet("=");
                 }
@@ -57,30 +61,27 @@ namespace Calculator {
         }
         private bool SymbolGet(string symbol) { return (symbol == TbSymbol.Text); } //Get the indicator symbol
         private void SymbolSet(string symbol) { TbSymbol.Text = symbol; }
-        private string EvalGet() { return TbEval.Text; } //Get current Evaluation
-        private void EvalAdd(string text) { TbEval.Text += text; }
-        private void EvalSet(string text) { TbEval.Text = text; }
-        private string InputGet() { return TbInput.Text; } //Get the current input string
+        private string EvalGet() { return currentEval; } //Get current Evaluation
+        private void EvalAdd(string text) { TbEval.Text += text; currentEval += text; }
+        private void EvalSet(string text) { TbEval.Text = currentEval = text; }
+        private string InputGet() { return currentInput; } //Get the current input string
         private void InputAdd(string text) {
-            if (SymbolGet("=")) {
-                EvalSet(string.Empty);
-                InputSet(string.Empty);
-            }
-            if (Regex.IsMatch(text, @"[^\dA-F]$")) {
+            if (SymbolGet("=")) TbEval.Text = TbInput.Text = currentInput = currentEval = string.Empty;
+            if (Regex.IsMatch(text, $@"[^\dA-F,.]$")) {
                 EvalAdd(InputGet() + text);
-                InputSet(string.Empty);
+                TbInput.Text = currentInput = string.Empty;
             }
-            else TbInput.Text += text;
+            else { TbInput.Text += text; currentInput += text; }
             DisplayUpdate();
             SymbolSet(">");
         }
-        private void InputSet(string text) { TbInput.Text = text; DisplayUpdate(); }
-        private void InputDelete() { if (InputGet().Length > 0) TbInput.Text = InputGet().Substring(0, InputGet().Length - 1); }
+        private void InputSet(string text) { TbInput.Text = currentInput = text; DisplayUpdate(); }
+        private void InputDelete() { if (InputGet().Length > 0) TbInput.Text = currentInput = InputGet().Substring(0, InputGet().Length - 1); }
         private void InputAddLeft(string op) { EvalAdd((Regex.IsMatch(EvalGet().Substring(EvalGet().Length), @"[^\dA-F]$")) ? $"*{op}{InputGet()}" : $"{op}{InputGet()}"); } //Add * if the last eval char was a number
         private void DisplayUpdate() {
+            string result = InputGet();
             try {
                 if (MenuViewPro.Checked) {
-                    string result = InputGet();
                     switch (baseCurrent) {
                         case 16: result = Regex.Replace(result, $@"[^\dA-F{SymbolComma}]", ""); break;
                         case 10: result = Regex.Replace(result, $@"[^\d{SymbolComma}]", ""); break;
@@ -94,6 +95,10 @@ namespace Calculator {
                 }
             }
             catch (Exception ex) { HandleError(ex); }
+            decimal decimalResult = 0;
+            decimal.TryParse(result, out decimalResult);
+            int count = BitConverter.GetBytes(decimal.GetBits(decimalResult)[3])[2];
+            TbInput.Text = string.Format("{0:n" + count + "}", decimalResult);
         }
         private void ColorToggle() {
             Utility.UseImmersiveDarkMode(Handle, !MenuEditDarkmode.Checked);
