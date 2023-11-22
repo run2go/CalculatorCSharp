@@ -5,25 +5,11 @@ using System.Text.Json; //Handle JSON formatted responses
 using System.Text.RegularExpressions; //Regex Packet to detect Binary & Hex
 using System.Diagnostics; //Access explorer.exe to open URLs in default browser
 using System.Globalization; //Get System Localization, grab default Comma character
-using System.Net; //Required to check the GitHub Repository
 using System.Numerics; //Used by BigInteger, also Conversion Class
 using System.Runtime.InteropServices; //Darkmode detection, used to update titlebar
-using System.Timers; //Used to Autocheck for Updates every 10min
-//update check periodically
-//resize fonts universally
-//allow selection * delete/backspace or typing something, don't affect the first 2 chars, only affect InputGet()
-//handle shortcuts (CTRL+key) differently
-//2(3-1) => 2*(3-1)
 
-namespace Calculator
-{
-    public partial class Interface : Form
-    {
-        internal Interface()
-        {
-            InitializeComponent();
-            InitializeAttributes();
-        }
+namespace Calculator {
+    public partial class Interface : Form {
         const string ProjectName = "Calculator";
         const string ProjectAuthor = "run2go";
         const string ProjectVersion = "1.1.8";
@@ -33,8 +19,8 @@ namespace Calculator
         readonly string SymbolGroupSeparator = CultureInfo.CurrentCulture.NumberFormat.NumberGroupSeparator;
         string lastResult = "0";
         int baseCurrent = 10; //Decimal = Base 10
-        private void InitializeAttributes()
-        {
+        internal Interface() {
+            InitializeComponent();
             if ((int)Registry.GetValue("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "AppsUseLightTheme", -1)! == 0) ColorToggle(); MenuEditDarkmode.Checked = !MenuEditDarkmode.Checked;
             BtCom.Text = SymbolComma;
             KeyPress += new KeyPressEventHandler(Interface_KeyPress!); //Default Input
@@ -45,10 +31,8 @@ namespace Calculator
             Utility.UpdateCheckAsync(ProjectAPI, StripMenuVersion);
         }
         private void Interface_KeyPress(object sender, KeyPressEventArgs e) { if (char.IsLetterOrDigit(e.KeyChar) || char.IsPunctuation(e.KeyChar)) InputUpdate($"{e.KeyChar}");  }
-        private void Interface_KeyDown(object sender, KeyEventArgs e)
-        {
-            switch (e.KeyCode)
-            {
+        private void Interface_KeyDown(object sender, KeyEventArgs e) {
+            switch (e.KeyCode) {
                 case Keys.Enter: Calculate(); break;
                 case Keys.Back:
                 case Keys.Delete: InputDelete(); break; //if (TbInput.SelectedText.Length > 0) TbInput.SelectedText = string.Empty;
@@ -57,16 +41,13 @@ namespace Calculator
             if (e.Control && e.KeyCode == Keys.C && !string.IsNullOrEmpty(lastResult)) Clipboard.SetText(lastResult);
             else if (e.Control && e.KeyCode == Keys.V && Clipboard.ContainsText(TextDataFormat.Text)) InputUpdate(Clipboard.GetText(TextDataFormat.Text));
         }
-        private void Calculate()
-        {
-            try
-            {
+        private void Calculate() {
+            try {
                 if (SymbolGet() == ">") EvalUpdate(InputGet());
                 SymbolSet("=");
                 Evaluation evaluation = new Evaluation();
                 string sanitizedEvaluation = evaluation.Sanitize(EvalGet(), baseCurrent);
                 EvalUpdate((MenuEditDebug.Checked) ? sanitizedEvaluation : EvalGet());
-
                 Expression equation = new Expression(sanitizedEvaluation);
                 string result = lastResult = equation.Eval().ToString()!;
                 result = (baseCurrent != 10) ? Converter.ConvertBase(result, 10, baseCurrent) : string.Format("{0:#,0.####}", result);
@@ -77,21 +58,17 @@ namespace Calculator
         }
         private string SymbolGet() { return TbSymbol.Text; } //Get the indicator symbol
         private void SymbolSet(string symbol) { TbSymbol.Text = symbol; }
-        private string EvalGet() { return TbEval.Text; } //Get current Equation
+        private string EvalGet() { return TbEval.Text; } //Get current Evaluation
         private void EvalUpdate(string text) { TbEval.Text = (SymbolGet() == "=") ? text : TbEval.Text + text; }
-        private string InputGet() { return TbInput.Text; } //Get the current input
+        private string InputGet() { return TbInput.Text; } //Get the current input string
         private void InputUpdate(string text) { TbInput.Text = (SymbolGet() == "=" ? text : TbInput.Text + text); SymbolSet(">"); }
         private void InputDelete() { if (InputGet().Length > 0) TbInput.Text = InputGet().Substring(0, InputGet().Length - 1); }
         private void InputAddExtra(string op) { EvalUpdate((Regex.IsMatch(EvalGet().Substring(EvalGet().Length), @"[^\dA-F]$")) ? $"*{op}{InputGet()}" : $"{op}{InputGet()}"); } //Add * if the last eval char was a number
-        private void DisplayUpdate()
-        {
-            try
-            {
-                if (MenuModePro.Checked)
-                {
+        private void DisplayUpdate() {
+            try {
+                if (MenuModePro.Checked) {
                     string result = InputGet();
-                    switch (baseCurrent)
-                    {
+                    switch (baseCurrent) {
                         case 16: result = Regex.Replace(result, $@"[^\dA-F{SymbolComma}]", ""); break;
                         case 10: result = Regex.Replace(result, $@"[^\d{SymbolComma}]", ""); break;
                         case 8: result = Regex.Replace(result, $@"[^0-7{SymbolComma}]", ""); break;
@@ -105,13 +82,11 @@ namespace Calculator
             }
             catch (Exception ex) { HandleError(ex); }
         }
-        private void ColorToggle()
-        {
+        private void ColorToggle() {
             Utility.UseImmersiveDarkMode(Handle, !MenuEditDarkmode.Checked);
             Size = new Size(Size.Width, Size.Height + 1); //Workaround to update Titlebar on W10
             Size = MinimumSize;
-            foreach (Control item in this.GetAllElements())
-            {
+            foreach (Control item in this.GetAllElements()) {
                 Button? button = item as Button;
                 if (button != null) button.FlatAppearance.BorderColor = Utility.ColorInvert(button.FlatAppearance.BorderColor);
                 item.BackColor = Utility.ColorInvert(item.BackColor);
@@ -120,8 +95,7 @@ namespace Calculator
         }
         private void StatusText(string status) { StripMenuVersion.Text = (status.Length > 0) ? $"{status} v{ProjectVersion} ~❤️" : $"v{ProjectVersion} ~❤️"; }
         public void HandleError(Exception ex) { SymbolSet("⚠️"); if (MenuEditDebug.Checked) MessageBox.Show(ex.ToString(), $"Debug: {ex.GetType()}"); }
-        private void BaseUpdate(object sender, EventArgs e)
-        {
+        private void BaseUpdate(object sender, EventArgs e) {
             RadioButton radioButton = (RadioButton)sender;
             baseCurrent = int.Parse(radioButton.Name.Substring(6));
             Button[] button = { Bt0, Bt1, Bt2, Bt3, Bt4, Bt5, Bt6, Bt7, Bt8, Bt9, BtA, BtB, BtC, BtD, BtE, BtF };
@@ -132,20 +106,17 @@ namespace Calculator
         private void MenuDarkmode_Click(object ob, EventArgs e) { ColorToggle(); MenuEditDarkmode.Checked = !MenuEditDarkmode.Checked; }
         private void MenuEditDebug_Click(object ob, EventArgs e) { StatusText((MenuEditDebug.Checked = !MenuEditDebug.Checked) ? "[Debug Mode]" : ""); }
         private void StripMenuVersion_Click(object ob, EventArgs e) { Process.Start("explorer.exe", ProjectWebsite); }
-        private void SwitchMode(object ob, EventArgs e)
-        {
+        private void SwitchMode(object ob, EventArgs e) {
             string mode = ((ToolStripMenuItem)ob).Name;
             int[] colSize = new int[6];
             int[] rowSize = new int[6];
-            switch (mode)
-            {
+            switch (mode) {
                 case "MenuModeSim": colSize = new int[] { 0, 8, 8, 8, 8, 0 }; rowSize = new int[] { 10, 0, 10, 10, 10, 10 }; break;
                 case "MenuModeAdv": colSize = new int[] { 0, 8, 8, 8, 8, 8 }; rowSize = new int[] { 10, 10, 10, 10, 10, 10 }; break;
                 case "MenuModePro": colSize = new int[] { 8, 8, 8, 8, 8, 8 }; rowSize = new int[] { 12, 12, 12, 12, 12, 12 }; break;
             }
             TableLayoutButtons.SuspendLayout();
-            for (int i = 0; i < 6; i++)
-            {
+            for (int i = 0; i < 6; i++) {
                 if (i < TableLayoutButtons.ColumnStyles.Count) TableLayoutButtons.ColumnStyles[i] = new ColumnStyle(SizeType.Percent, colSize[i]);
                 if (i < TableLayoutButtons.RowStyles.Count) TableLayoutButtons.RowStyles[i] = new RowStyle(SizeType.Percent, rowSize[i]);
             }
@@ -158,8 +129,7 @@ namespace Calculator
             TableLayoutMain.RowStyles[0] = new RowStyle(SizeType.Percent, MenuModePro.Checked ? 5 : 7);
             TableLayoutMain.RowStyles[1] = new RowStyle(SizeType.Percent, MenuModePro.Checked ? 10 : 12);
             TableLayoutMain.RowStyles[2] = new RowStyle(SizeType.Percent, MenuModePro.Checked ? 22 : 0);
-            if (!MenuModePro.Checked)
-            {
+            if (!MenuModePro.Checked) {
                 Button[] button = { Bt0, Bt1, Bt2, Bt3, Bt4, Bt5, Bt6, Bt7, Bt8, Bt9, BtA, BtB, BtC, BtD, BtE, BtF };
                 for (int i = 0; i < 10; i++) button[i].Enabled = true;
                 RbBase10.Checked = true;
@@ -185,45 +155,38 @@ namespace Calculator
         private void BtBase_Click(object ob, EventArgs e) { Button bt = (Button)ob; Clipboard.SetText(bt.Text); } //Copy Converted Bases
         private void TbDeselect_Enter(object sender, EventArgs e) { this.ActiveControl = null; }
     }
-    internal static class Utility
-    {
+    internal static class Utility {
         internal static bool IsNumeric(string value) { return Regex.IsMatch(value, @"^[0-9A-F]+$", RegexOptions.IgnoreCase); }
         internal static Color ColorInvert(Color color) { return Color.FromArgb(255 - color.R, 255 - color.G, 255 - color.B); }
         internal static Color ColorOffset(Color col, int off, bool negative) { return negative ? Color.FromArgb(col.A - off, col.R - off, col.B - off) : Color.FromArgb(col.A + off, col.R + off, col.B + off); }
-        internal async static void UpdateCheckAsync(string URL, object statusObject)
-        {
+        internal async static void UpdateCheckAsync(string URL, object statusObject) {
             ToolStripMenuItem toolStripMenuItem = (ToolStripMenuItem)statusObject;
             string responseBody = "";
-            try
-            {
+            try {
                 HttpClient client = new HttpClient();
                 using HttpResponseMessage response = await client.GetAsync(URL);
                 response.EnsureSuccessStatusCode();
                 responseBody = await response.Content.ReadAsStringAsync();
             }
             catch (Exception ex) { responseBody = ex.Message; }
-            //toolStripMenuItem.Text = responseBody;
+            toolStripMenuItem.Text = (responseBody.Length > 0) ? $"{responseBody} v11 ~❤️" : $"v11 ~❤️";
+            toolStripMenuItem.Text = "aaa";
             MessageBox.Show(responseBody);
         }
-        internal static IEnumerable<Control> GetAllElements(this Control control)
-        {
+        internal static IEnumerable<Control> GetAllElements(this Control control) {
             var controls = control.Controls.Cast<Control>();
             return controls.SelectMany(GetAllElements).Concat(controls);
         }
-        internal static void ObjectResizeContents(object sender)
-        {
+        internal static void ObjectResizeContents(object sender) {
             Control? control = sender as Control;
-            double multiplier = sender switch
-            {
+            double multiplier = sender switch {
                 Button => 0.6,
                 Label => 1.2,
                 RichTextBox => 1.0,
                 _ => 1.0
             };
-            if (control!.Text.Length > 0)
-            {
-                using (Graphics g = control.CreateGraphics())
-                {
+            if (control!.Text.Length > 0) {
+                using (Graphics g = control.CreateGraphics()) {
                     float maxFontSize = float.MaxValue; // Maximum font size
                     SizeF textSize = g.MeasureString(control.Text, control.Font);
                     if (textSize.Width <= 0 || textSize.Height <= 0) return; // Ensure that the width and height ratios are greater than 0
@@ -235,17 +198,14 @@ namespace Calculator
                 }
             }
         }
-        internal static void ButtonResizeHelper(object sender, Button bt)
-        {
+        internal static void ButtonResizeHelper(object sender, Button bt) {
             Button button = (Button)sender;
             button.Font = new Font(bt.Font.FontFamily, bt.Font.Size, bt.Font.Style);
         }
         [DllImport("dwmapi.dll")] // Used for the following titlebar recoloring
         private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
-        internal static bool UseImmersiveDarkMode(IntPtr handle, bool enabled)
-        {
-            if (IsWindows10OrGreater(17763))
-            {
+        internal static bool UseImmersiveDarkMode(IntPtr handle, bool enabled) {
+            if (IsWindows10OrGreater(17763)) {
                 var attribute = 19; //DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1
                 if (IsWindows10OrGreater(18985)) attribute = 20; //DWMWA_USE_IMMERSIVE_DARK_MODE
                 int useImmersiveDarkMode = enabled ? 1 : 0;
@@ -255,25 +215,21 @@ namespace Calculator
         }
         private static bool IsWindows10OrGreater(int build = -1) { return Environment.OSVersion.Version.Major >= 10 && Environment.OSVersion.Version.Build >= build; }
     }
-    internal partial class Evaluation
-    {
-        internal string Sanitize(string eval, int baseCurrent)
-        {
+    internal partial class Evaluation {
+        internal string Sanitize(string eval, int baseCurrent) {
             string[] elements = Regex.Split(eval.Trim(), @"^[\dA-F]+$"); //Split by Numeric & Non-Numeric parts
             for (int i = 0; i < elements.Length; i++) if (Utility.IsNumeric(elements[i])) elements[i] = Converter.ConvertBase(elements[i], baseCurrent, 10);
             eval = string.Join("", elements);
             eval = eval.Replace('x', '*').Replace(',', '.').Replace('[', '(').Replace('{', '(').Replace(']', ')').Replace('}', ')');
             eval = Regex.Replace(eval, @"(?<=[\dA-F()√π])[\(√π]", "*$0"); // Insert missing multiplier operators
             eval = eval.Replace("π", "PI()"); //Sanitize
-            eval = Regex.Replace(eval, @"(\d+|[0-9A-F]+)!+", match =>
-            { // Handle Factorials
+            eval = Regex.Replace(eval, @"(\d+|[0-9A-F]+)!+", match => { // Handle Factorials
                 string innerMatch = match.Groups[1].Value;
                 int numberOfExclamationMarks = match.Value.Count(c => c == '!');
                 for (int i = 0; i < numberOfExclamationMarks; i++) innerMatch = $"FACT({innerMatch})";
                 return innerMatch;
             });
-            eval = Regex.Replace(eval, @"√+([0-9A-F]+)", match =>
-            { // Handle Square Roots
+            eval = Regex.Replace(eval, @"√+([0-9A-F]+)", match => { // Handle Square Roots
                 string innerMatch = match.Groups[1].Value;
                 int numberOfSquareRoots = match.Value.Count(c => c == '√');
                 innerMatch = $"SQRT({innerMatch})"; //'√' is a leading symbol
@@ -283,18 +239,15 @@ namespace Calculator
             return eval;
         }
     }
-    internal class Converter
-    {
+    internal class Converter {
         private static readonly Dictionary<char, int> CharToInt = new Dictionary<char, int> { { '0', 0 }, { '1', 1 }, { '2', 2 }, { '3', 3 }, { '4', 4 }, { '5', 5 }, { '6', 6 }, { '7', 7 }, { '8', 8 }, { '9', 9 }, { 'A', 10 }, { 'B', 11 }, { 'C', 12 }, { 'D', 13 }, { 'E', 14 }, { 'F', 15 } };
         private static readonly Dictionary<int, char> IntToChar = new Dictionary<int, char> { { 0, '0' }, { 1, '1' }, { 2, '2' }, { 3, '3' }, { 4, '4' }, { 5, '5' }, { 6, '6' }, { 7, '7' }, { 8, '8' }, { 9, '9' }, { 10, 'A' }, { 11, 'B' }, { 12, 'C' }, { 13, 'D' }, { 14, 'E' }, { 15, 'F' } };
-        internal static string ConvertBase(string input, int fromBase, int toBase)
-        {
+        internal static string ConvertBase(string input, int fromBase, int toBase) {
             input = input.ToUpper();
             BigInteger value = 0;
             for (int i = input.Length - 1; i >= 0; i--) value += CharToInt[input[i]] * BigInteger.Pow(fromBase, input.Length - 1 - i); // Convert input to decimal (base 10)
             StringBuilder result = new StringBuilder();
-            while (value > 0) // Convert decimal to the desired base
-            {
+            while (value > 0) { // Convert decimal to the desired base
                 result.Insert(0, IntToChar[(int)(value % toBase)]);
                 value /= toBase;
             }
