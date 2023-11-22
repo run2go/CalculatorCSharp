@@ -30,10 +30,10 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Interface));
             menuStrip = new MenuStrip();
-            StripMenuMode = new ToolStripMenuItem();
-            MenuModeSim = new ToolStripMenuItem();
-            MenuModeAdv = new ToolStripMenuItem();
-            MenuModePro = new ToolStripMenuItem();
+            StripMenuView = new ToolStripMenuItem();
+            MenuViewSim = new ToolStripMenuItem();
+            MenuViewAdv = new ToolStripMenuItem();
+            MenuViewPro = new ToolStripMenuItem();
             StripMenuEdit = new ToolStripMenuItem();
             MenuEditTopmost = new ToolStripMenuItem();
             MenuEditDarkmode = new ToolStripMenuItem();
@@ -99,44 +99,44 @@
             // 
             // menuStrip
             // 
-            menuStrip.Items.AddRange(new ToolStripItem[] { StripMenuMode, StripMenuEdit, StripMenuVersion, StripMenuInfo });
+            menuStrip.Items.AddRange(new ToolStripItem[] { StripMenuView, StripMenuEdit, StripMenuVersion, StripMenuInfo });
             menuStrip.Location = new Point(0, 0);
             menuStrip.Name = "menuStrip";
             menuStrip.Size = new Size(433, 24);
             menuStrip.TabIndex = 1;
             // 
-            // StripMenuMode
+            // StripMenuView
             // 
-            StripMenuMode.DropDownItems.AddRange(new ToolStripItem[] { MenuModeSim, MenuModeAdv, MenuModePro });
-            StripMenuMode.Name = "StripMenuMode";
-            StripMenuMode.Size = new Size(50, 20);
-            StripMenuMode.Text = "Mode";
+            StripMenuView.DropDownItems.AddRange(new ToolStripItem[] { MenuViewSim, MenuViewAdv, MenuViewPro });
+            StripMenuView.Name = "StripMenuView";
+            StripMenuView.Size = new Size(44, 20);
+            StripMenuView.Text = "View";
             // 
-            // MenuModeSim
+            // MenuViewSim
             // 
-            MenuModeSim.Name = "MenuModeSim";
-            MenuModeSim.ShortcutKeys = Keys.F2;
-            MenuModeSim.Size = new Size(160, 22);
-            MenuModeSim.Text = "Simple";
-            MenuModeSim.Click += SwitchMode;
+            MenuViewSim.Name = "MenuViewSim";
+            MenuViewSim.ShortcutKeys = Keys.F2;
+            MenuViewSim.Size = new Size(160, 22);
+            MenuViewSim.Text = "Simple";
+            MenuViewSim.Click += SwitchMode;
             // 
-            // MenuModeAdv
+            // MenuViewAdv
             // 
-            MenuModeAdv.Name = "MenuModeAdv";
-            MenuModeAdv.ShortcutKeys = Keys.F3;
-            MenuModeAdv.Size = new Size(160, 22);
-            MenuModeAdv.Text = "Advanced";
-            MenuModeAdv.Click += SwitchMode;
+            MenuViewAdv.Name = "MenuViewAdv";
+            MenuViewAdv.ShortcutKeys = Keys.F3;
+            MenuViewAdv.Size = new Size(160, 22);
+            MenuViewAdv.Text = "Advanced";
+            MenuViewAdv.Click += SwitchMode;
             // 
-            // MenuModePro
+            // MenuViewPro
             // 
-            MenuModePro.Checked = true;
-            MenuModePro.CheckState = CheckState.Checked;
-            MenuModePro.Name = "MenuModePro";
-            MenuModePro.ShortcutKeys = Keys.F4;
-            MenuModePro.Size = new Size(160, 22);
-            MenuModePro.Text = "Programmer";
-            MenuModePro.Click += SwitchMode;
+            MenuViewPro.Checked = true;
+            MenuViewPro.CheckState = CheckState.Checked;
+            MenuViewPro.Name = "MenuViewPro";
+            MenuViewPro.ShortcutKeys = Keys.F4;
+            MenuViewPro.Size = new Size(160, 22);
+            MenuViewPro.Text = "Programmer";
+            MenuViewPro.Click += SwitchMode;
             // 
             // StripMenuEdit
             // 
@@ -181,11 +181,10 @@
             // StripMenuVersion
             // 
             StripMenuVersion.Alignment = ToolStripItemAlignment.Right;
-            StripMenuVersion.Font = new Font("Corbel", 9F, FontStyle.Regular, GraphicsUnit.Point);
             StripMenuVersion.ForeColor = SystemColors.ControlDarkDark;
             StripMenuVersion.Name = "StripMenuVersion";
             StripMenuVersion.ShortcutKeys = Keys.F1;
-            StripMenuVersion.Size = new Size(56, 20);
+            StripMenuVersion.Size = new Size(57, 20);
             StripMenuVersion.Text = "Version";
             StripMenuVersion.Click += StripMenuVersion_Click;
             // 
@@ -960,8 +959,8 @@
             // 
             tableLayoutBase.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             tableLayoutBase.ColumnCount = 2;
-            tableLayoutBase.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 21.0023861F));
-            tableLayoutBase.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 78.99761F));
+            tableLayoutBase.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+            tableLayoutBase.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 75F));
             tableLayoutBase.Controls.Add(BtBase2, 1, 3);
             tableLayoutBase.Controls.Add(BtBase8, 1, 2);
             tableLayoutBase.Controls.Add(BtBase10, 1, 1);
@@ -978,7 +977,6 @@
             tableLayoutBase.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
             tableLayoutBase.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
             tableLayoutBase.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-            tableLayoutBase.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             tableLayoutBase.Size = new Size(427, 94);
             tableLayoutBase.TabIndex = 17;
             // 
@@ -989,10 +987,10 @@
             BtBase2.FlatAppearance.BorderSize = 0;
             BtBase2.FlatStyle = FlatStyle.Flat;
             BtBase2.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            BtBase2.Location = new Point(89, 69);
+            BtBase2.Location = new Point(106, 69);
             BtBase2.Margin = new Padding(0);
             BtBase2.Name = "BtBase2";
-            BtBase2.Size = new Size(338, 25);
+            BtBase2.Size = new Size(321, 25);
             BtBase2.TabIndex = 15;
             BtBase2.TabStop = false;
             BtBase2.Text = "0";
@@ -1008,10 +1006,10 @@
             BtBase8.FlatAppearance.BorderSize = 0;
             BtBase8.FlatStyle = FlatStyle.Flat;
             BtBase8.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            BtBase8.Location = new Point(89, 46);
+            BtBase8.Location = new Point(106, 46);
             BtBase8.Margin = new Padding(0);
             BtBase8.Name = "BtBase8";
-            BtBase8.Size = new Size(338, 23);
+            BtBase8.Size = new Size(321, 23);
             BtBase8.TabIndex = 14;
             BtBase8.TabStop = false;
             BtBase8.Text = "0";
@@ -1027,10 +1025,10 @@
             BtBase10.FlatAppearance.BorderSize = 0;
             BtBase10.FlatStyle = FlatStyle.Flat;
             BtBase10.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            BtBase10.Location = new Point(89, 23);
+            BtBase10.Location = new Point(106, 23);
             BtBase10.Margin = new Padding(0);
             BtBase10.Name = "BtBase10";
-            BtBase10.Size = new Size(338, 23);
+            BtBase10.Size = new Size(321, 23);
             BtBase10.TabIndex = 13;
             BtBase10.TabStop = false;
             BtBase10.Text = "0";
@@ -1047,7 +1045,7 @@
             rbBase2.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
             rbBase2.Location = new Point(3, 72);
             rbBase2.Name = "rbBase2";
-            rbBase2.Size = new Size(83, 19);
+            rbBase2.Size = new Size(100, 19);
             rbBase2.TabIndex = 11;
             rbBase2.Text = "Bin  (2)";
             rbBase2.TextAlign = ContentAlignment.MiddleCenter;
@@ -1062,7 +1060,7 @@
             rbBase8.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
             rbBase8.Location = new Point(3, 49);
             rbBase8.Name = "rbBase8";
-            rbBase8.Size = new Size(83, 17);
+            rbBase8.Size = new Size(100, 17);
             rbBase8.TabIndex = 11;
             rbBase8.Text = "Oct  (8)";
             rbBase8.TextAlign = ContentAlignment.MiddleCenter;
@@ -1078,7 +1076,7 @@
             RbBase10.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
             RbBase10.Location = new Point(3, 26);
             RbBase10.Name = "RbBase10";
-            RbBase10.Size = new Size(83, 17);
+            RbBase10.Size = new Size(100, 17);
             RbBase10.TabIndex = 12;
             RbBase10.TabStop = true;
             RbBase10.Text = "Dec (10)";
@@ -1094,7 +1092,7 @@
             rbBase16.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
             rbBase16.Location = new Point(3, 3);
             rbBase16.Name = "rbBase16";
-            rbBase16.Size = new Size(83, 17);
+            rbBase16.Size = new Size(100, 17);
             rbBase16.TabIndex = 0;
             rbBase16.Text = "Hex (16)";
             rbBase16.TextAlign = ContentAlignment.MiddleCenter;
@@ -1108,10 +1106,10 @@
             BtBase16.FlatAppearance.BorderSize = 0;
             BtBase16.FlatStyle = FlatStyle.Flat;
             BtBase16.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            BtBase16.Location = new Point(89, 0);
+            BtBase16.Location = new Point(106, 0);
             BtBase16.Margin = new Padding(0);
             BtBase16.Name = "BtBase16";
-            BtBase16.Size = new Size(338, 23);
+            BtBase16.Size = new Size(321, 23);
             BtBase16.TabIndex = 12;
             BtBase16.TabStop = false;
             BtBase16.Text = "0";
@@ -1218,9 +1216,9 @@
         private MenuStrip menuStrip;
         private TableLayoutPanel TableLayoutButtons;
         private ToolStripMenuItem StripMenuEdit;
-        private ToolStripMenuItem StripMenuMode;
-        private ToolStripMenuItem MenuModeSim;
-        private ToolStripMenuItem MenuModeAdv;
+        private ToolStripMenuItem StripMenuView;
+        private ToolStripMenuItem MenuViewSim;
+        private ToolStripMenuItem MenuViewAdv;
         private ToolStripMenuItem MenuEditTopmost;
         private ToolStripMenuItem MenuEditDarkmode;
         private Button Bt9;
@@ -1250,7 +1248,7 @@
         private ToolStripMenuItem StripMenuVersion;
         private ToolStripSeparator toolStripSeparator;
         private ToolStripMenuItem MenuEditDebug;
-        private ToolStripMenuItem MenuModePro;
+        private ToolStripMenuItem MenuViewPro;
         private Button BtF;
         private Button BtE;
         private Button BtD;
