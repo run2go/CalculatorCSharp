@@ -6,6 +6,7 @@ using System.Diagnostics; //Access explorer.exe to open URLs in default browser
 using System.Globalization; //Get System Localization, grab default Comma character
 using System.Numerics; //Used by BigInteger, also Conversion Class
 using System.Runtime.InteropServices;
+using org.matheval.Implements;
 
 namespace Calculator {
     public partial class Interface : Form {
@@ -13,7 +14,7 @@ namespace Calculator {
         const string ProjectAuthor = "run2go";
         const string ProjectVersion = "1.1.9";
         readonly string ProjectWebsite = $"https://github.com/{ProjectAuthor}/{ProjectName}/tree/Latest";
-        readonly string ProjectAPI = $"https://api.github.com/repos/{ProjectAuthor}/{ProjectName}";
+        readonly string ProjectFile = $"https://raw.githubusercontent.com/{ProjectAuthor}/{ProjectName}/master/{ProjectName}/{ProjectName}.cs";//https://api.github.com/repos/
         readonly string SymbolComma = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
         readonly string SymbolGroupSeparator = CultureInfo.CurrentCulture.NumberFormat.NumberGroupSeparator;
         string lastResult = "0";
@@ -26,14 +27,14 @@ namespace Calculator {
             KeyDown += new KeyEventHandler(Interface_KeyDown!); //Handle special keys & shortcuts
             KeyPreview = true;
             SwitchMode(MenuViewSim, null!);
-            StatusText(Utility.UpdateCheck(ProjectAPI, ProjectVersion) ? "[Update Available]" : string.Empty);
+            StatusText(Utility.UpdateCheck(ProjectFile, ProjectVersion) ? "[Update Available]" : string.Empty);
         }
-        private void Interface_KeyPress(object sender, KeyPressEventArgs e) { if (e.KeyChar != (char)13) InputAdd($"{e.KeyChar}");  }
+        private void Interface_KeyPress(object sender, KeyPressEventArgs e) { if (e.KeyChar != (char)13 && e.KeyChar != (char)46 && e.KeyChar != (char)8) InputAdd($"{e.KeyChar}"); }
         private void Interface_KeyDown(object sender, KeyEventArgs e) {
             switch (e.KeyCode) {
                 case Keys.Enter: Calculate(); break;
                 case Keys.Back:
-                case Keys.Delete: InputDelete(); break; //if (TbInput.SelectedText.Length > 0) TbInput.SelectedText = string.Empty;
+                case Keys.Delete: InputDelete(); break;
             }
             if (e.Control && e.KeyCode == Keys.C && !string.IsNullOrEmpty(lastResult)) Clipboard.SetText(lastResult);
             else if (e.Control && e.KeyCode == Keys.V && Clipboard.ContainsText(TextDataFormat.Text)) InputSet(Clipboard.GetText(TextDataFormat.Text));
@@ -61,11 +62,15 @@ namespace Calculator {
         private void EvalSet(string text) { TbEval.Text = text; }
         private string InputGet() { return TbInput.Text; } //Get the current input string
         private void InputAdd(string text) {
-            if (SymbolGet("=")){
+            if (SymbolGet("=")) {
                 EvalSet(string.Empty);
                 InputSet(string.Empty);
             }
-            TbInput.Text += text;
+            if (Regex.IsMatch(text, @"[^\dA-F]$")) {
+                EvalAdd(InputGet() + text);
+                InputSet(string.Empty);
+            }
+            else TbInput.Text += text;
             DisplayUpdate();
             SymbolSet(">");
         }
@@ -110,10 +115,6 @@ namespace Calculator {
             for (int i = baseCurrent; i < button.Length; i++) { button[i].Enabled = false; button[i].ForeColor = Utility.ColorOffset(Bt0.ForeColor, 200, MenuEditDarkmode.Checked); } //Disable unused buttons
             for (int i = 0; i < baseCurrent; i++) { button[i].Enabled = true; button[i].ForeColor = Bt0.ForeColor; } //Enable required buttons
         }
-        private void MenuEditTopmost_Click(object ob, EventArgs e) { TopMost = MenuEditTopmost.Checked = !MenuEditTopmost.Checked; }
-        private void MenuDarkmode_Click(object ob, EventArgs e) { ColorToggle(); MenuEditDarkmode.Checked = !MenuEditDarkmode.Checked; }
-        private void MenuEditDebug_Click(object ob, EventArgs e) { StatusText((MenuEditDebug.Checked = !MenuEditDebug.Checked) ? "[Debug Mode]" : ""); }
-        private void StripMenuVersion_Click(object ob, EventArgs e) { Process.Start("explorer.exe", ProjectWebsite); }
         private void SwitchMode(object ob, EventArgs e) {
             string view = ((ToolStripMenuItem)ob).Name;
             int[] colSize = new int[6];
@@ -143,9 +144,13 @@ namespace Calculator {
                 RbBase10.Checked = true;
             }
         }
+        private void MenuEditTopmost_Click(object ob, EventArgs e) { TopMost = MenuEditTopmost.Checked = !MenuEditTopmost.Checked; }
+        private void MenuDarkmode_Click(object ob, EventArgs e) { ColorToggle(); MenuEditDarkmode.Checked = !MenuEditDarkmode.Checked; }
+        private void MenuEditDebug_Click(object ob, EventArgs e) { StatusText((MenuEditDebug.Checked = !MenuEditDebug.Checked) ? "[Debug Mode]" : ""); }
+        private void StripMenuVersion_Click(object ob, EventArgs e) { Process.Start("explorer.exe", ProjectWebsite); }
         private void BtCalc_Click(object ob, EventArgs e) { Calculate(); }
         private void BtDelete_Click(object ob, EventArgs e) { InputDelete(); }
-        private void BtClear_Click(object ob, EventArgs e) { TbInput.Text = TbEval.Text = string.Empty; SymbolSet(">"); }
+        private void BtClear_Click(object ob, EventArgs e) { EvalSet(string.Empty); InputSet(string.Empty); SymbolSet(">"); }
         private void BtCopy_Click(object ob, EventArgs e) { InputAdd(lastResult); }
         private void BtCom_Click(object ob, EventArgs e) { InputAdd(SymbolComma); }
         private void BtFactorial_Click(object ob, EventArgs e) { InputAdd("!"); }
@@ -169,7 +174,10 @@ namespace Calculator {
         internal static string updateResponse = "";
         internal static bool UpdateCheck(string URL, string currentVersion) {
             UpdateCheckAsync(URL);
-            string availableVersion = updateResponse;
+            string availableVersion = "0.0.0";
+            string versionPattern = @"const\s+string\s+ProjectVersion\s+=\s+""(?<version>\d+(\.\d+){0,2})"";";
+            Match match = Regex.Match(updateResponse, versionPattern);
+            if (match.Success) availableVersion = match.Groups["version"].Value;
             return (currentVersion == availableVersion);
         }
         internal async static void UpdateCheckAsync(string URL) {
