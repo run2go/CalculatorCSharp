@@ -6,7 +6,7 @@ using System.Diagnostics; //Access explorer.exe to open URLs in default browser
 using System.Globalization; //Get System Localization, grab default Comma character
 using System.Numerics; //Used by BigInteger, also Conversion Class
 using System.Runtime.InteropServices; //Required for darkmode
-
+//Move to WPF?
 namespace Calculator {
     public partial class Interface : Form {
         const string ProjectName = "Calculator";
